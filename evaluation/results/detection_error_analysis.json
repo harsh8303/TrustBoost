@@ -1,0 +1,936 @@
+{
+  "total_errors": 61,
+  "error_distribution": {
+    "boundary_error": 23,
+    "missed_pii": 20,
+    "category_mismatch": 12,
+    "spurious_detection": 6
+  },
+  "detailed_errors": [
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [47:74] vs [47:61]",
+      "predicted": {
+        "text": "452 Elm Street, Springfield",
+        "type": "ADDRESS",
+        "start": 47,
+        "end": 74
+      },
+      "expected": {
+        "text": "452 Elm Street",
+        "type": "ADDRESS",
+        "start": 47,
+        "end": 61
+      },
+      "sample_id": "sample_002"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Springfield",
+        "type": "LOCATION",
+        "start": 63,
+        "end": 74
+      },
+      "sample_id": "sample_002"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [35:50] vs [39:50]",
+      "predicted": {
+        "text": "Dr. Evelyn Reed",
+        "type": "PERSON",
+        "start": 35,
+        "end": 50
+      },
+      "expected": {
+        "text": "Evelyn Reed",
+        "type": "PERSON",
+        "start": 39,
+        "end": 50
+      },
+      "sample_id": "sample_003"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [46:80] vs [46:72]",
+      "predicted": {
+        "text": "Flat 4B, Greenwood Heights, Austin",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 80
+      },
+      "expected": {
+        "text": "Flat 4B, Greenwood Heights",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 72
+      },
+      "sample_id": "sample_006"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Austin",
+        "type": "LOCATION",
+        "start": 74,
+        "end": 80
+      },
+      "sample_id": "sample_006"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Miami",
+        "type": "LOCATION",
+        "start": 59,
+        "end": 64
+      },
+      "sample_id": "sample_010"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Jessica Jones",
+        "type": "PERSON",
+        "start": 14,
+        "end": 27
+      },
+      "sample_id": "sample_011"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "London",
+        "type": "LOCATION",
+        "start": 71,
+        "end": 77
+      },
+      "sample_id": "sample_011"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [23:44] vs [33:44]",
+      "predicted": {
+        "text": "IFSC code HDFC0000240",
+        "type": "IFSC",
+        "start": 23,
+        "end": 44
+      },
+      "expected": {
+        "text": "HDFC0000240",
+        "type": "IFSC",
+        "start": 33,
+        "end": 44
+      },
+      "sample_id": "sample_018"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [19:50] vs [38:50]",
+      "predicted": {
+        "text": "ICICI Bank account 001105009876",
+        "type": "BANK_ACCOUNT",
+        "start": 19,
+        "end": 50
+      },
+      "expected": {
+        "text": "001105009876",
+        "type": "BANK_ACCOUNT",
+        "start": 38,
+        "end": 50
+      },
+      "sample_id": "sample_019"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "ICIC0000011",
+        "type": "IFSC",
+        "start": 62,
+        "end": 73
+      },
+      "sample_id": "sample_019"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [14:37] vs [26:37]",
+      "predicted": {
+        "text": "SBI account 30987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 14,
+        "end": 37
+      },
+      "expected": {
+        "text": "30987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 37
+      },
+      "sample_id": "sample_022"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [43:64] vs [53:64]",
+      "predicted": {
+        "text": "IFSC code SBIN0001122",
+        "type": "IFSC",
+        "start": 43,
+        "end": 64
+      },
+      "expected": {
+        "text": "SBIN0001122",
+        "type": "IFSC",
+        "start": 53,
+        "end": 64
+      },
+      "sample_id": "sample_022"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: EMAIL, expected: FINANCIAL_IDENTIFIER)",
+      "predicted": {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "EMAIL",
+        "start": 35,
+        "end": 57
+      },
+      "expected": {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 35,
+        "end": 57
+      },
+      "sample_id": "sample_023"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [16:42] vs [26:42]",
+      "predicted": {
+        "text": "Visa card 4111111111114444",
+        "type": "CREDIT_CARD",
+        "start": 16,
+        "end": 42
+      },
+      "expected": {
+        "text": "4111111111114444",
+        "type": "CREDIT_CARD",
+        "start": 26,
+        "end": 42
+      },
+      "sample_id": "sample_025"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "27AAAPL1234C1ZV",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 23,
+        "end": 38
+      },
+      "sample_id": "sample_027"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [0:30] vs [11:30]",
+      "predicted": {
+        "text": "MasterCard 5424-1800-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 0,
+        "end": 30
+      },
+      "expected": {
+        "text": "5424-1800-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 11,
+        "end": 30
+      },
+      "sample_id": "sample_029"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: EMAIL, expected: FINANCIAL_IDENTIFIER)",
+      "predicted": {
+        "text": "payments.support@icici",
+        "type": "EMAIL",
+        "start": 41,
+        "end": 63
+      },
+      "expected": {
+        "text": "payments.support@icici",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 41,
+        "end": 63
+      },
+      "sample_id": "sample_030"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [31:50] vs [31:51]",
+      "predicted": {
+        "text": "SuperSecretPassw0rd",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 50
+      },
+      "expected": {
+        "text": "SuperSecretPassw0rd!",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 51
+      },
+      "sample_id": "sample_031"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [35:94] vs [48:93]",
+      "predicted": {
+        "text": "Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
+        "type": "ACCESS_TOKEN",
+        "start": 35,
+        "end": 94
+      },
+      "expected": {
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID",
+        "type": "ACCESS_TOKEN",
+        "start": 48,
+        "end": 93
+      },
+      "sample_id": "sample_033"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [0:66] vs [39:66]",
+      "predicted": {
+        "text": "Client secret for OAuth application is sec_live_99f018a4bc82d0194e",
+        "type": "SECRET",
+        "start": 0,
+        "end": 66
+      },
+      "expected": {
+        "text": "sec_live_99f018a4bc82d0194e",
+        "type": "SECRET",
+        "start": 39,
+        "end": 66
+      },
+      "sample_id": "sample_034"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "deploy bot",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 69,
+        "end": 79
+      },
+      "expected": null,
+      "sample_id": "sample_035"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC8...",
+        "type": "PRIVATE_KEY",
+        "start": 19,
+        "end": 54
+      },
+      "sample_id": "sample_035"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: PASSWORD, expected: DATABASE_CREDENTIAL)",
+      "predicted": {
+        "text": "P@ssw0rd2026",
+        "type": "PASSWORD",
+        "start": 47,
+        "end": 59
+      },
+      "expected": {
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81
+      },
+      "sample_id": "sample_036"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: CREDENTIAL, expected: PASSWORD)",
+      "predicted": {
+        "text": "admin / Tr0ub4dor&3",
+        "type": "CREDENTIAL",
+        "start": 46,
+        "end": 65
+      },
+      "expected": {
+        "text": "Tr0ub4dor&3",
+        "type": "PASSWORD",
+        "start": 54,
+        "end": 65
+      },
+      "sample_id": "sample_037"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "sk_test_51MzABCDEFGHIJKLMN1234567890",
+        "type": "API_KEY",
+        "start": 27,
+        "end": 63
+      },
+      "sample_id": "sample_038"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "db_master",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 14,
+        "end": 23
+      },
+      "expected": null,
+      "sample_id": "sample_041"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: INTERNAL_URL, expected: DATABASE_CREDENTIAL)",
+      "predicted": {
+        "text": "redis://default:redispw2026!@cache.internal.net:6379",
+        "type": "INTERNAL_URL",
+        "start": 11,
+        "end": 63
+      },
+      "expected": {
+        "text": "redis://default:redispw2026!@cache.internal.net:6379",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 11,
+        "end": 63
+      },
+      "sample_id": "sample_045"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [0:26] vs [13:26]",
+      "predicted": {
+        "text": "All code for Project Aegis",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 0,
+        "end": 26
+      },
+      "expected": {
+        "text": "Project Aegis",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 13,
+        "end": 26
+      },
+      "sample_id": "sample_049"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: CONFIDENTIAL_PROJECT, expected: INTERNAL_ORGANIZATION_INFORMATION)",
+      "predicted": {
+        "text": "Q3 financial margin targets",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 4,
+        "end": 31
+      },
+      "expected": {
+        "text": "Q3 financial margin targets and unannounced merger plans",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 60
+      },
+      "sample_id": "sample_050"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: CONFIDENTIAL_PROJECT, expected: INTERNAL_ORGANIZATION_INFORMATION)",
+      "predicted": {
+        "text": "unannounced merger plans",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 36,
+        "end": 60
+      },
+      "expected": {
+        "text": "Q3 financial margin targets and unannounced merger plans",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 60
+      },
+      "sample_id": "sample_050"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "executive staff",
+        "type": "PERSON",
+        "start": 73,
+        "end": 88
+      },
+      "expected": null,
+      "sample_id": "sample_055"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "proprietary algorithm for customer churn prediction",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 55
+      },
+      "sample_id": "sample_055"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [26:53] vs [39:53]",
+      "predicted": {
+        "text": "HDFC account 50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 53
+      },
+      "expected": {
+        "text": "50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 39,
+        "end": 53
+      },
+      "sample_id": "sample_058"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [6:27] vs [16:27]",
+      "predicted": {
+        "text": "IFSC code SBIN0004567",
+        "type": "IFSC",
+        "start": 6,
+        "end": 27
+      },
+      "expected": {
+        "text": "SBIN0004567",
+        "type": "IFSC",
+        "start": 16,
+        "end": 27
+      },
+      "sample_id": "sample_061"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [21:37] vs [21:38]",
+      "predicted": {
+        "text": "SecretDbPassword",
+        "type": "PASSWORD",
+        "start": 21,
+        "end": 37
+      },
+      "expected": {
+        "text": "SecretDbPassword!",
+        "type": "PASSWORD",
+        "start": 21,
+        "end": 38
+      },
+      "sample_id": "sample_062"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [22:52] vs [22:44]",
+      "predicted": {
+        "text": "Flat 204, Shanti Nagar, Mumbai",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 52
+      },
+      "expected": {
+        "text": "Flat 204, Shanti Nagar",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 44
+      },
+      "sample_id": "sample_063"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Mumbai",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 52
+      },
+      "sample_id": "sample_063"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: EMAIL, expected: FINANCIAL_IDENTIFIER)",
+      "predicted": {
+        "text": "deepak.kumar@paytm",
+        "type": "EMAIL",
+        "start": 30,
+        "end": 48
+      },
+      "expected": {
+        "text": "deepak.kumar@paytm",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 30,
+        "end": 48
+      },
+      "sample_id": "sample_064"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [47:61] vs [47:53]",
+      "predicted": {
+        "text": "Denver airport",
+        "type": "LOCATION",
+        "start": 47,
+        "end": 61
+      },
+      "expected": {
+        "text": "Denver",
+        "type": "LOCATION",
+        "start": 47,
+        "end": 53
+      },
+      "sample_id": "sample_067"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: PERSON, expected: FINANCIAL_IDENTIFIER)",
+      "predicted": {
+        "text": "johnny.cash",
+        "type": "PERSON",
+        "start": 36,
+        "end": 47
+      },
+      "expected": {
+        "text": "johnny.cash@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 36,
+        "end": 58
+      },
+      "sample_id": "sample_069"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: BANK_ACCOUNT, expected: FINANCIAL_IDENTIFIER)",
+      "predicted": {
+        "text": "okhdfcbank",
+        "type": "BANK_ACCOUNT",
+        "start": 48,
+        "end": 58
+      },
+      "expected": {
+        "text": "johnny.cash@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 36,
+        "end": 58
+      },
+      "sample_id": "sample_069"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "http://gw.internal.mesh:8000",
+        "type": "INTERNAL_URL",
+        "start": 64,
+        "end": 92
+      },
+      "sample_id": "sample_076"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [56:84] vs [63:84]",
+      "predicted": {
+        "text": "Bearer sk-live-9021849102b48",
+        "type": "API_KEY",
+        "start": 56,
+        "end": 84
+      },
+      "expected": {
+        "text": "sk-live-9021849102b48",
+        "type": "API_KEY",
+        "start": 63,
+        "end": 84
+      },
+      "sample_id": "sample_080"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Ahmedabad",
+        "type": "LOCATION",
+        "start": 118,
+        "end": 127
+      },
+      "sample_id": "sample_081"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [60:86] vs [60:78]",
+      "predicted": {
+        "text": "88 Pine Ridge Road, Dallas",
+        "type": "ADDRESS",
+        "start": 60,
+        "end": 86
+      },
+      "expected": {
+        "text": "88 Pine Ridge Road",
+        "type": "ADDRESS",
+        "start": 60,
+        "end": 78
+      },
+      "sample_id": "sample_082"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Dallas",
+        "type": "LOCATION",
+        "start": 80,
+        "end": 86
+      },
+      "sample_id": "sample_082"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [39:62] vs [48:62]",
+      "predicted": {
+        "text": "Aadhaar: 3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 39,
+        "end": 62
+      },
+      "expected": {
+        "text": "3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 48,
+        "end": 62
+      },
+      "sample_id": "sample_083"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "dev_admin",
+        "type": "PERSON",
+        "start": 26,
+        "end": 35
+      },
+      "expected": null,
+      "sample_id": "sample_085"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [68:95] vs [68:84]",
+      "predicted": {
+        "text": "404 Green Valley, Bengaluru",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 95
+      },
+      "expected": {
+        "text": "404 Green Valley",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 84
+      },
+      "sample_id": "sample_086"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Bengaluru",
+        "type": "LOCATION",
+        "start": 86,
+        "end": 95
+      },
+      "sample_id": "sample_086"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: CREDENTIAL, expected: CREDIT_CARD)",
+      "predicted": {
+        "text": "corporate card 5105-1051-0510-5100",
+        "type": "CREDENTIAL",
+        "start": 36,
+        "end": 70
+      },
+      "expected": {
+        "text": "5105-1051-0510-5100",
+        "type": "CREDIT_CARD",
+        "start": 51,
+        "end": 70
+      },
+      "sample_id": "sample_087"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: LOCATION, expected: ADDRESS)",
+      "predicted": {
+        "text": "14 Wall Street, New York",
+        "type": "LOCATION",
+        "start": 87,
+        "end": 111
+      },
+      "expected": {
+        "text": "14 Wall Street",
+        "type": "ADDRESS",
+        "start": 87,
+        "end": 101
+      },
+      "sample_id": "sample_087"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "New York",
+        "type": "LOCATION",
+        "start": 103,
+        "end": 111
+      },
+      "sample_id": "sample_087"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [83:100] vs [83:101]",
+      "predicted": {
+        "text": "RootAdminPass2026",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 100
+      },
+      "expected": {
+        "text": "RootAdminPass2026!",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 101
+      },
+      "sample_id": "sample_088"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Project Polaris",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 20,
+        "end": 35
+      },
+      "sample_id": "sample_088"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Paris",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 51
+      },
+      "sample_id": "sample_090"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Portland",
+        "type": "LOCATION",
+        "start": 37,
+        "end": 45
+      },
+      "sample_id": "sample_092"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "KEY",
+        "type": "API_KEY",
+        "start": 28,
+        "end": 31
+      },
+      "expected": null,
+      "sample_id": "sample_094"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "secret_token_val_998811",
+        "type": "SECRET",
+        "start": 33,
+        "end": 56
+      },
+      "sample_id": "sample_094"
+    },
+    {
+      "error_type": "spurious_detection",
+      "description": "Model detected entity where no gold entity exists",
+      "predicted": {
+        "text": "10:00 AM UTC",
+        "type": "DATE_OF_BIRTH",
+        "start": 34,
+        "end": 46
+      },
+      "expected": null,
+      "sample_id": "sample_099"
+    }
+  ],
+  "reconciliation_summary": {
+    "strict_matching": {
+      "strict_tp": 118,
+      "strict_fp": 41,
+      "strict_fn": 53,
+      "strict_errors_sum_fp_plus_fn": 94
+    },
+    "reconciled_taxonomy": {
+      "spurious_detections_fp": 6,
+      "overlapping_predictions_fp": 35,
+      "boundary_errors_pred_perspective": 23,
+      "category_mismatches_pred_perspective": 12,
+      "masked_false_negatives": 39,
+      "unmasked_leaked_false_negatives": 14,
+      "compound_swallowed_secondary_entities": 6
+    },
+    "note_on_metrics_py_missed_pii_count_of_20": "metrics.py reported 20 missed_pii because when a compound prediction (e.g. [ADDRESS] covering street + city) overlapped two gold entities (e.g. ADDRESS and LOCATION), only the first gold entity was marked resolved (overlaps[0]). The second gold entity was counted as missed_pii in metrics.py despite being masked inside the address token. Subtracting these 6 compound-swallowed entities from 20 leaves exactly 14 true unmasked, leaked entities."
+  }
+}

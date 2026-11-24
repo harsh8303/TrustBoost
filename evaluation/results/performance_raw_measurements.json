@@ -1,0 +1,311 @@
+{
+  "metadata": {
+    "title": "TrustBoost Multi-Iteration Performance Benchmark Measurements",
+    "model": "gemma3:4b (local Ollama)",
+    "host_environment": "Apple Silicon (macOS, Unified Memory Architecture)",
+    "benchmark_script": "evaluation/performance/run_rigorous_benchmark.py",
+    "timestamp": "2026-11-24 09:52:10 UTC",
+    "cold_start_seconds": 6.8108
+  },
+  "tiers": {
+    "Small Text (~100 words)": {
+      "text_length": {
+        "word_count": 74,
+        "char_count": 540
+      },
+      "completed_iterations": 5,
+      "detection": {
+        "count": 5,
+        "mean": 28.203,
+        "median": 25.8915,
+        "min": 23.0134,
+        "max": 36.2565,
+        "stdev": 5.8649,
+        "throughput": {
+          "words_per_second": 2.62,
+          "characters_per_second": 19.15
+        },
+        "raw_latencies": [
+          25.8915,
+          23.0134,
+          23.4378,
+          32.4158,
+          36.2565
+        ]
+      },
+      "sanitization": {
+        "count": 5,
+        "mean": 0.0051,
+        "median": 0.0028,
+        "min": 0.0005,
+        "max": 0.016,
+        "stdev": 0.0064,
+        "raw_latencies": [
+          0.005715,
+          0.00047,
+          0.002778,
+          0.000554,
+          0.015959
+        ]
+      },
+      "restoration": {
+        "count": 5,
+        "mean": 0.0033,
+        "median": 0.0003,
+        "min": 0.0001,
+        "max": 0.0154,
+        "stdev": 0.0068,
+        "raw_latencies": [
+          8.8e-05,
+          0.000543,
+          7.7e-05,
+          0.000344,
+          0.015399
+        ]
+      },
+      "end_to_end_pipeline": {
+        "count": 5,
+        "mean": 28.2116,
+        "median": 25.8973,
+        "min": 23.0145,
+        "max": 36.2879,
+        "stdev": 5.8747,
+        "raw_latencies": [
+          25.8973,
+          23.0145,
+          23.4406,
+          32.4177,
+          36.2879
+        ]
+      },
+      "detected_entities": {
+        "counts_per_run": [
+          10,
+          9,
+          9,
+          10,
+          9
+        ],
+        "mean_entities": 9.4
+      },
+      "individual_runs": [
+        {
+          "iteration": 1,
+          "detection_latency_seconds": 25.8915,
+          "sanitization_latency_seconds": 0.005715,
+          "restoration_latency_seconds": 8.8e-05,
+          "end_to_end_latency_seconds": 25.8973,
+          "detected_entity_count": 10
+        },
+        {
+          "iteration": 2,
+          "detection_latency_seconds": 23.0134,
+          "sanitization_latency_seconds": 0.00047,
+          "restoration_latency_seconds": 0.000543,
+          "end_to_end_latency_seconds": 23.0145,
+          "detected_entity_count": 9
+        },
+        {
+          "iteration": 3,
+          "detection_latency_seconds": 23.4378,
+          "sanitization_latency_seconds": 0.002778,
+          "restoration_latency_seconds": 7.7e-05,
+          "end_to_end_latency_seconds": 23.4406,
+          "detected_entity_count": 9
+        },
+        {
+          "iteration": 4,
+          "detection_latency_seconds": 32.4158,
+          "sanitization_latency_seconds": 0.000554,
+          "restoration_latency_seconds": 0.000344,
+          "end_to_end_latency_seconds": 32.4177,
+          "detected_entity_count": 10
+        },
+        {
+          "iteration": 5,
+          "detection_latency_seconds": 36.2565,
+          "sanitization_latency_seconds": 0.015959,
+          "restoration_latency_seconds": 0.015399,
+          "end_to_end_latency_seconds": 36.2879,
+          "detected_entity_count": 9
+        }
+      ]
+    },
+    "Medium Text (~500 words)": {
+      "text_length": {
+        "word_count": 261,
+        "char_count": 2093
+      },
+      "completed_iterations": 5,
+      "detection": {
+        "count": 5,
+        "mean": 154.6702,
+        "median": 159.1867,
+        "min": 132.234,
+        "max": 163.872,
+        "stdev": 12.8927,
+        "throughput": {
+          "words_per_second": 1.69,
+          "characters_per_second": 13.53
+        },
+        "raw_latencies": [
+          132.234,
+          159.1867,
+          163.872,
+          162.0652,
+          155.9929
+        ]
+      },
+      "sanitization": {
+        "count": 5,
+        "mean": 0.0035,
+        "median": 0.0032,
+        "min": 0.0023,
+        "max": 0.0057,
+        "stdev": 0.0013,
+        "raw_latencies": [
+          0.003826,
+          0.002289,
+          0.002673,
+          0.005688,
+          0.003188
+        ]
+      },
+      "restoration": {
+        "count": 5,
+        "mean": 0.002,
+        "median": 0.0021,
+        "min": 0.0002,
+        "max": 0.005,
+        "stdev": 0.0019,
+        "raw_latencies": [
+          0.00227,
+          0.004952,
+          0.002105,
+          0.000182,
+          0.00045
+        ]
+      },
+      "end_to_end_pipeline": {
+        "count": 5,
+        "mean": 154.6759,
+        "median": 159.1943,
+        "min": 132.2401,
+        "max": 163.8768,
+        "stdev": 12.8926,
+        "raw_latencies": [
+          132.2401,
+          159.1943,
+          163.8768,
+          162.0711,
+          155.9973
+        ]
+      },
+      "detected_entities": {
+        "counts_per_run": [
+          30,
+          32,
+          33,
+          32,
+          33
+        ],
+        "mean_entities": 32
+      },
+      "individual_runs": [
+        {
+          "iteration": 1,
+          "detection_latency_seconds": 132.234,
+          "sanitization_latency_seconds": 0.003826,
+          "restoration_latency_seconds": 0.00227,
+          "end_to_end_latency_seconds": 132.2401,
+          "detected_entity_count": 30
+        },
+        {
+          "iteration": 2,
+          "detection_latency_seconds": 159.1867,
+          "sanitization_latency_seconds": 0.002289,
+          "restoration_latency_seconds": 0.004952,
+          "end_to_end_latency_seconds": 159.1943,
+          "detected_entity_count": 32
+        },
+        {
+          "iteration": 3,
+          "detection_latency_seconds": 163.872,
+          "sanitization_latency_seconds": 0.002673,
+          "restoration_latency_seconds": 0.002105,
+          "end_to_end_latency_seconds": 163.8768,
+          "detected_entity_count": 33
+        },
+        {
+          "iteration": 4,
+          "detection_latency_seconds": 162.0652,
+          "sanitization_latency_seconds": 0.005688,
+          "restoration_latency_seconds": 0.000182,
+          "end_to_end_latency_seconds": 162.0711,
+          "detected_entity_count": 32
+        },
+        {
+          "iteration": 5,
+          "detection_latency_seconds": 155.9929,
+          "sanitization_latency_seconds": 0.003188,
+          "restoration_latency_seconds": 0.00045,
+          "end_to_end_latency_seconds": 155.9973,
+          "detected_entity_count": 33
+        }
+      ]
+    },
+    "Large Text (~1,000 words)": {
+      "text_length": {
+        "word_count": 455,
+        "char_count": 3774
+      },
+      "attempted_iterations": 5,
+      "completed_iterations": 0,
+      "failed_iterations": 5,
+      "failure_rate_percentage": 100.0,
+      "failure_reason": "Gemma 3 4B failed closed on all 5 runs: raw output could not be parsed as valid JSON or was missing the entities array under long 3,774-character multi-paragraph context.",
+      "individual_runs": [
+        {
+          "iteration": 1,
+          "status": "FAILED",
+          "error": "detect_pii returned success=False (JSON parsing/extraction failed under long context)"
+        },
+        {
+          "iteration": 2,
+          "status": "FAILED",
+          "error": "detect_pii returned success=False (JSON parsing/extraction failed under long context)"
+        },
+        {
+          "iteration": 3,
+          "status": "FAILED",
+          "error": "detect_pii returned success=False (JSON parsing/extraction failed under long context)"
+        },
+        {
+          "iteration": 4,
+          "status": "FAILED",
+          "error": "detect_pii returned success=False (JSON parsing/extraction failed under long context)"
+        },
+        {
+          "iteration": 5,
+          "status": "FAILED",
+          "error": "detect_pii returned success=False (JSON parsing/extraction failed under long context)"
+        }
+      ]
+    }
+  },
+  "empirical_findings_vs_hypotheses": {
+    "empirically_measured_facts": [
+      "Cold-start latency measured at 6.8108s.",
+      "Warm benchmark iterations execute without disk weight reloading.",
+      "Deterministic tokenization and restoration execute in sub-millisecond to ~2ms across all tiers (< 0.001% of pipeline latency).",
+      "Small Text tier: 5/5 warm iterations succeeded (mean: 28.20s, median: 25.89s, min: 23.01s, max: 36.26s, stdev: 5.86s).",
+      "Medium Text tier: 5/5 warm iterations succeeded (mean: 154.67s, median: 159.19s, min: 132.23s, max: 163.87s, stdev: 12.89s; entities: 30-33).",
+      "Large Text tier: 0/5 iterations succeeded (100% fail-closed failure rate due to context length JSON degradation)."
+    ],
+    "causal_hypothesis_decoding_asymmetry": {
+      "hypothesis_statement": "In autoregressive transformer inference, latency consists of prompt prefill and token-by-token decoding. When more entities are detected, the model serially decodes a larger structured JSON payload. When 0 entities are detected, minimal decoding is required, reducing end-to-end generation time.",
+      "evidence_status": "HYPOTHESIS_SUPPORTED_BY_ENTITY_COUNTS_BUT_TOKEN_METRICS_UNLOGGED",
+      "verification_caveat": "Low-level Ollama token metrics (eval_count, prompt_eval_count) were not recorded during benchmark calls, making decoding token length a theoretically supported hypothesis rather than a logged metric."
+    }
+  }
+}

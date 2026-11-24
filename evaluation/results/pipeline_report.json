@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "title": "TrustBoost Deterministic Pipeline Evaluation Report",
+    "timestamp": "2026-11-24 07:21:00 UTC",
+    "overall_status": "PASSED",
+    "total_tests": 13,
+    "total_passed": 13,
+    "overall_pass_rate": 1.0
+  },
+  "suites": {
+    "core_sanitization_pipeline": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Standard Multi-Type Sanitization",
+          "passed": true,
+          "sanitized_text": "Contact [PERSON_1] at [EMAIL_1] or phone [PHONE_1]."
+        },
+        {
+          "name": "Empty Input Text Guard",
+          "passed": true,
+          "sanitized_text": null
+        },
+        {
+          "name": "Zero Entities Passthrough",
+          "passed": true,
+          "sanitized_text": "The weather today in general is sunny and clear."
+        },
+        {
+          "name": "Multiple Entities of Same Type",
+          "passed": true,
+          "sanitized_text": "Doctors [PERSON_1], [PERSON_2], and [PERSON_3] attended the symposium."
+        }
+      ]
+    },
+    "core_restoration_pipeline": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Standard Multiple Token Restoration",
+          "passed": true,
+          "restored_text": "Hello Alice, confirmation sent to alice@example.com and SMS to +1-555-0100."
+        },
+        {
+          "name": "Repeated Token Restoration",
+          "passed": true,
+          "restored_text": "Thank you Alice. Goodbye Alice!"
+        },
+        {
+          "name": "No Tokens Passthrough",
+          "passed": true,
+          "restored_text": "The requested file has been successfully uploaded to the bucket."
+        },
+        {
+          "name": "Empty Response Text",
+          "passed": true,
+          "restored_text": ""
+        }
+      ]
+    },
+    "edge_cases_and_formatting": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Adjacent Entities with Punctuation",
+          "passed": true,
+          "sanitized_text": "Data: [PERSON_1],[EMAIL_1]"
+        },
+        {
+          "name": "Substring Collision Avoidance",
+          "passed": true,
+          "sanitized_text": "[PERSON_1] and [PERSON_2] went to [LOCATION_1]."
+        },
+        {
+          "name": "Unicode and Emojis Roundtrip",
+          "passed": true,
+          "sanitized_text": "Hey [PERSON_1] 👋 send email to [EMAIL_1] 🚀",
+          "restored_text": "Hey Rahul Sharma 👋 send email to rahul@corp.in 🚀"
+        },
+        {
+          "name": "Special Characters in Values Roundtrip",
+          "passed": true,
+          "sanitized_text": "Password: [PASSWORD_1] and secret key: [SECRET_1].",
+          "restored_text": "Password: P@ssw0rd!#$ and secret key: sec*live&99%."
+        },
+        {
+          "name": "Bracket Enclosed Entities",
+          "passed": true,
+          "sanitized_text": "User: \"[[PERSON_1]]\", Email: <[EMAIL_1]>, ID: ([PHONE_1])."
+        }
+      ]
+    }
+  }
+}

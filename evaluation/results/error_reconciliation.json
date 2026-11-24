@@ -1,0 +1,2053 @@
+{
+  "metadata": {
+    "title": "TrustBoost Detection Error & Leakage Reconciliation Report",
+    "timestamp": "2026-11-24 08:51:24 UTC",
+    "dataset_samples": 100,
+    "total_gold_entities": 171,
+    "total_predicted_entities": 159
+  },
+  "summary": {
+    "strict_matching": {
+      "strict_true_positives": 118,
+      "strict_false_positives": 41,
+      "strict_false_negatives": 53,
+      "total_strict_errors_fp_plus_fn": 94,
+      "micro_precision": 0.7421,
+      "micro_recall": 0.6901,
+      "micro_f1": 0.7152
+    },
+    "leakage_reconciliation": {
+      "total_strict_false_negatives": 53,
+      "masked_by_imprecise_or_misclassified_tokens": 39,
+      "residual_leaked_entities": 14,
+      "entity_leakage_rate_percentage": 8.19,
+      "sample_leakage_rate_percentage": 13.0,
+      "reconciliation_formula": "Strict FNs (53) = Masked/Protected by Non-Strict Tokens (39) + Residual Verbatim Leaked Entities (14)"
+    },
+    "protected_false_negatives_breakdown": {
+      "masked_by_imprecise_boundary_token": 24,
+      "masked_by_imprecise_and_misclassified_token": 9,
+      "masked_by_misclassified_token": 4,
+      "masked_by_compound_span_token": 2
+    },
+    "false_positives_breakdown": {
+      "total_strict_false_positives": 41,
+      "spurious_detections_no_gold_overlap": 6,
+      "overlapping_predictions_with_gold_entities": 35,
+      "overlapping_details": {
+        "compound_span_multiple_golds": 6,
+        "boundary_error": 18,
+        "category_mismatch": 4,
+        "boundary_and_category_mismatch": 7
+      }
+    },
+    "taxonomy_reconciliation_explanation": {
+      "level_of_counting": "Entity-level (171 gold, 159 pred) vs Error-event level (paired overlap instances).",
+      "explanation": "In strict entity evaluation, every gold entity without an exact match is 1 FN (53 total), and every prediction without an exact match is 1 FP (41 total), giving 94 strict error points. In the error taxonomy, when a prediction overlaps a gold entity with boundary or category error, that single event links 1 FP with 1 or more FNs. Specifically, 35 overlapping predictions account for 35 FPs and 39 FNs (due to compound spans covering multiple golds). Adding 6 spurious FPs (6 FP, 0 FN) and 14 unmasked missed PII (0 FP, 14 FN) perfectly accounts for all 41 FPs and 53 FNs."
+    }
+  },
+  "all_53_false_negatives_reconciliation": [
+    {
+      "sample_id": "sample_002",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "452 Elm Street",
+        "type": "ADDRESS",
+        "start": 47,
+        "end": 61
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "452 Elm Street, Springfield",
+          "type": "ADDRESS",
+          "start": 47,
+          "end": 74,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ADDRESS) but with imprecise character boundaries [47:74] vs [47:61]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_002",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "Springfield",
+        "type": "LOCATION",
+        "start": 63,
+        "end": 74
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "452 Elm Street, Springfield",
+          "type": "ADDRESS",
+          "start": 47,
+          "end": 74,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [47:74] with differing category (ADDRESS). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_003",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Evelyn Reed",
+        "type": "PERSON",
+        "start": 39,
+        "end": 50
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Dr. Evelyn Reed",
+          "type": "PERSON",
+          "start": 35,
+          "end": 50,
+          "reason": "Full name of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (PERSON) but with imprecise character boundaries [35:50] vs [39:50]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_006",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Flat 4B, Greenwood Heights",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 72
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Flat 4B, Greenwood Heights, Austin",
+          "type": "ADDRESS",
+          "start": 46,
+          "end": 80,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ADDRESS) but with imprecise character boundaries [46:80] vs [46:72]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_006",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "Austin",
+        "type": "LOCATION",
+        "start": 74,
+        "end": 80
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Flat 4B, Greenwood Heights, Austin",
+          "type": "ADDRESS",
+          "start": 46,
+          "end": 80,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [46:80] with differing category (ADDRESS). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_010",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "Miami",
+        "type": "LOCATION",
+        "start": 59,
+        "end": 64
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_011",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Jessica Jones",
+        "type": "PERSON",
+        "start": 14,
+        "end": 27
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_011",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "London",
+        "type": "LOCATION",
+        "start": 71,
+        "end": 77
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_018",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "HDFC0000240",
+        "type": "IFSC",
+        "start": 33,
+        "end": 44
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "IFSC code HDFC0000240",
+          "type": "IFSC",
+          "start": 23,
+          "end": 44,
+          "reason": "Bank identifier"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (IFSC) but with imprecise character boundaries [23:44] vs [33:44]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_019",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "001105009876",
+        "type": "BANK_ACCOUNT",
+        "start": 38,
+        "end": 50
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "ICICI Bank account 001105009876",
+          "type": "BANK_ACCOUNT",
+          "start": 19,
+          "end": 50,
+          "reason": "Identifies a specific bank account."
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (BANK_ACCOUNT) but with imprecise character boundaries [19:50] vs [38:50]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_019",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "ICIC0000011",
+        "type": "IFSC",
+        "start": 62,
+        "end": 73
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_022",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "30987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 37
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "SBI account 30987654321",
+          "type": "BANK_ACCOUNT",
+          "start": 14,
+          "end": 37,
+          "reason": "Specific bank account number"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (BANK_ACCOUNT) but with imprecise character boundaries [14:37] vs [26:37]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_022",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "SBIN0001122",
+        "type": "IFSC",
+        "start": 53,
+        "end": 64
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "IFSC code SBIN0001122",
+          "type": "IFSC",
+          "start": 43,
+          "end": 64,
+          "reason": "Unique identifier for a bank account"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (IFSC) but with imprecise character boundaries [43:64] vs [53:64]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_023",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 35,
+        "end": 57
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "rahul.verma@okhdfcbank",
+          "type": "EMAIL",
+          "start": 35,
+          "end": 57,
+          "reason": "Personal email address"
+        }
+      ],
+      "masking_mechanism": "exact_span_category_mismatch",
+      "reconciliation_category": "masked_by_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector accurately captured the exact text span [35:57], but misclassified type as EMAIL instead of FINANCIAL_IDENTIFIER. The tokenizer replaced the entity with [EMAIL_k], masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_025",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "4111111111114444",
+        "type": "CREDIT_CARD",
+        "start": 26,
+        "end": 42
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Visa card 4111111111114444",
+          "type": "CREDIT_CARD",
+          "start": 16,
+          "end": 42,
+          "reason": "Full credit card number is considered PII"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (CREDIT_CARD) but with imprecise character boundaries [16:42] vs [26:42]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_027",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "27AAAPL1234C1ZV",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 23,
+        "end": 38
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_029",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "5424-1800-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 11,
+        "end": 30
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "MasterCard 5424-1800-2345-6789",
+          "type": "CREDIT_CARD",
+          "start": 0,
+          "end": 30,
+          "reason": "Full credit card number is PII"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (CREDIT_CARD) but with imprecise character boundaries [0:30] vs [11:30]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_030",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "payments.support@icici",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 41,
+        "end": 63
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "payments.support@icici",
+          "type": "EMAIL",
+          "start": 41,
+          "end": 63,
+          "reason": "Email address associated with a financial institution"
+        }
+      ],
+      "masking_mechanism": "exact_span_category_mismatch",
+      "reconciliation_category": "masked_by_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector accurately captured the exact text span [41:63], but misclassified type as EMAIL instead of FINANCIAL_IDENTIFIER. The tokenizer replaced the entity with [EMAIL_k], masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_031",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "SuperSecretPassw0rd!",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 51
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "SuperSecretPassw0rd",
+          "type": "PASSWORD",
+          "start": 31,
+          "end": 50,
+          "reason": "Authentication credential"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (PASSWORD) but with imprecise character boundaries [31:50] vs [31:51]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_033",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID",
+        "type": "ACCESS_TOKEN",
+        "start": 48,
+        "end": 93
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
+          "type": "ACCESS_TOKEN",
+          "start": 35,
+          "end": 94,
+          "reason": "Authentication token"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ACCESS_TOKEN) but with imprecise character boundaries [35:94] vs [48:93]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_034",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "sec_live_99f018a4bc82d0194e",
+        "type": "SECRET",
+        "start": 39,
+        "end": 66
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Client secret for OAuth application is sec_live_99f018a4bc82d0194e",
+          "type": "SECRET",
+          "start": 0,
+          "end": 66,
+          "reason": "Authentication credential for an OAuth application."
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (SECRET) but with imprecise character boundaries [0:66] vs [39:66]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_035",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC8...",
+        "type": "PRIVATE_KEY",
+        "start": 19,
+        "end": 54
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_036",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "P@ssw0rd2026",
+          "type": "PASSWORD",
+          "start": 47,
+          "end": 59,
+          "reason": "Password associated with a database credential"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [47:59] with differing category (PASSWORD). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_037",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Tr0ub4dor&3",
+        "type": "PASSWORD",
+        "start": 54,
+        "end": 65
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "admin / Tr0ub4dor&3",
+          "type": "CREDENTIAL",
+          "start": 46,
+          "end": 65,
+          "reason": "Login credentials"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [46:65] with differing category (CREDENTIAL). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_038",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "sk_test_51MzABCDEFGHIJKLMN1234567890",
+        "type": "API_KEY",
+        "start": 27,
+        "end": 63
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_045",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "redis://default:redispw2026!@cache.internal.net:6379",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 11,
+        "end": 63
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "redis://default:redispw2026!@cache.internal.net:6379",
+          "type": "INTERNAL_URL",
+          "start": 11,
+          "end": 63,
+          "reason": "Contains internal hostname and credentials"
+        }
+      ],
+      "masking_mechanism": "exact_span_category_mismatch",
+      "reconciliation_category": "masked_by_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector accurately captured the exact text span [11:63], but misclassified type as INTERNAL_URL instead of DATABASE_CREDENTIAL. The tokenizer replaced the entity with [INTERNAL_URL_k], masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_049",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Project Aegis",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 13,
+        "end": 26
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "All code for Project Aegis",
+          "type": "CONFIDENTIAL_PROJECT",
+          "start": 0,
+          "end": 26,
+          "reason": "Project name requiring non-disclosure agreement"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (CONFIDENTIAL_PROJECT) but with imprecise character boundaries [0:26] vs [13:26]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_050",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Q3 financial margin targets and unannounced merger plans",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 60
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Q3 financial margin targets",
+          "type": "CONFIDENTIAL_PROJECT",
+          "start": 4,
+          "end": 31,
+          "reason": "Confidential financial information"
+        },
+        {
+          "text": "unannounced merger plans",
+          "type": "CONFIDENTIAL_PROJECT",
+          "start": 36,
+          "end": 60,
+          "reason": "Confidential strategic plans"
+        }
+      ],
+      "masking_mechanism": "multiple_overlaps_compound_span",
+      "reconciliation_category": "masked_by_compound_span_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector merged this entity with adjacent entities into a compound span token. The entity was masked inside the compound token and did not leak."
+    },
+    {
+      "sample_id": "sample_055",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "proprietary algorithm for customer churn prediction",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 55
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_058",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 39,
+        "end": 53
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "HDFC account 50100987654321",
+          "type": "BANK_ACCOUNT",
+          "start": 26,
+          "end": 53,
+          "reason": "Specific bank account number"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (BANK_ACCOUNT) but with imprecise character boundaries [26:53] vs [39:53]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_061",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "SBIN0004567",
+        "type": "IFSC",
+        "start": 16,
+        "end": 27
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "IFSC code SBIN0004567",
+          "type": "IFSC",
+          "start": 6,
+          "end": 27,
+          "reason": "Bank identifier code"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (IFSC) but with imprecise character boundaries [6:27] vs [16:27]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_062",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "SecretDbPassword!",
+        "type": "PASSWORD",
+        "start": 21,
+        "end": 38
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "SecretDbPassword",
+          "type": "PASSWORD",
+          "start": 21,
+          "end": 37,
+          "reason": "Database password"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (PASSWORD) but with imprecise character boundaries [21:37] vs [21:38]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_063",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Flat 204, Shanti Nagar",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 44
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Flat 204, Shanti Nagar, Mumbai",
+          "type": "ADDRESS",
+          "start": 22,
+          "end": 52,
+          "reason": "Residential address containing a person's location"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ADDRESS) but with imprecise character boundaries [22:52] vs [22:44]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_063",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Mumbai",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 52
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Flat 204, Shanti Nagar, Mumbai",
+          "type": "ADDRESS",
+          "start": 22,
+          "end": 52,
+          "reason": "Residential address containing a person's location"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [22:52] with differing category (ADDRESS). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_064",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "deepak.kumar@paytm",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 30,
+        "end": 48
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "deepak.kumar@paytm",
+          "type": "EMAIL",
+          "start": 30,
+          "end": 48,
+          "reason": "Personal email address"
+        }
+      ],
+      "masking_mechanism": "exact_span_category_mismatch",
+      "reconciliation_category": "masked_by_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector accurately captured the exact text span [30:48], but misclassified type as EMAIL instead of FINANCIAL_IDENTIFIER. The tokenizer replaced the entity with [EMAIL_k], masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_067",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Denver",
+        "type": "LOCATION",
+        "start": 47,
+        "end": 53
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Denver airport",
+          "type": "LOCATION",
+          "start": 47,
+          "end": 61,
+          "reason": "Specific location is PII."
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (LOCATION) but with imprecise character boundaries [47:61] vs [47:53]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_069",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "johnny.cash@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 36,
+        "end": 58
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "johnny.cash",
+          "type": "PERSON",
+          "start": 36,
+          "end": 47,
+          "reason": "Name of an individual"
+        },
+        {
+          "text": "okhdfcbank",
+          "type": "BANK_ACCOUNT",
+          "start": 48,
+          "end": 58,
+          "reason": "Bank account name"
+        }
+      ],
+      "masking_mechanism": "multiple_overlaps_compound_span",
+      "reconciliation_category": "masked_by_compound_span_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector merged this entity with adjacent entities into a compound span token. The entity was masked inside the compound token and did not leak."
+    },
+    {
+      "sample_id": "sample_076",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "http://gw.internal.mesh:8000",
+        "type": "INTERNAL_URL",
+        "start": 64,
+        "end": 92
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_080",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "sk-live-9021849102b48",
+        "type": "API_KEY",
+        "start": 63,
+        "end": 84
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Bearer sk-live-9021849102b48",
+          "type": "API_KEY",
+          "start": 56,
+          "end": 84,
+          "reason": "API key for authentication"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (API_KEY) but with imprecise character boundaries [56:84] vs [63:84]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_081",
+      "gold_index": 4,
+      "gold_entity": {
+        "text": "Ahmedabad",
+        "type": "LOCATION",
+        "start": 118,
+        "end": 127
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_082",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "88 Pine Ridge Road",
+        "type": "ADDRESS",
+        "start": 60,
+        "end": 78
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "88 Pine Ridge Road, Dallas",
+          "type": "ADDRESS",
+          "start": 60,
+          "end": 86,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ADDRESS) but with imprecise character boundaries [60:86] vs [60:78]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_082",
+      "gold_index": 3,
+      "gold_entity": {
+        "text": "Dallas",
+        "type": "LOCATION",
+        "start": 80,
+        "end": 86
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "88 Pine Ridge Road, Dallas",
+          "type": "ADDRESS",
+          "start": 60,
+          "end": 86,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [60:86] with differing category (ADDRESS). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_083",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 48,
+        "end": 62
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "Aadhaar: 3344 5566 7788",
+          "type": "AADHAAR",
+          "start": 39,
+          "end": 62,
+          "reason": "Unique national identification number"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (AADHAAR) but with imprecise character boundaries [39:62] vs [48:62]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_086",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "404 Green Valley",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 84
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "404 Green Valley, Bengaluru",
+          "type": "ADDRESS",
+          "start": 68,
+          "end": 95,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (ADDRESS) but with imprecise character boundaries [68:95] vs [68:84]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_086",
+      "gold_index": 3,
+      "gold_entity": {
+        "text": "Bengaluru",
+        "type": "LOCATION",
+        "start": 86,
+        "end": 95
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "404 Green Valley, Bengaluru",
+          "type": "ADDRESS",
+          "start": 68,
+          "end": 95,
+          "reason": "Residential address of an individual"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [68:95] with differing category (ADDRESS). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_087",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "5105-1051-0510-5100",
+        "type": "CREDIT_CARD",
+        "start": 51,
+        "end": 70
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "corporate card 5105-1051-0510-5100",
+          "type": "CREDENTIAL",
+          "start": 36,
+          "end": 70,
+          "reason": "Card number associated with corporate account"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [36:70] with differing category (CREDENTIAL). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_087",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "14 Wall Street",
+        "type": "ADDRESS",
+        "start": 87,
+        "end": 101
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "14 Wall Street, New York",
+          "type": "LOCATION",
+          "start": 87,
+          "end": 111,
+          "reason": "Specific physical address"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_different_category",
+      "reconciliation_category": "masked_by_imprecise_and_misclassified_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector predicted an overlapping span [87:111] with differing category (LOCATION). The tokenizer replaced the span, masking the original text from leakage."
+    },
+    {
+      "sample_id": "sample_087",
+      "gold_index": 3,
+      "gold_entity": {
+        "text": "New York",
+        "type": "LOCATION",
+        "start": 103,
+        "end": 111
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "14 Wall Street, New York",
+          "type": "LOCATION",
+          "start": 87,
+          "end": 111,
+          "reason": "Specific physical address"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (LOCATION) but with imprecise character boundaries [87:111] vs [103:111]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_088",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "Project Polaris",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 20,
+        "end": 35
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_088",
+      "gold_index": 2,
+      "gold_entity": {
+        "text": "RootAdminPass2026!",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 101
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [
+        {
+          "text": "RootAdminPass2026",
+          "type": "PASSWORD",
+          "start": 83,
+          "end": 100,
+          "reason": "Authentication credential"
+        }
+      ],
+      "masking_mechanism": "boundary_mismatch_same_category",
+      "reconciliation_category": "masked_by_imprecise_boundary_token",
+      "remains_in_sanitized_text": false,
+      "leakage_status": "PROTECTED_FROM_LEAKAGE",
+      "explanation": "Detector identified the correct entity type (PASSWORD) but with imprecise character boundaries [83:100] vs [83:101]. The tokenizer replaced the overlapping span, preventing verbatim text leakage."
+    },
+    {
+      "sample_id": "sample_090",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Paris",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 51
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_092",
+      "gold_index": 1,
+      "gold_entity": {
+        "text": "Portland",
+        "type": "LOCATION",
+        "start": 37,
+        "end": 45
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    },
+    {
+      "sample_id": "sample_094",
+      "gold_index": 0,
+      "gold_entity": {
+        "text": "secret_token_val_998811",
+        "type": "SECRET",
+        "start": 33,
+        "end": 56
+      },
+      "is_strict_fn": true,
+      "overlapping_predictions": [],
+      "masking_mechanism": "none_unmasked",
+      "reconciliation_category": "completely_missed_leaked",
+      "remains_in_sanitized_text": true,
+      "leakage_status": "LEAKED",
+      "explanation": "Detector completely missed this entity (0 overlapping predictions). The sensitive substring remained verbatim in the sanitized output, resulting in true PII leakage."
+    }
+  ],
+  "all_41_false_positives_reconciliation": [
+    {
+      "sample_id": "sample_002",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "452 Elm Street, Springfield",
+        "type": "ADDRESS",
+        "start": 47,
+        "end": 74,
+        "reason": "Residential address of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "452 Elm Street",
+          "type": "ADDRESS",
+          "start": 47,
+          "end": 61
+        },
+        {
+          "text": "Springfield",
+          "type": "LOCATION",
+          "start": 63,
+          "end": 74
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_003",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "Dr. Evelyn Reed",
+        "type": "PERSON",
+        "start": 35,
+        "end": 50,
+        "reason": "Full name of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Evelyn Reed",
+          "type": "PERSON",
+          "start": 39,
+          "end": 50
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_006",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "Flat 4B, Greenwood Heights, Austin",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 80,
+        "reason": "Residential address of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Flat 4B, Greenwood Heights",
+          "type": "ADDRESS",
+          "start": 46,
+          "end": 72
+        },
+        {
+          "text": "Austin",
+          "type": "LOCATION",
+          "start": 74,
+          "end": 80
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_018",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "IFSC code HDFC0000240",
+        "type": "IFSC",
+        "start": 23,
+        "end": 44,
+        "reason": "Bank identifier"
+      },
+      "overlapping_golds": [
+        {
+          "text": "HDFC0000240",
+          "type": "IFSC",
+          "start": 33,
+          "end": 44
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_019",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "ICICI Bank account 001105009876",
+        "type": "BANK_ACCOUNT",
+        "start": 19,
+        "end": 50,
+        "reason": "Identifies a specific bank account."
+      },
+      "overlapping_golds": [
+        {
+          "text": "001105009876",
+          "type": "BANK_ACCOUNT",
+          "start": 38,
+          "end": 50
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_022",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "SBI account 30987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 14,
+        "end": 37,
+        "reason": "Specific bank account number"
+      },
+      "overlapping_golds": [
+        {
+          "text": "30987654321",
+          "type": "BANK_ACCOUNT",
+          "start": 26,
+          "end": 37
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_022",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "IFSC code SBIN0001122",
+        "type": "IFSC",
+        "start": 43,
+        "end": 64,
+        "reason": "Unique identifier for a bank account"
+      },
+      "overlapping_golds": [
+        {
+          "text": "SBIN0001122",
+          "type": "IFSC",
+          "start": 53,
+          "end": 64
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_023",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "EMAIL",
+        "start": 35,
+        "end": 57,
+        "reason": "Personal email address"
+      },
+      "overlapping_golds": [
+        {
+          "text": "rahul.verma@okhdfcbank",
+          "type": "FINANCIAL_IDENTIFIER",
+          "start": 35,
+          "end": 57
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_025",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Visa card 4111111111114444",
+        "type": "CREDIT_CARD",
+        "start": 16,
+        "end": 42,
+        "reason": "Full credit card number is considered PII"
+      },
+      "overlapping_golds": [
+        {
+          "text": "4111111111114444",
+          "type": "CREDIT_CARD",
+          "start": 26,
+          "end": 42
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_029",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "MasterCard 5424-1800-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 0,
+        "end": 30,
+        "reason": "Full credit card number is PII"
+      },
+      "overlapping_golds": [
+        {
+          "text": "5424-1800-2345-6789",
+          "type": "CREDIT_CARD",
+          "start": 11,
+          "end": 30
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_030",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "payments.support@icici",
+        "type": "EMAIL",
+        "start": 41,
+        "end": 63,
+        "reason": "Email address associated with a financial institution"
+      },
+      "overlapping_golds": [
+        {
+          "text": "payments.support@icici",
+          "type": "FINANCIAL_IDENTIFIER",
+          "start": 41,
+          "end": 63
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_031",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "SuperSecretPassw0rd",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 50,
+        "reason": "Authentication credential"
+      },
+      "overlapping_golds": [
+        {
+          "text": "SuperSecretPassw0rd!",
+          "type": "PASSWORD",
+          "start": 31,
+          "end": 51
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_033",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
+        "type": "ACCESS_TOKEN",
+        "start": 35,
+        "end": 94,
+        "reason": "Authentication token"
+      },
+      "overlapping_golds": [
+        {
+          "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID",
+          "type": "ACCESS_TOKEN",
+          "start": 48,
+          "end": 93
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_034",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Client secret for OAuth application is sec_live_99f018a4bc82d0194e",
+        "type": "SECRET",
+        "start": 0,
+        "end": 66,
+        "reason": "Authentication credential for an OAuth application."
+      },
+      "overlapping_golds": [
+        {
+          "text": "sec_live_99f018a4bc82d0194e",
+          "type": "SECRET",
+          "start": 39,
+          "end": 66
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_035",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "deploy bot",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 69,
+        "end": 79,
+        "reason": "Name of an internal organization"
+      },
+      "overlapping_golds": []
+    },
+    {
+      "sample_id": "sample_036",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "P@ssw0rd2026",
+        "type": "PASSWORD",
+        "start": 47,
+        "end": 59,
+        "reason": "Password associated with a database credential"
+      },
+      "overlapping_golds": [
+        {
+          "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+          "type": "DATABASE_CREDENTIAL",
+          "start": 28,
+          "end": 81
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_037",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "admin / Tr0ub4dor&3",
+        "type": "CREDENTIAL",
+        "start": 46,
+        "end": 65,
+        "reason": "Login credentials"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Tr0ub4dor&3",
+          "type": "PASSWORD",
+          "start": 54,
+          "end": 65
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_041",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "db_master",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 14,
+        "end": 23,
+        "reason": "Database username associated with credentials"
+      },
+      "overlapping_golds": []
+    },
+    {
+      "sample_id": "sample_045",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "redis://default:redispw2026!@cache.internal.net:6379",
+        "type": "INTERNAL_URL",
+        "start": 11,
+        "end": 63,
+        "reason": "Contains internal hostname and credentials"
+      },
+      "overlapping_golds": [
+        {
+          "text": "redis://default:redispw2026!@cache.internal.net:6379",
+          "type": "DATABASE_CREDENTIAL",
+          "start": 11,
+          "end": 63
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_049",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "All code for Project Aegis",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 0,
+        "end": 26,
+        "reason": "Project name requiring non-disclosure agreement"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Project Aegis",
+          "type": "CONFIDENTIAL_PROJECT",
+          "start": 13,
+          "end": 26
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_050",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Q3 financial margin targets",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 4,
+        "end": 31,
+        "reason": "Confidential financial information"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Q3 financial margin targets and unannounced merger plans",
+          "type": "INTERNAL_ORGANIZATION_INFORMATION",
+          "start": 4,
+          "end": 60
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_050",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "unannounced merger plans",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 36,
+        "end": 60,
+        "reason": "Confidential strategic plans"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Q3 financial margin targets and unannounced merger plans",
+          "type": "INTERNAL_ORGANIZATION_INFORMATION",
+          "start": 4,
+          "end": 60
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_055",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "executive staff",
+        "type": "PERSON",
+        "start": 73,
+        "end": 88,
+        "reason": "Refers to specific individuals within the organization."
+      },
+      "overlapping_golds": []
+    },
+    {
+      "sample_id": "sample_058",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "HDFC account 50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 53,
+        "reason": "Specific bank account number"
+      },
+      "overlapping_golds": [
+        {
+          "text": "50100987654321",
+          "type": "BANK_ACCOUNT",
+          "start": 39,
+          "end": 53
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_061",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "IFSC code SBIN0004567",
+        "type": "IFSC",
+        "start": 6,
+        "end": 27,
+        "reason": "Bank identifier code"
+      },
+      "overlapping_golds": [
+        {
+          "text": "SBIN0004567",
+          "type": "IFSC",
+          "start": 16,
+          "end": 27
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_062",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "SecretDbPassword",
+        "type": "PASSWORD",
+        "start": 21,
+        "end": 37,
+        "reason": "Database password"
+      },
+      "overlapping_golds": [
+        {
+          "text": "SecretDbPassword!",
+          "type": "PASSWORD",
+          "start": 21,
+          "end": 38
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_063",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Flat 204, Shanti Nagar, Mumbai",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 52,
+        "reason": "Residential address containing a person's location"
+      },
+      "overlapping_golds": [
+        {
+          "text": "Flat 204, Shanti Nagar",
+          "type": "ADDRESS",
+          "start": 22,
+          "end": 44
+        },
+        {
+          "text": "Mumbai",
+          "type": "LOCATION",
+          "start": 46,
+          "end": 52
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_064",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "deepak.kumar@paytm",
+        "type": "EMAIL",
+        "start": 30,
+        "end": 48,
+        "reason": "Personal email address"
+      },
+      "overlapping_golds": [
+        {
+          "text": "deepak.kumar@paytm",
+          "type": "FINANCIAL_IDENTIFIER",
+          "start": 30,
+          "end": 48
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_067",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "Denver airport",
+        "type": "LOCATION",
+        "start": 47,
+        "end": 61,
+        "reason": "Specific location is PII."
+      },
+      "overlapping_golds": [
+        {
+          "text": "Denver",
+          "type": "LOCATION",
+          "start": 47,
+          "end": 53
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_069",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "johnny.cash",
+        "type": "PERSON",
+        "start": 36,
+        "end": 47,
+        "reason": "Name of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "johnny.cash@okhdfcbank",
+          "type": "FINANCIAL_IDENTIFIER",
+          "start": 36,
+          "end": 58
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_069",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "okhdfcbank",
+        "type": "BANK_ACCOUNT",
+        "start": 48,
+        "end": 58,
+        "reason": "Bank account name"
+      },
+      "overlapping_golds": [
+        {
+          "text": "johnny.cash@okhdfcbank",
+          "type": "FINANCIAL_IDENTIFIER",
+          "start": 36,
+          "end": 58
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_080",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "Bearer sk-live-9021849102b48",
+        "type": "API_KEY",
+        "start": 56,
+        "end": 84,
+        "reason": "API key for authentication"
+      },
+      "overlapping_golds": [
+        {
+          "text": "sk-live-9021849102b48",
+          "type": "API_KEY",
+          "start": 63,
+          "end": 84
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_082",
+      "pred_index": 2,
+      "predicted_entity": {
+        "text": "88 Pine Ridge Road, Dallas",
+        "type": "ADDRESS",
+        "start": 60,
+        "end": 86,
+        "reason": "Residential address of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "88 Pine Ridge Road",
+          "type": "ADDRESS",
+          "start": 60,
+          "end": 78
+        },
+        {
+          "text": "Dallas",
+          "type": "LOCATION",
+          "start": 80,
+          "end": 86
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_083",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "Aadhaar: 3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 39,
+        "end": 62,
+        "reason": "Unique national identification number"
+      },
+      "overlapping_golds": [
+        {
+          "text": "3344 5566 7788",
+          "type": "AADHAAR",
+          "start": 48,
+          "end": 62
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_085",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "dev_admin",
+        "type": "PERSON",
+        "start": 26,
+        "end": 35,
+        "reason": "User account name"
+      },
+      "overlapping_golds": []
+    },
+    {
+      "sample_id": "sample_086",
+      "pred_index": 2,
+      "predicted_entity": {
+        "text": "404 Green Valley, Bengaluru",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 95,
+        "reason": "Residential address of an individual"
+      },
+      "overlapping_golds": [
+        {
+          "text": "404 Green Valley",
+          "type": "ADDRESS",
+          "start": 68,
+          "end": 84
+        },
+        {
+          "text": "Bengaluru",
+          "type": "LOCATION",
+          "start": 86,
+          "end": 95
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_087",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "corporate card 5105-1051-0510-5100",
+        "type": "CREDENTIAL",
+        "start": 36,
+        "end": 70,
+        "reason": "Card number associated with corporate account"
+      },
+      "overlapping_golds": [
+        {
+          "text": "5105-1051-0510-5100",
+          "type": "CREDIT_CARD",
+          "start": 51,
+          "end": 70
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_087",
+      "pred_index": 2,
+      "predicted_entity": {
+        "text": "14 Wall Street, New York",
+        "type": "LOCATION",
+        "start": 87,
+        "end": 111,
+        "reason": "Specific physical address"
+      },
+      "overlapping_golds": [
+        {
+          "text": "14 Wall Street",
+          "type": "ADDRESS",
+          "start": 87,
+          "end": 101
+        },
+        {
+          "text": "New York",
+          "type": "LOCATION",
+          "start": 103,
+          "end": 111
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_088",
+      "pred_index": 1,
+      "predicted_entity": {
+        "text": "RootAdminPass2026",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 100,
+        "reason": "Authentication credential"
+      },
+      "overlapping_golds": [
+        {
+          "text": "RootAdminPass2026!",
+          "type": "PASSWORD",
+          "start": 83,
+          "end": 101
+        }
+      ]
+    },
+    {
+      "sample_id": "sample_094",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "KEY",
+        "type": "API_KEY",
+        "start": 28,
+        "end": 31,
+        "reason": "API key is a sensitive credential."
+      },
+      "overlapping_golds": []
+    },
+    {
+      "sample_id": "sample_099",
+      "pred_index": 0,
+      "predicted_entity": {
+        "text": "10:00 AM UTC",
+        "type": "DATE_OF_BIRTH",
+        "start": 34,
+        "end": 46,
+        "reason": "Specific time indicating a meeting"
+      },
+      "overlapping_golds": []
+    }
+  ]
+}

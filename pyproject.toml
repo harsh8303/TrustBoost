@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "trustboost"
+version = "0.1.0"
+description = "An AI-Powered PII Sanitization Agent"
+requires-python = ">=3.11"
+
+# Runtime dependencies — kept in sync with requirements.txt
+dependencies = [
+    "streamlit",
+    "ollama",
+    "python-dotenv",
+    "pandas",
+    "langchain>=1.5.0",
+    "langchain-core>=1.8.0",
+    "langchain-community>=0.4.0",
+]
+
+[tool.setuptools.packages.find]
+# Automatically discovers the trustboost/ package and all its sub-packages
+where = ["."]
+
+# ── Pytest configuration ──────────────────────────────────────────────────────
+[tool.pytest.ini_options]
+
+# pythonpath tells pytest to add the project root to sys.path before collecting
+# tests. This is what makes "from trustboost.agent import ..." work when you
+# run plain `pytest` (without the `python -m` prefix).
+pythonpath = ["."]
+
+# Registered markers — eliminates the "PytestUnknownMarkWarning" for @pytest.mark.integration
+markers = [
+    "integration: marks tests that require a running Ollama server and downloaded model (deselect with '-m \"not integration\"')",
+]
+
+# Default options applied to every test run:
+#   -v         → verbose output (shows each test name)
+#   --tb=short → shorter traceback on failure (easier to read)
+addopts = "-v --tb=short"
+
+# Tell pytest where to find tests
+testpaths = ["tests"]

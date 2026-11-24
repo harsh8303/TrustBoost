@@ -1,0 +1,261 @@
+{
+  "metadata": {
+    "title": "TrustBoost Robustness Evaluation Report",
+    "model": "gemma3:4b (local Ollama)",
+    "timestamp": "2026-11-24 07:27:34 UTC",
+    "total_categories_tested": 10,
+    "passed_categories": 10,
+    "robustness_pass_rate": 1.0
+  },
+  "category_results": [
+    {
+      "category": "standard_english",
+      "name": "Standard English Prose",
+      "text_length_chars": 144,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 3,
+      "detected_entities": [
+        {
+          "text": "Arthur Pendelton",
+          "type": "PERSON"
+        },
+        {
+          "text": "742 Evergreen Terrace, Springfield",
+          "type": "ADDRESS"
+        },
+        {
+          "text": "arthur.p@lawfirm.example.com",
+          "type": "EMAIL"
+        }
+      ],
+      "sanitized_text": "Please dispatch the official contract to Attorney [PERSON_1] at [ADDRESS_1], or email [EMAIL_1].",
+      "tokens_generated": 3,
+      "restoration_exact_match": true,
+      "latency_seconds": 30.112,
+      "passed": true
+    },
+    {
+      "category": "hinglish_code_switching",
+      "name": "Hinglish Transliterated Text",
+      "text_length_chars": 107,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 2,
+      "detected_entities": [
+        {
+          "text": "9876543210",
+          "type": "PHONE"
+        },
+        {
+          "text": "rahul.sharma@startup.in",
+          "type": "EMAIL"
+        }
+      ],
+      "sanitized_text": "Bhai suno, mera phone number [PHONE_1] pe call mat karo, direct email bhej do [EMAIL_1] par.",
+      "tokens_generated": 2,
+      "restoration_exact_match": true,
+      "latency_seconds": 14.059,
+      "passed": true
+    },
+    {
+      "category": "informal_chat_slang",
+      "name": "Informal Chat with Typos",
+      "text_length_chars": 90,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 2,
+      "detected_entities": [
+        {
+          "text": "rohit99@okhdfcbank",
+          "type": "BANK_ACCOUNT"
+        },
+        {
+          "text": "Winter2026#",
+          "type": "PASSWORD"
+        }
+      ],
+      "sanitized_text": "yo dude send 500 bucks to my upi [BANK_ACCOUNT_1] asap thx!! admin pw is [PASSWORD_1] btw",
+      "tokens_generated": 2,
+      "restoration_exact_match": true,
+      "latency_seconds": 10.145,
+      "passed": true
+    },
+    {
+      "category": "complex_formatting",
+      "name": "Markdown Table & Log Dump",
+      "text_length_chars": 133,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 1,
+      "detected_entities": [
+        {
+          "text": "192.168.1.100",
+          "type": "IP_ADDRESS"
+        }
+      ],
+      "sanitized_text": "| User | Email | Role |\n| --- | --- | --- |\n| Jane Doe | jane.doe@acme.com | Admin |\nDEBUG [2026-03-31] connection from [IP_ADDRESS_1]",
+      "tokens_generated": 1,
+      "restoration_exact_match": true,
+      "latency_seconds": 13.902,
+      "passed": true
+    },
+    {
+      "category": "dense_multi_entity",
+      "name": "Dense Multi-Entity Record",
+      "text_length_chars": 145,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 6,
+      "detected_entities": [
+        {
+          "text": "Vikramaditya Singh",
+          "type": "PERSON"
+        },
+        {
+          "text": "ABCDE1234F",
+          "type": "PAN"
+        },
+        {
+          "text": "8877 6655 4433",
+          "type": "AADHAAR"
+        },
+        {
+          "text": "50100987654321",
+          "type": "BANK_ACCOUNT"
+        },
+        {
+          "text": " IFSC: HDFC0000240",
+          "type": "IFSC"
+        },
+        {
+          "text": "New Delhi",
+          "type": "LOCATION"
+        }
+      ],
+      "sanitized_text": "Client [PERSON_1] (PAN: [PAN_1], Aadhaar: [AADHAAR_1]) transferred funds to account [BANK_ACCOUNT_1],[IFSC_1] in [LOCATION_1].",
+      "tokens_generated": 6,
+      "restoration_exact_match": true,
+      "latency_seconds": 18.127,
+      "passed": true
+    },
+    {
+      "category": "negative_no_pii",
+      "name": "Negative Sample (No PII / Technical Docs)",
+      "text_length_chars": 150,
+      "expected_has_pii": false,
+      "detector_success": true,
+      "detected_entities_count": 0,
+      "detected_entities": [],
+      "sanitized_text": "Photosynthesis is the biological process used by plants and other organisms to convert light energy into chemical energy through cellular respiration.",
+      "tokens_generated": 0,
+      "restoration_exact_match": true,
+      "latency_seconds": 16.137,
+      "passed": true
+    },
+    {
+      "category": "ambiguous_contexts",
+      "name": "Ambiguous Contexts (May, Rose, Paris)",
+      "text_length_chars": 101,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 2,
+      "detected_entities": [
+        {
+          "text": "May Parker",
+          "type": "PERSON"
+        },
+        {
+          "text": "April",
+          "type": "PERSON"
+        }
+      ],
+      "sanitized_text": "[PERSON_1] loves the rose flower in Paris, but her sister [PERSON_2] prefers the autumn weather in London.",
+      "tokens_generated": 2,
+      "restoration_exact_match": true,
+      "latency_seconds": 11.54,
+      "passed": true
+    },
+    {
+      "category": "unusual_punctuation_whitespace",
+      "name": "Nested Brackets & Unusual Whitespace",
+      "text_length_chars": 95,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 3,
+      "detected_entities": [
+        {
+          "text": "Robert Vance",
+          "type": "PERSON"
+        },
+        {
+          "text": "robert.vance@refrigeration.com",
+          "type": "EMAIL"
+        },
+        {
+          "text": "+1-555-0199",
+          "type": "PHONE"
+        }
+      ],
+      "sanitized_text": "Customer details:\t\t[[[[PERSON_1]]]]\t---\t<[EMAIL_1]>\t\t;;;\t(([PHONE_1]))",
+      "tokens_generated": 3,
+      "restoration_exact_match": true,
+      "latency_seconds": 16.896,
+      "passed": true
+    },
+    {
+      "category": "mixed_casing",
+      "name": "ALL-CAPS and Erratic Casing",
+      "text_length_chars": 102,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 2,
+      "detected_entities": [
+        {
+          "text": "JAMES T. KIRK",
+          "type": "PERSON"
+        },
+        {
+          "text": "APEX_ALPHA_99182",
+          "type": "ACCESS_TOKEN"
+        }
+      ],
+      "sanitized_text": "ATTENTION: OFFICER [PERSON_1] REPORTED TO STARBASE SAN FRANCISCO WITH ACCESS CODE [ACCESS_TOKEN_1].",
+      "tokens_generated": 2,
+      "restoration_exact_match": true,
+      "latency_seconds": 23.767,
+      "passed": true
+    },
+    {
+      "category": "long_text_extended",
+      "name": "Extended Multi-Sentence Narrative",
+      "text_length_chars": 422,
+      "expected_has_pii": true,
+      "detector_success": true,
+      "detected_entities_count": 4,
+      "detected_entities": [
+        {
+          "text": "Project Vanguard",
+          "type": "CONFIDENTIAL_PROJECT"
+        },
+        {
+          "text": "eleanor.vance@globalcorp.example.org",
+          "type": "EMAIL"
+        },
+        {
+          "text": "k8s-worker-node-04a",
+          "type": "SERVER_IDENTIFIER"
+        },
+        {
+          "text": "10.0.15.22",
+          "type": "IP_ADDRESS"
+        }
+      ],
+      "sanitized_text": "During the executive board briefing for [CONFIDENTIAL_PROJECT_1], Senior Director Eleanor Vance presented the quarterly targets. Eleanor requested all correspondence be routed to [EMAIL_1]. Her assistant Daniel Wu verified server health on [SERVER_IDENTIFIER_1] from IP address [IP_ADDRESS_1]. All attendees agreed that unauthorized dissemination of internal financial forecasts violates corporate compliance.",
+      "tokens_generated": 4,
+      "restoration_exact_match": true,
+      "latency_seconds": 34.084,
+      "passed": true
+    }
+  ]
+}

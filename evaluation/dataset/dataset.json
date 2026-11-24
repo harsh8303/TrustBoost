@@ -1,0 +1,1822 @@
+[
+  {
+    "id": "sample_001",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Hi, my name is Alice Walker and you can email me at alice.walker@example.com anytime.",
+    "entities": [
+      {
+        "text": "Alice Walker",
+        "type": "PERSON",
+        "start": 15,
+        "end": 27
+      },
+      {
+        "text": "alice.walker@example.com",
+        "type": "EMAIL",
+        "start": 52,
+        "end": 76
+      }
+    ]
+  },
+  {
+    "id": "sample_002",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Please deliver the package to Bob Henderson at 452 Elm Street, Springfield.",
+    "entities": [
+      {
+        "text": "Bob Henderson",
+        "type": "PERSON",
+        "start": 30,
+        "end": 43
+      },
+      {
+        "text": "452 Elm Street",
+        "type": "ADDRESS",
+        "start": 47,
+        "end": 61
+      },
+      {
+        "text": "Springfield",
+        "type": "LOCATION",
+        "start": 63,
+        "end": 74
+      }
+    ]
+  },
+  {
+    "id": "sample_003",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Call me back on +1-555-019-2834 if Dr. Evelyn Reed is unavailable.",
+    "entities": [
+      {
+        "text": "+1-555-019-2834",
+        "type": "PHONE",
+        "start": 16,
+        "end": 31
+      },
+      {
+        "text": "Evelyn Reed",
+        "type": "PERSON",
+        "start": 39,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "id": "sample_004",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Patient record shows Charlie Vance was born on 14/05/1988 in Chicago.",
+    "entities": [
+      {
+        "text": "Charlie Vance",
+        "type": "PERSON",
+        "start": 21,
+        "end": 34
+      },
+      {
+        "text": "14/05/1988",
+        "type": "DATE_OF_BIRTH",
+        "start": 47,
+        "end": 57
+      },
+      {
+        "text": "Chicago",
+        "type": "LOCATION",
+        "start": 61,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "id": "sample_005",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Send your CV directly to hr.recruiting@apextechnologies.example.org before Friday.",
+    "entities": [
+      {
+        "text": "hr.recruiting@apextechnologies.example.org",
+        "type": "EMAIL",
+        "start": 25,
+        "end": 67
+      }
+    ]
+  },
+  {
+    "id": "sample_006",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Our representative David K. Miller resides at Flat 4B, Greenwood Heights, Austin.",
+    "entities": [
+      {
+        "text": "David K. Miller",
+        "type": "PERSON",
+        "start": 19,
+        "end": 34
+      },
+      {
+        "text": "Flat 4B, Greenwood Heights",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 72
+      },
+      {
+        "text": "Austin",
+        "type": "LOCATION",
+        "start": 74,
+        "end": 80
+      }
+    ]
+  },
+  {
+    "id": "sample_007",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Emergency contact is Fiona Gallagher reached at 555-0144.",
+    "entities": [
+      {
+        "text": "Fiona Gallagher",
+        "type": "PERSON",
+        "start": 21,
+        "end": 36
+      },
+      {
+        "text": "555-0144",
+        "type": "PHONE",
+        "start": 48,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "id": "sample_008",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Applicant: George Thomas, DOB: 1995-10-22, currently living in Seattle.",
+    "entities": [
+      {
+        "text": "George Thomas",
+        "type": "PERSON",
+        "start": 11,
+        "end": 24
+      },
+      {
+        "text": "1995-10-22",
+        "type": "DATE_OF_BIRTH",
+        "start": 31,
+        "end": 41
+      },
+      {
+        "text": "Seattle",
+        "type": "LOCATION",
+        "start": 63,
+        "end": 70
+      }
+    ]
+  },
+  {
+    "id": "sample_009",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Contact Hannah Abbott at hannah.abbott@hogwarts.example.net for inquiries.",
+    "entities": [
+      {
+        "text": "Hannah Abbott",
+        "type": "PERSON",
+        "start": 8,
+        "end": 21
+      },
+      {
+        "text": "hannah.abbott@hogwarts.example.net",
+        "type": "EMAIL",
+        "start": 25,
+        "end": 59
+      }
+    ]
+  },
+  {
+    "id": "sample_010",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "The tenant is Ian Malcolm, resident of 12 Ocean Boulevard, Miami.",
+    "entities": [
+      {
+        "text": "Ian Malcolm",
+        "type": "PERSON",
+        "start": 14,
+        "end": 25
+      },
+      {
+        "text": "12 Ocean Boulevard",
+        "type": "ADDRESS",
+        "start": 39,
+        "end": 57
+      },
+      {
+        "text": "Miami",
+        "type": "LOCATION",
+        "start": 59,
+        "end": 64
+      }
+    ]
+  },
+  {
+    "id": "sample_011",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "You can reach Jessica Jones at +44 20 7946 0912 during office hours in London.",
+    "entities": [
+      {
+        "text": "Jessica Jones",
+        "type": "PERSON",
+        "start": 14,
+        "end": 27
+      },
+      {
+        "text": "+44 20 7946 0912",
+        "type": "PHONE",
+        "start": 31,
+        "end": 47
+      },
+      {
+        "text": "London",
+        "type": "LOCATION",
+        "start": 71,
+        "end": 77
+      }
+    ]
+  },
+  {
+    "id": "sample_012",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Date of Birth: 03-Dec-1979 for client Kevin Flynn.",
+    "entities": [
+      {
+        "text": "03-Dec-1979",
+        "type": "DATE_OF_BIRTH",
+        "start": 15,
+        "end": 26
+      },
+      {
+        "text": "Kevin Flynn",
+        "type": "PERSON",
+        "start": 38,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "id": "sample_013",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Forward billing statements to accounting.dept@solarsolutions.example.co.",
+    "entities": [
+      {
+        "text": "accounting.dept@solarsolutions.example.co",
+        "type": "EMAIL",
+        "start": 30,
+        "end": 71
+      }
+    ]
+  },
+  {
+    "id": "sample_014",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "Laura Croft can be reached at +1 (555) 987-6543 at her estate in Surrey.",
+    "entities": [
+      {
+        "text": "Laura Croft",
+        "type": "PERSON",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "text": "+1 (555) 987-6543",
+        "type": "PHONE",
+        "start": 30,
+        "end": 47
+      },
+      {
+        "text": "Surrey",
+        "type": "LOCATION",
+        "start": 65,
+        "end": 71
+      }
+    ]
+  },
+  {
+    "id": "sample_015",
+    "category": "personal",
+    "text_style": "standard",
+    "text": "New recruit Michael Scott was born on 15 March 1965 in Scranton.",
+    "entities": [
+      {
+        "text": "Michael Scott",
+        "type": "PERSON",
+        "start": 12,
+        "end": 25
+      },
+      {
+        "text": "15 March 1965",
+        "type": "DATE_OF_BIRTH",
+        "start": 38,
+        "end": 51
+      },
+      {
+        "text": "Scranton",
+        "type": "LOCATION",
+        "start": 55,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "id": "sample_016",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Please link your Aadhaar number 9876 5432 1098 with bank account 50100234567890.",
+    "entities": [
+      {
+        "text": "9876 5432 1098",
+        "type": "AADHAAR",
+        "start": 32,
+        "end": 46
+      },
+      {
+        "text": "50100234567890",
+        "type": "BANK_ACCOUNT",
+        "start": 65,
+        "end": 79
+      }
+    ]
+  },
+  {
+    "id": "sample_017",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Taxpayer Rajesh Kumar has provided PAN ABCDE1234F for high-value tax clearance.",
+    "entities": [
+      {
+        "text": "Rajesh Kumar",
+        "type": "PERSON",
+        "start": 9,
+        "end": 21
+      },
+      {
+        "text": "ABCDE1234F",
+        "type": "PAN",
+        "start": 39,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "id": "sample_018",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "For NEFT transfer, use IFSC code HDFC0000240 for account holder Priya Sharma.",
+    "entities": [
+      {
+        "text": "HDFC0000240",
+        "type": "IFSC",
+        "start": 33,
+        "end": 44
+      },
+      {
+        "text": "Priya Sharma",
+        "type": "PERSON",
+        "start": 64,
+        "end": 76
+      }
+    ]
+  },
+  {
+    "id": "sample_019",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Salary credited to ICICI Bank account 001105009876 under IFSC ICIC0000011.",
+    "entities": [
+      {
+        "text": "001105009876",
+        "type": "BANK_ACCOUNT",
+        "start": 38,
+        "end": 50
+      },
+      {
+        "text": "ICIC0000011",
+        "type": "IFSC",
+        "start": 62,
+        "end": 73
+      }
+    ]
+  },
+  {
+    "id": "sample_020",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Kindly submit Aadhaar 4321 8765 2109 and PAN BKZPR8812K for KYC renewal.",
+    "entities": [
+      {
+        "text": "4321 8765 2109",
+        "type": "AADHAAR",
+        "start": 22,
+        "end": 36
+      },
+      {
+        "text": "BKZPR8812K",
+        "type": "PAN",
+        "start": 45,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "id": "sample_021",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Payment processed using credit card 4532-8901-2345-6789 expiring 11/28.",
+    "entities": [
+      {
+        "text": "4532-8901-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 36,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "id": "sample_022",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Wire funds to SBI account 30987654321 with IFSC code SBIN0001122.",
+    "entities": [
+      {
+        "text": "30987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 37
+      },
+      {
+        "text": "SBIN0001122",
+        "type": "IFSC",
+        "start": 53,
+        "end": 64
+      }
+    ]
+  },
+  {
+    "id": "sample_023",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Merchant settlement sent to UPI ID rahul.verma@okhdfcbank for order #49102.",
+    "entities": [
+      {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 35,
+        "end": 57
+      }
+    ]
+  },
+  {
+    "id": "sample_024",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Customer Sunita Rao registered PAN ALMPR3344Q and Aadhaar 2345 6789 0123.",
+    "entities": [
+      {
+        "text": "Sunita Rao",
+        "type": "PERSON",
+        "start": 9,
+        "end": 19
+      },
+      {
+        "text": "ALMPR3344Q",
+        "type": "PAN",
+        "start": 35,
+        "end": 45
+      },
+      {
+        "text": "2345 6789 0123",
+        "type": "AADHAAR",
+        "start": 58,
+        "end": 72
+      }
+    ]
+  },
+  {
+    "id": "sample_025",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Charged $450 to Visa card 4111111111114444 for subscription renewal.",
+    "entities": [
+      {
+        "text": "4111111111114444",
+        "type": "CREDIT_CARD",
+        "start": 26,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "id": "sample_026",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Send refund to bank account 112233445566 with branch IFSC UTIB0000150.",
+    "entities": [
+      {
+        "text": "112233445566",
+        "type": "BANK_ACCOUNT",
+        "start": 28,
+        "end": 40
+      },
+      {
+        "text": "UTIB0000150",
+        "type": "IFSC",
+        "start": 58,
+        "end": 69
+      }
+    ]
+  },
+  {
+    "id": "sample_027",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Corporate tax ID GSTIN 27AAAPL1234C1ZV filed by manager Ananya Gupta.",
+    "entities": [
+      {
+        "text": "27AAAPL1234C1ZV",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 23,
+        "end": 38
+      },
+      {
+        "text": "Ananya Gupta",
+        "type": "PERSON",
+        "start": 56,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "id": "sample_028",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Aadhaar card copy 8877 6655 4433 submitted by applicant Vikramaditya Singh.",
+    "entities": [
+      {
+        "text": "8877 6655 4433",
+        "type": "AADHAAR",
+        "start": 18,
+        "end": 32
+      },
+      {
+        "text": "Vikramaditya Singh",
+        "type": "PERSON",
+        "start": 56,
+        "end": 74
+      }
+    ]
+  },
+  {
+    "id": "sample_029",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "MasterCard 5424-1800-2345-6789 was declined due to insufficient credit limit.",
+    "entities": [
+      {
+        "text": "5424-1800-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 11,
+        "end": 30
+      }
+    ]
+  },
+  {
+    "id": "sample_030",
+    "category": "financial_government",
+    "text_style": "standard",
+    "text": "Please confirm receipt of payment at VPA payments.support@icici.",
+    "entities": [
+      {
+        "text": "payments.support@icici",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 41,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "id": "sample_031",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Temporary database password is SuperSecretPassw0rd! please change after login.",
+    "entities": [
+      {
+        "text": "SuperSecretPassw0rd!",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "id": "sample_032",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Set your environment variable to API_KEY=ghp_39aZkL84910fKmQ9021a8xZ4901lQp.",
+    "entities": [
+      {
+        "text": "ghp_39aZkL84910fKmQ9021a8xZ4901lQp",
+        "type": "API_KEY",
+        "start": 41,
+        "end": 75
+      }
+    ]
+  },
+  {
+    "id": "sample_033",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Authenticate all web requests with Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
+    "entities": [
+      {
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID",
+        "type": "ACCESS_TOKEN",
+        "start": 48,
+        "end": 93
+      }
+    ]
+  },
+  {
+    "id": "sample_034",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Client secret for OAuth application is sec_live_99f018a4bc82d0194e.",
+    "entities": [
+      {
+        "text": "sec_live_99f018a4bc82d0194e",
+        "type": "SECRET",
+        "start": 39,
+        "end": 66
+      }
+    ]
+  },
+  {
+    "id": "sample_035",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Deploy key ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8... generated for deploy bot.",
+    "entities": [
+      {
+        "text": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC8...",
+        "type": "PRIVATE_KEY",
+        "start": 19,
+        "end": 54
+      }
+    ]
+  },
+  {
+    "id": "sample_036",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Postgres connection string: postgresql://admin:P@ssw0rd2026@localhost:5432/maindb.",
+    "entities": [
+      {
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81
+      }
+    ]
+  },
+  {
+    "id": "sample_037",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Default admin credentials for root router are admin / Tr0ub4dor&3 with credential token cred_adm_88190.",
+    "entities": [
+      {
+        "text": "Tr0ub4dor&3",
+        "type": "PASSWORD",
+        "start": 54,
+        "end": 65
+      },
+      {
+        "text": "cred_adm_88190",
+        "type": "CREDENTIAL",
+        "start": 88,
+        "end": 102
+      }
+    ]
+  },
+  {
+    "id": "sample_038",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Use Stripe test secret key sk_test_51MzABCDEFGHIJKLMN1234567890 in integration tests.",
+    "entities": [
+      {
+        "text": "sk_test_51MzABCDEFGHIJKLMN1234567890",
+        "type": "API_KEY",
+        "start": 27,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "id": "sample_039",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "OAuth refresh token dckr_pat_83901aF923bCd0193E is valid for 30 days.",
+    "entities": [
+      {
+        "text": "dckr_pat_83901aF923bCd0193E",
+        "type": "ACCESS_TOKEN",
+        "start": 20,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "id": "sample_040",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "AWS secret access key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY leaked in public repo.",
+    "entities": [
+      {
+        "text": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+        "type": "SECRET",
+        "start": 22,
+        "end": 62
+      }
+    ]
+  },
+  {
+    "id": "sample_041",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Database user db_master with password MongoRootPassword#99 connected successfully.",
+    "entities": [
+      {
+        "text": "MongoRootPassword#99",
+        "type": "PASSWORD",
+        "start": 38,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "id": "sample_042",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Google Cloud API Key AIzaSyD90218_exampleFakeKey987123 was revoked by security team.",
+    "entities": [
+      {
+        "text": "AIzaSyD90218_exampleFakeKey987123",
+        "type": "API_KEY",
+        "start": 21,
+        "end": 54
+      }
+    ]
+  },
+  {
+    "id": "sample_043",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Authentication bearer ya29.a0AfH6SMD_exampleTokenValue123 expired.",
+    "entities": [
+      {
+        "text": "ya29.a0AfH6SMD_exampleTokenValue123",
+        "type": "ACCESS_TOKEN",
+        "start": 22,
+        "end": 57
+      }
+    ]
+  },
+  {
+    "id": "sample_044",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Save the encryption secret key enc_sec_88491028ba39c to AWS KMS immediately.",
+    "entities": [
+      {
+        "text": "enc_sec_88491028ba39c",
+        "type": "SECRET",
+        "start": 31,
+        "end": 52
+      }
+    ]
+  },
+  {
+    "id": "sample_045",
+    "category": "security_credentials",
+    "text_style": "standard",
+    "text": "Redis URI: redis://default:redispw2026!@cache.internal.net:6379.",
+    "entities": [
+      {
+        "text": "redis://default:redispw2026!@cache.internal.net:6379",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 11,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "id": "sample_046",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Web server running at 192.168.1.105 is currently experiencing high latency.",
+    "entities": [
+      {
+        "text": "192.168.1.105",
+        "type": "IP_ADDRESS",
+        "start": 22,
+        "end": 35
+      }
+    ]
+  },
+  {
+    "id": "sample_047",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Visit internal dashboard at https://wiki.internal.corp.local/hr-policies for details.",
+    "entities": [
+      {
+        "text": "https://wiki.internal.corp.local/hr-policies",
+        "type": "INTERNAL_URL",
+        "start": 28,
+        "end": 72
+      }
+    ]
+  },
+  {
+    "id": "sample_048",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Production cluster node k8s-worker-node-04a failed health check in us-east-1.",
+    "entities": [
+      {
+        "text": "k8s-worker-node-04a",
+        "type": "SERVER_IDENTIFIER",
+        "start": 24,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "id": "sample_049",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "All code for Project Aegis must remain under strict non-disclosure agreement.",
+    "entities": [
+      {
+        "text": "Project Aegis",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 13,
+        "end": 26
+      }
+    ]
+  },
+  {
+    "id": "sample_050",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Our Q3 financial margin targets and unannounced merger plans are strictly confidential.",
+    "entities": [
+      {
+        "text": "Q3 financial margin targets and unannounced merger plans",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 60
+      }
+    ]
+  },
+  {
+    "id": "sample_051",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "SSH into bastion server 10.200.45.12 to perform the database migration.",
+    "entities": [
+      {
+        "text": "10.200.45.12",
+        "type": "IP_ADDRESS",
+        "start": 24,
+        "end": 36
+      }
+    ]
+  },
+  {
+    "id": "sample_052",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Internal staging endpoint is http://staging-api.service.internal:8080/v1/health.",
+    "entities": [
+      {
+        "text": "http://staging-api.service.internal:8080/v1/health",
+        "type": "INTERNAL_URL",
+        "start": 29,
+        "end": 79
+      }
+    ]
+  },
+  {
+    "id": "sample_053",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "Primary database host db-primary-sg-01.vpc.internal restarted after memory alert.",
+    "entities": [
+      {
+        "text": "db-primary-sg-01.vpc.internal",
+        "type": "SERVER_IDENTIFIER",
+        "start": 22,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "id": "sample_054",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "The board discussed Project Titan roadmap and future acquisitions during the executive session.",
+    "entities": [
+      {
+        "text": "Project Titan",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 20,
+        "end": 33
+      }
+    ]
+  },
+  {
+    "id": "sample_055",
+    "category": "technical_org",
+    "text_style": "standard",
+    "text": "The proprietary algorithm for customer churn prediction is restricted to executive staff.",
+    "entities": [
+      {
+        "text": "proprietary algorithm for customer churn prediction",
+        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+        "start": 4,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "id": "sample_056",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Arre bhai, Rohit Verma ko call karo on 9876543210 urgently.",
+    "entities": [
+      {
+        "text": "Rohit Verma",
+        "type": "PERSON",
+        "start": 11,
+        "end": 22
+      },
+      {
+        "text": "9876543210",
+        "type": "PHONE",
+        "start": 39,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "id": "sample_057",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Mera Aadhaar card number 8901 2345 6789 update kar do portal pe please.",
+    "entities": [
+      {
+        "text": "8901 2345 6789",
+        "type": "AADHAAR",
+        "start": 25,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "id": "sample_058",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Bhaiya ne bola ki payment HDFC account 50100987654321 me transfer kar do.",
+    "entities": [
+      {
+        "text": "50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 39,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "id": "sample_059",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Kripya apna PAN card ALMPK9911D email kijiye pooja.nair@startup.example.in par.",
+    "entities": [
+      {
+        "text": "ALMPK9911D",
+        "type": "PAN",
+        "start": 21,
+        "end": 31
+      },
+      {
+        "text": "pooja.nair@startup.example.in",
+        "type": "EMAIL",
+        "start": 45,
+        "end": 74
+      }
+    ]
+  },
+  {
+    "id": "sample_060",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Server ka IP 172.16.254.1 hai, uspar deploy kar dena shaam tak.",
+    "entities": [
+      {
+        "text": "172.16.254.1",
+        "type": "IP_ADDRESS",
+        "start": 13,
+        "end": 25
+      }
+    ]
+  },
+  {
+    "id": "sample_061",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Aapka IFSC code SBIN0004567 galat bata raha hai, check karo.",
+    "entities": [
+      {
+        "text": "SBIN0004567",
+        "type": "IFSC",
+        "start": 16,
+        "end": 27
+      }
+    ]
+  },
+  {
+    "id": "sample_062",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Database ka password SecretDbPassword! kisi ke saath share mat karna.",
+    "entities": [
+      {
+        "text": "SecretDbPassword!",
+        "type": "PASSWORD",
+        "start": 21,
+        "end": 38
+      }
+    ]
+  },
+  {
+    "id": "sample_063",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Mera delivery address Flat 204, Shanti Nagar, Mumbai hai.",
+    "entities": [
+      {
+        "text": "Flat 204, Shanti Nagar",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 44
+      },
+      {
+        "text": "Mumbai",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 52
+      }
+    ]
+  },
+  {
+    "id": "sample_064",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Paisa transfer ke liye UPI id deepak.kumar@paytm use karo.",
+    "entities": [
+      {
+        "text": "deepak.kumar@paytm",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 30,
+        "end": 48
+      }
+    ]
+  },
+  {
+    "id": "sample_065",
+    "category": "hinglish",
+    "text_style": "hinglish",
+    "text": "Sunil Joshi ka birthday 25/12/1990 ko aata hai, yaad rakhna.",
+    "entities": [
+      {
+        "text": "Sunil Joshi",
+        "type": "PERSON",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "text": "25/12/1990",
+        "type": "DATE_OF_BIRTH",
+        "start": 24,
+        "end": 34
+      }
+    ]
+  },
+  {
+    "id": "sample_066",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "hey mark ping me on mark_dev99@gmail.com asap thx!!",
+    "entities": [
+      {
+        "text": "mark_dev99@gmail.com",
+        "type": "EMAIL",
+        "start": 20,
+        "end": 40
+      }
+    ]
+  },
+  {
+    "id": "sample_067",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "yo my phone is 555-0199 call me when u land at Denver airport",
+    "entities": [
+      {
+        "text": "555-0199",
+        "type": "PHONE",
+        "start": 15,
+        "end": 23
+      },
+      {
+        "text": "Denver",
+        "type": "LOCATION",
+        "start": 47,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "id": "sample_068",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "admin pass is Winter2026# dont tell anyone pls",
+    "entities": [
+      {
+        "text": "Winter2026#",
+        "type": "PASSWORD",
+        "start": 14,
+        "end": 25
+      }
+    ]
+  },
+  {
+    "id": "sample_069",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "can u send 500 bucks to my gpay vpa johnny.cash@okhdfcbank ?",
+    "entities": [
+      {
+        "text": "johnny.cash@okhdfcbank",
+        "type": "FINANCIAL_IDENTIFIER",
+        "start": 36,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "id": "sample_070",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "meet Sarah Connor at 742 Evergreen Terrace tonight",
+    "entities": [
+      {
+        "text": "Sarah Connor",
+        "type": "PERSON",
+        "start": 5,
+        "end": 17
+      },
+      {
+        "text": "742 Evergreen Terrace",
+        "type": "ADDRESS",
+        "start": 21,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "id": "sample_071",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "check the logs on server prod-db-replica-02 right now",
+    "entities": [
+      {
+        "text": "prod-db-replica-02",
+        "type": "SERVER_IDENTIFIER",
+        "start": 25,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "id": "sample_072",
+    "category": "informal_chat",
+    "text_style": "informal",
+    "text": "temp api token is pat_live_89102a94f for the webhook test",
+    "entities": [
+      {
+        "text": "pat_live_89102a94f",
+        "type": "API_KEY",
+        "start": 18,
+        "end": 36
+      }
+    ]
+  },
+  {
+    "id": "sample_073",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "| Employee | Department | Email |\n| --- | --- | --- |\n| Jane Doe | Engineering | jane.doe@acme.example.com |",
+    "entities": [
+      {
+        "text": "Jane Doe",
+        "type": "PERSON",
+        "start": 56,
+        "end": 64
+      },
+      {
+        "text": "jane.doe@acme.example.com",
+        "type": "EMAIL",
+        "start": 81,
+        "end": 106
+      }
+    ]
+  },
+  {
+    "id": "sample_074",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "DEBUG [2026-03-31 10:14:22] Connection accepted from client 198.51.100.45:44321",
+    "entities": [
+      {
+        "text": "198.51.100.45",
+        "type": "IP_ADDRESS",
+        "start": 60,
+        "end": 73
+      }
+    ]
+  },
+  {
+    "id": "sample_075",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "{\"status\": \"active\", \"lead\": \"Marcus Brody\", \"pan\": \"BKPTR1290N\"}",
+    "entities": [
+      {
+        "text": "Marcus Brody",
+        "type": "PERSON",
+        "start": 30,
+        "end": 42
+      },
+      {
+        "text": "BKPTR1290N",
+        "type": "PAN",
+        "start": 53,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "id": "sample_076",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "ENV_CONFIG:\n  AUTH_SECRET=sec_tok_991823746a\n  INTERNAL_GATEWAY=http://gw.internal.mesh:8000",
+    "entities": [
+      {
+        "text": "sec_tok_991823746a",
+        "type": "SECRET",
+        "start": 26,
+        "end": 44
+      },
+      {
+        "text": "http://gw.internal.mesh:8000",
+        "type": "INTERNAL_URL",
+        "start": 64,
+        "end": 92
+      }
+    ]
+  },
+  {
+    "id": "sample_077",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "* Name: Robert Langdon\n* Phone: +1-202-555-0143\n* City: Boston",
+    "entities": [
+      {
+        "text": "Robert Langdon",
+        "type": "PERSON",
+        "start": 8,
+        "end": 22
+      },
+      {
+        "text": "+1-202-555-0143",
+        "type": "PHONE",
+        "start": 32,
+        "end": 47
+      },
+      {
+        "text": "Boston",
+        "type": "LOCATION",
+        "start": 56,
+        "end": 62
+      }
+    ]
+  },
+  {
+    "id": "sample_078",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "CSV_DUMP: id,name,aadhaar\n101,Neha Deshmukh,7766 5544 3322",
+    "entities": [
+      {
+        "text": "Neha Deshmukh",
+        "type": "PERSON",
+        "start": 30,
+        "end": 43
+      },
+      {
+        "text": "7766 5544 3322",
+        "type": "AADHAAR",
+        "start": 44,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "id": "sample_079",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "SELECT * FROM users WHERE email = 'auditor.lead@securecorp.example.org';",
+    "entities": [
+      {
+        "text": "auditor.lead@securecorp.example.org",
+        "type": "EMAIL",
+        "start": 35,
+        "end": 70
+      }
+    ]
+  },
+  {
+    "id": "sample_080",
+    "category": "structured_formatting",
+    "text_style": "formatting",
+    "text": "curl -X POST https://api.service.com -H 'Authorization: Bearer sk-live-9021849102b48'",
+    "entities": [
+      {
+        "text": "sk-live-9021849102b48",
+        "type": "API_KEY",
+        "start": 63,
+        "end": 84
+      }
+    ]
+  },
+  {
+    "id": "sample_081",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Customer profile: Amit Patel, email: amit.patel@fintech.example.in, phone: +91-9820012345, PAN: ABCDP9876Q, living in Ahmedabad.",
+    "entities": [
+      {
+        "text": "Amit Patel",
+        "type": "PERSON",
+        "start": 18,
+        "end": 28
+      },
+      {
+        "text": "amit.patel@fintech.example.in",
+        "type": "EMAIL",
+        "start": 37,
+        "end": 66
+      },
+      {
+        "text": "+91-9820012345",
+        "type": "PHONE",
+        "start": 75,
+        "end": 89
+      },
+      {
+        "text": "ABCDP9876Q",
+        "type": "PAN",
+        "start": 96,
+        "end": 106
+      },
+      {
+        "text": "Ahmedabad",
+        "type": "LOCATION",
+        "start": 118,
+        "end": 127
+      }
+    ]
+  },
+  {
+    "id": "sample_082",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Onboarding form: Samantha Brooks, DOB: 1989-07-12, Address: 88 Pine Ridge Road, Dallas, phone: 555-0176, credit card: 4000-1234-5678-9010.",
+    "entities": [
+      {
+        "text": "Samantha Brooks",
+        "type": "PERSON",
+        "start": 17,
+        "end": 32
+      },
+      {
+        "text": "1989-07-12",
+        "type": "DATE_OF_BIRTH",
+        "start": 39,
+        "end": 49
+      },
+      {
+        "text": "88 Pine Ridge Road",
+        "type": "ADDRESS",
+        "start": 60,
+        "end": 78
+      },
+      {
+        "text": "Dallas",
+        "type": "LOCATION",
+        "start": 80,
+        "end": 86
+      },
+      {
+        "text": "555-0176",
+        "type": "PHONE",
+        "start": 95,
+        "end": 103
+      },
+      {
+        "text": "4000-1234-5678-9010",
+        "type": "CREDIT_CARD",
+        "start": 118,
+        "end": 137
+      }
+    ]
+  },
+  {
+    "id": "sample_083",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Escalation report: Agent Suresh Menon (Aadhaar: 3344 5566 7788) reported unauthorized access to server srv-fin-core-09 from IP 192.0.2.144.",
+    "entities": [
+      {
+        "text": "Suresh Menon",
+        "type": "PERSON",
+        "start": 25,
+        "end": 37
+      },
+      {
+        "text": "3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 48,
+        "end": 62
+      },
+      {
+        "text": "srv-fin-core-09",
+        "type": "SERVER_IDENTIFIER",
+        "start": 103,
+        "end": 118
+      },
+      {
+        "text": "192.0.2.144",
+        "type": "IP_ADDRESS",
+        "start": 127,
+        "end": 138
+      }
+    ]
+  },
+  {
+    "id": "sample_084",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Account setup for Vikram Singhania: send credentials to vikram.singhania@corp.example.com. Bank account: 998877665544, IFSC: PUNB0123456.",
+    "entities": [
+      {
+        "text": "Vikram Singhania",
+        "type": "PERSON",
+        "start": 18,
+        "end": 34
+      },
+      {
+        "text": "vikram.singhania@corp.example.com",
+        "type": "EMAIL",
+        "start": 56,
+        "end": 89
+      },
+      {
+        "text": "998877665544",
+        "type": "BANK_ACCOUNT",
+        "start": 105,
+        "end": 117
+      },
+      {
+        "text": "PUNB0123456",
+        "type": "IFSC",
+        "start": 125,
+        "end": 136
+      }
+    ]
+  },
+  {
+    "id": "sample_085",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "DevOps notification: User dev_admin updated API_KEY ak_live_77189a02fb on internal node 10.0.12.99 connecting to https://vault.internal.corp/secrets.",
+    "entities": [
+      {
+        "text": "ak_live_77189a02fb",
+        "type": "API_KEY",
+        "start": 52,
+        "end": 70
+      },
+      {
+        "text": "10.0.12.99",
+        "type": "IP_ADDRESS",
+        "start": 88,
+        "end": 98
+      },
+      {
+        "text": "https://vault.internal.corp/secrets",
+        "type": "INTERNAL_URL",
+        "start": 113,
+        "end": 148
+      }
+    ]
+  },
+  {
+    "id": "sample_086",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Employee records show Kavita Krishnan (born 1992-04-18) residing at 404 Green Valley, Bengaluru, contactable at +91-9988776655.",
+    "entities": [
+      {
+        "text": "Kavita Krishnan",
+        "type": "PERSON",
+        "start": 22,
+        "end": 37
+      },
+      {
+        "text": "1992-04-18",
+        "type": "DATE_OF_BIRTH",
+        "start": 44,
+        "end": 54
+      },
+      {
+        "text": "404 Green Valley",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 84
+      },
+      {
+        "text": "Bengaluru",
+        "type": "LOCATION",
+        "start": 86,
+        "end": 95
+      },
+      {
+        "text": "+91-9988776655",
+        "type": "PHONE",
+        "start": 112,
+        "end": 126
+      }
+    ]
+  },
+  {
+    "id": "sample_087",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Billing memo: Eleanor Vance charged corporate card 5105-1051-0510-5100 for services at 14 Wall Street, New York.",
+    "entities": [
+      {
+        "text": "Eleanor Vance",
+        "type": "PERSON",
+        "start": 14,
+        "end": 27
+      },
+      {
+        "text": "5105-1051-0510-5100",
+        "type": "CREDIT_CARD",
+        "start": 51,
+        "end": 70
+      },
+      {
+        "text": "14 Wall Street",
+        "type": "ADDRESS",
+        "start": 87,
+        "end": 101
+      },
+      {
+        "text": "New York",
+        "type": "LOCATION",
+        "start": 103,
+        "end": 111
+      }
+    ]
+  },
+  {
+    "id": "sample_088",
+    "category": "multi_entity_dense",
+    "text_style": "multi_entity",
+    "text": "Security notice: In Project Polaris, lead architect Daniel Wu shared root password RootAdminPass2026! over unencrypted mail daniel.wu@polaris.example.org.",
+    "entities": [
+      {
+        "text": "Project Polaris",
+        "type": "CONFIDENTIAL_PROJECT",
+        "start": 20,
+        "end": 35
+      },
+      {
+        "text": "Daniel Wu",
+        "type": "PERSON",
+        "start": 52,
+        "end": 61
+      },
+      {
+        "text": "RootAdminPass2026!",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 101
+      },
+      {
+        "text": "daniel.wu@polaris.example.org",
+        "type": "EMAIL",
+        "start": 124,
+        "end": 153
+      }
+    ]
+  },
+  {
+    "id": "sample_089",
+    "category": "ambiguous_edge_cases",
+    "text_style": "casing",
+    "text": "INSPECTOR JOHNATHAN DOE VERIFIED THE EVIDENCE IN ATLANTA.",
+    "entities": [
+      {
+        "text": "JOHNATHAN DOE",
+        "type": "PERSON",
+        "start": 10,
+        "end": 23
+      },
+      {
+        "text": "ATLANTA",
+        "type": "LOCATION",
+        "start": 49,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "id": "sample_090",
+    "category": "ambiguous_edge_cases",
+    "text_style": "ambiguous",
+    "text": "Please confirm if May Parker is travelling to Paris this May.",
+    "entities": [
+      {
+        "text": "May Parker",
+        "type": "PERSON",
+        "start": 18,
+        "end": 28
+      },
+      {
+        "text": "Paris",
+        "type": "LOCATION",
+        "start": 46,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "id": "sample_091",
+    "category": "ambiguous_edge_cases",
+    "text_style": "punctuation",
+    "text": "Send mail to (test.contact@sample.example.com); or call [+1-555-0182]!",
+    "entities": [
+      {
+        "text": "test.contact@sample.example.com",
+        "type": "EMAIL",
+        "start": 14,
+        "end": 45
+      },
+      {
+        "text": "+1-555-0182",
+        "type": "PHONE",
+        "start": 57,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "id": "sample_092",
+    "category": "ambiguous_edge_cases",
+    "text_style": "casing",
+    "text": "rose miller loves the rose flower in Portland park.",
+    "entities": [
+      {
+        "text": "rose miller",
+        "type": "PERSON",
+        "start": 0,
+        "end": 11
+      },
+      {
+        "text": "Portland",
+        "type": "LOCATION",
+        "start": 37,
+        "end": 45
+      }
+    ]
+  },
+  {
+    "id": "sample_093",
+    "category": "ambiguous_edge_cases",
+    "text_style": "standard",
+    "text": "The server host was named server-gamma-node-09 with address 192.168.10.88.",
+    "entities": [
+      {
+        "text": "server-gamma-node-09",
+        "type": "SERVER_IDENTIFIER",
+        "start": 26,
+        "end": 46
+      },
+      {
+        "text": "192.168.10.88",
+        "type": "IP_ADDRESS",
+        "start": 60,
+        "end": 73
+      }
+    ]
+  },
+  {
+    "id": "sample_094",
+    "category": "ambiguous_edge_cases",
+    "text_style": "formatting",
+    "text": "Here is the code block:\n```\nKEY=\"secret_token_val_998811\"\n```\nDo not push this file.",
+    "entities": [
+      {
+        "text": "secret_token_val_998811",
+        "type": "SECRET",
+        "start": 33,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "id": "sample_095",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "Photosynthesis is a chemical process that occurs in plants, algae, and some types of bacteria, converting light energy into chemical energy.",
+    "entities": []
+  },
+  {
+    "id": "sample_096",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "To clone a remote repository using git, run `git clone https://github.com/example/repo.git` and then navigate into the project directory.",
+    "entities": []
+  },
+  {
+    "id": "sample_097",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "The quick brown fox jumps over the lazy dog while the autumn wind gently rustles the dry golden leaves in the afternoon sun.",
+    "entities": []
+  },
+  {
+    "id": "sample_098",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "The Python standard library includes modules such as math, os, sys, json, and itertools for handling everyday programming tasks.",
+    "entities": []
+  },
+  {
+    "id": "sample_099",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "Our team meeting is scheduled for 10:00 AM UTC tomorrow to review the quarterly roadmap milestones and sprint deliverables.",
+    "entities": []
+  },
+  {
+    "id": "sample_100",
+    "category": "negative_no_pii",
+    "text_style": "no_pii",
+    "text": "Gravitational acceleration on Earth's surface is approximately 9.8 meters per second squared, varying slightly with latitude and altitude.",
+    "entities": []
+  }
+]

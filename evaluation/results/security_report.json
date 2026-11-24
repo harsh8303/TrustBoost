@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "title": "TrustBoost Security and Privacy Evaluation Report",
+    "timestamp": "2026-11-24 07:21:00 UTC",
+    "overall_status": "PASSED",
+    "total_tests": 13,
+    "total_passed": 13,
+    "overall_pass_rate": 1.0
+  },
+  "suites": {
+    "leakage_prevention": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "success_rate": 1.0,
+      "details": [
+        {
+          "test_case": "Personal identification",
+          "original_text": "Please reach out to Alice Johnson at alice.johnson@example.org or phone +1-555-0199.",
+          "sanitized_text": "Please reach out to [PERSON_1] at [EMAIL_1] or phone [PHONE_1].",
+          "entities_checked": 3,
+          "leaked_entities": [],
+          "passed": true
+        },
+        {
+          "test_case": "Financial & Govt credentials",
+          "original_text": "Customer PAN ABCDE1234F linked with Aadhaar 9999 8888 7777 and card 4111-2222-3333-4444.",
+          "sanitized_text": "Customer PAN [PAN_1] linked with Aadhaar [AADHAAR_1] and card [CREDIT_CARD_1].",
+          "entities_checked": 3,
+          "leaked_entities": [],
+          "passed": true
+        },
+        {
+          "test_case": "Security tokens and database secrets",
+          "original_text": "Use password SuperSecret#2026 with token sk-live-9021840192ba for database uri postgresql://user:dbpass@host:5432.",
+          "sanitized_text": "Use password [PASSWORD_1] with token [SECRET_1] for database uri [DATABASE_CREDENTIAL_1].",
+          "entities_checked": 3,
+          "leaked_entities": [],
+          "passed": true
+        }
+      ]
+    },
+    "restoration_fidelity": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "success_rate": 1.0,
+      "details": [
+        {
+          "test_case": "Exact Roundtrip Identity",
+          "input_text": "Dr. Sarah Connor works in London and can be called on 555-0123.",
+          "sanitized_text": "Dr. [PERSON_1] works in [LOCATION_1] and can be called on [PHONE_1].",
+          "restored_text": "Dr. Sarah Connor works in London and can be called on 555-0123.",
+          "expected_all_entities_restored": true,
+          "missing_entities": [],
+          "passed": true
+        },
+        {
+          "test_case": "Simulated AI Response Roundtrip",
+          "input_text": "Transfer 5000 INR from account 9876543210 to Priya Verma at IFSC HDFC0001234.",
+          "sanitized_text": "Transfer 5000 INR from account [BANK_ACCOUNT_1] to [PERSON_1] at IFSC [IFSC_1].",
+          "restored_text": "Acknowledged. We have initiated the wire from 9876543210 to recipient Priya Verma under IFSC HDFC0001234.",
+          "expected_all_entities_restored": true,
+          "missing_entities": [],
+          "passed": true
+        }
+      ]
+    },
+    "unknown_placeholder_preservation": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "success_rate": 1.0,
+      "details": [
+        {
+          "input_response": "Hello [PERSON_1], your email [EMAIL_99] and order token [ORDER_REF_10] are being processed.",
+          "restored_output": "Hello Alice Walker, your email [EMAIL_99] and order token [ORDER_REF_10] are being processed.",
+          "expected_output": "Hello Alice Walker, your email [EMAIL_99] and order token [ORDER_REF_10] are being processed.",
+          "unrestored_tokens": [
+            "[EMAIL_99]",
+            "[ORDER_REF_10]"
+          ],
+          "passed": true
+        }
+      ]
+    },
+    "global_mapping_consistency": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "success_rate": 1.0,
+      "details": [
+        {
+          "shared_entity": "Alice Walker",
+          "sanitized_1": "User [PERSON_1] has requested a password reset.",
+          "sanitized_2": "Audit confirmed: [PERSON_1] logged in from IP [IP_ADDRESS_1].",
+          "sanitized_3": "Email sent to [PERSON_1] regarding project updates.",
+          "counter_value": 1,
+          "passed": true
+        }
+      ]
+    },
+    "fail_closed_resilience": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "success_rate": 1.0,
+      "details": [
+        {
+          "name": "Corrupted non-JSON LLM output",
+          "passed": true
+        },
+        {
+          "name": "Truncated JSON",
+          "passed": true
+        },
+        {
+          "name": "Negative offset injection",
+          "passed": true
+        },
+        {
+          "name": "OutOfBounds offset injection",
+          "passed": true
+        },
+        {
+          "name": "Hallucinated Entity Type",
+          "passed": true
+        },
+        {
+          "name": "Slice Text Mismatch",
+          "passed": true
+        }
+      ]
+    }
+  }
+}

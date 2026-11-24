@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "title": "TrustBoost LangChain Agent Evaluation Report",
+    "timestamp": "2026-11-24 07:22:17 UTC",
+    "overall_status": "PASSED",
+    "total_tests": 11,
+    "total_passed": 11,
+    "overall_pass_rate": 1.0
+  },
+  "suites": {
+    "operation_routing": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Sanitize Operation Routing",
+          "passed": true,
+          "result_keys": [
+            "success",
+            "original_text",
+            "detected_entities",
+            "sanitized_text",
+            "mapping",
+            "tokens",
+            "updated_global_state",
+            "message"
+          ]
+        },
+        {
+          "name": "Restore Operation Routing",
+          "passed": true,
+          "restored_text": "Greetings John Doe, welcome!"
+        },
+        {
+          "name": "Unknown Operation Handling",
+          "passed": true,
+          "error_message": "Unknown operation: 'unsupported_action'. Valid operations are 'sanitize' and 'restore'."
+        }
+      ]
+    },
+    "tool_definitions_and_execution": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Tool Registry Completeness",
+          "passed": true,
+          "registered_tools": [
+            "entity_validation",
+            "global_tokenization",
+            "restore_text",
+            "restoration",
+            "pii_detection",
+            "sanitize_text"
+          ]
+        },
+        {
+          "name": "Entity Validation Tool Execution",
+          "passed": true,
+          "validated_count": 1
+        },
+        {
+          "name": "Global Tokenization Tool Execution",
+          "passed": true,
+          "sanitized_text": "Contact [PERSON_1] at alice@example.com."
+        },
+        {
+          "name": "Restoration Tool Execution",
+          "passed": true,
+          "restored_text": "Greetings Alice!"
+        }
+      ]
+    },
+    "error_handling_and_guards": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "details": [
+        {
+          "name": "None Text Guard in Sanitize",
+          "passed": true,
+          "message": "Input text cannot be empty."
+        },
+        {
+          "name": "Non-Dict Agent Input Guard",
+          "passed": true,
+          "message": "Input to TrustBoostAgent must be a dictionary."
+        },
+        {
+          "name": "Empty Text Sanitization Guard",
+          "passed": true,
+          "message": "Input text cannot be empty."
+        }
+      ]
+    },
+    "unauthorized_mutation_prevention": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0,
+      "details": [
+        {
+          "name": "Preserve State on Unmapped Tokens",
+          "passed": true
+        }
+      ]
+    }
+  }
+}
