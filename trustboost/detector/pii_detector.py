@@ -26,13 +26,18 @@ WHAT THIS FILE DOES NOT DO:
 """
 
 import json
+import os
 
 from trustboost.agent.ollama_client import generate_response
+from trustboost.detector.pattern_detector import find_pattern_entities
 from trustboost.detector.prompt_builder import (
     FALLBACK_ENTITY_TYPE,
     VALID_ENTITY_TYPES,
     build_detection_messages,
 )
+
+# Turn the fixed-format backup detector on/off (TRUSTBOOST_PATTERNS=0 to disable).
+USE_PATTERN_BACKUP = os.getenv("TRUSTBOOST_PATTERNS", "1") != "0"
 
 CHUNK_CHARS = 1500
 
@@ -563,6 +568,9 @@ def detect_pii(text: str) -> dict:
                 "message": f"PII detection failed: {result['message']}",
             }
         raw_entities.extend(result["entities"])
+
+    if USE_PATTERN_BACKUP:
+        raw_entities.extend(find_pattern_entities(original_text))
 
     located = []
     for raw_entity in raw_entities:
