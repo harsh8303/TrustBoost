@@ -3,7 +3,7 @@
     "evaluation_title": "TrustBoost Phase 3 & Pipeline Comprehensive Detection Evaluation",
     "model": "gemma3:4b (local Ollama)",
     "total_samples": 43,
-    "timestamp": "2026-11-25 21:33:59 UTC",
+    "timestamp": "2026-11-25 22:11:13 UTC",
     "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])"
   },
   "summary": {
