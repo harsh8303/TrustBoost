@@ -258,3 +258,47 @@ def export_category_metrics_csv(category_metrics: Dict[str, Any], filepath: str)
                 f"{data['recall']:.4f}",
                 f"{data['f1']:.4f}"
             ])
+
+
+def compute_privacy_metrics(samples: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Privacy-focused metrics (what actually matters for TrustBoost):
+
+    - char_recall: of all characters that belong to real PII, what fraction
+      got masked? (1.0 = nothing leaked)
+    - entities_with_any_leak: how many real PII items had at least one
+      character left visible.
+    - over_masking_rate: of all masked characters, what fraction were NOT
+      PII (masking too much; annoying but safe).
+    """
+    total_pii_chars = masked_pii_chars = 0
+    total_entities = leaky_entities = 0
+    total_masked_chars = masked_non_pii_chars = 0
+    leaks = []
+
+    for sample in samples:
+        masked = set()
+        for p in sample.get("predicted_entities", []):
+            masked.update(range(p["start"], p["end"]))
+        gold_chars = set()
+        for g in sample.get("entities", []):
+            span = set(range(g["start"], g["end"]))
+            gold_chars |= span
+            total_pii_chars += len(span)
+            masked_pii_chars += len(span & masked)
+            total_entities += 1
+            if span - masked:
+                leaky_entities += 1
+                leaks.append({"sample_id": sample.get("id"), "type": g["type"], "text": g["text"],
+                              "unmasked_chars": len(span - masked), "total_chars": len(span)})
+        total_masked_chars += len(masked)
+        masked_non_pii_chars += len(masked - gold_chars)
+
+    return {
+        "char_recall": round(masked_pii_chars / total_pii_chars, 4) if total_pii_chars else 1.0,
+        "entities_with_any_leak": leaky_entities,
+        "entity_any_leak_rate": round(leaky_entities / total_entities, 4) if total_entities else 0.0,
+        "over_masking_rate": round(masked_non_pii_chars / total_masked_chars, 4) if total_masked_chars else 0.0,
+        "total_gold_entities": total_entities,
+        "leaked_entities": leaks,
+    }

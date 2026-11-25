@@ -2,176 +2,43 @@
   "metadata": {
     "evaluation_title": "TrustBoost Phase 3 & Pipeline Comprehensive Detection Evaluation",
     "model": "gemma3:4b (local Ollama)",
-    "total_samples": 100,
-    "timestamp": "2026-11-24 08:15:45 UTC",
+    "total_samples": 43,
+    "timestamp": "2026-11-25 22:11:13 UTC",
     "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])"
   },
   "summary": {
-    "total_samples": 100,
-    "total_gold_entities": 171,
-    "total_pred_entities": 159,
-    "strict_true_positives": 118,
-    "strict_false_positives": 41,
-    "strict_false_negatives": 53,
+    "total_samples": 43,
+    "total_gold_entities": 77,
+    "total_pred_entities": 66,
+    "strict_true_positives": 55,
+    "strict_false_positives": 11,
+    "strict_false_negatives": 22,
     "micro_metrics": {
-      "precision": 0.7421,
-      "recall": 0.6901,
-      "f1": 0.7152
+      "precision": 0.8333,
+      "recall": 0.7143,
+      "f1": 0.7692
     },
     "macro_metrics": {
-      "precision": 0.5641,
-      "recall": 0.5819,
-      "f1": 0.5609
+      "precision": 0.5788,
+      "recall": 0.6188,
+      "f1": 0.5654
+    },
+    "privacy_metrics": {
+      "char_recall": 0.8855,
+      "entities_with_any_leak": 11,
+      "entity_any_leak_rate": 0.1429,
+      "over_masking_rate": 0.0714,
+      "total_gold_entities": 77
     },
     "latency_stats": {
-      "mean_seconds": 8.572,
-      "min_seconds": 1.256,
-      "max_seconds": 48.741,
-      "total_inference_time_seconds": 857.23
+      "mean_seconds": 16.91,
+      "min_seconds": 6.736,
+      "max_seconds": 61.637,
+      "total_inference_time_seconds": 727.14
     }
   },
   "category_metrics": {
     "AADHAAR": {
-      "tp": 6,
-      "fp": 1,
-      "fn": 1,
-      "gold_count": 7,
-      "pred_count": 7,
-      "precision": 0.8571,
-      "recall": 0.8571,
-      "f1": 0.8571
-    },
-    "ACCESS_TOKEN": {
-      "tp": 2,
-      "fp": 1,
-      "fn": 1,
-      "gold_count": 3,
-      "pred_count": 3,
-      "precision": 0.6667,
-      "recall": 0.6667,
-      "f1": 0.6667
-    },
-    "ADDRESS": {
-      "tp": 2,
-      "fp": 5,
-      "fn": 6,
-      "gold_count": 8,
-      "pred_count": 7,
-      "precision": 0.2857,
-      "recall": 0.25,
-      "f1": 0.2667
-    },
-    "API_KEY": {
-      "tp": 4,
-      "fp": 2,
-      "fn": 2,
-      "gold_count": 6,
-      "pred_count": 6,
-      "precision": 0.6667,
-      "recall": 0.6667,
-      "f1": 0.6667
-    },
-    "BANK_ACCOUNT": {
-      "tp": 3,
-      "fp": 4,
-      "fn": 3,
-      "gold_count": 6,
-      "pred_count": 7,
-      "precision": 0.4286,
-      "recall": 0.5,
-      "f1": 0.4615
-    },
-    "CONFIDENTIAL_PROJECT": {
-      "tp": 1,
-      "fp": 3,
-      "fn": 2,
-      "gold_count": 3,
-      "pred_count": 4,
-      "precision": 0.25,
-      "recall": 0.3333,
-      "f1": 0.2857
-    },
-    "CREDENTIAL": {
-      "tp": 1,
-      "fp": 2,
-      "fn": 0,
-      "gold_count": 1,
-      "pred_count": 3,
-      "precision": 0.3333,
-      "recall": 1.0,
-      "f1": 0.5
-    },
-    "CREDIT_CARD": {
-      "tp": 2,
-      "fp": 2,
-      "fn": 3,
-      "gold_count": 5,
-      "pred_count": 4,
-      "precision": 0.5,
-      "recall": 0.4,
-      "f1": 0.4444
-    },
-    "DATABASE_CREDENTIAL": {
-      "tp": 0,
-      "fp": 1,
-      "fn": 2,
-      "gold_count": 2,
-      "pred_count": 1,
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0
-    },
-    "DATE_OF_BIRTH": {
-      "tp": 7,
-      "fp": 1,
-      "fn": 0,
-      "gold_count": 7,
-      "pred_count": 8,
-      "precision": 0.875,
-      "recall": 1.0,
-      "f1": 0.9333
-    },
-    "EMAIL": {
-      "tp": 12,
-      "fp": 3,
-      "fn": 0,
-      "gold_count": 12,
-      "pred_count": 15,
-      "precision": 0.8,
-      "recall": 1.0,
-      "f1": 0.8889
-    },
-    "FINANCIAL_IDENTIFIER": {
-      "tp": 0,
-      "fp": 0,
-      "fn": 5,
-      "gold_count": 5,
-      "pred_count": 0,
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0
-    },
-    "IFSC": {
-      "tp": 2,
-      "fp": 3,
-      "fn": 4,
-      "gold_count": 6,
-      "pred_count": 5,
-      "precision": 0.4,
-      "recall": 0.3333,
-      "f1": 0.3636
-    },
-    "INTERNAL_ORGANIZATION_INFORMATION": {
-      "tp": 0,
-      "fp": 1,
-      "fn": 2,
-      "gold_count": 2,
-      "pred_count": 1,
-      "precision": 0.0,
-      "recall": 0.0,
-      "f1": 0.0
-    },
-    "INTERNAL_URL": {
       "tp": 3,
       "fp": 1,
       "fn": 1,
@@ -181,67 +48,27 @@
       "recall": 0.75,
       "f1": 0.75
     },
-    "IP_ADDRESS": {
-      "tp": 7,
+    "ACCESS_TOKEN": {
+      "tp": 1,
       "fp": 0,
-      "fn": 0,
-      "gold_count": 7,
-      "pred_count": 7,
+      "fn": 1,
+      "gold_count": 2,
+      "pred_count": 1,
       "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0
+      "recall": 0.5,
+      "f1": 0.6667
     },
-    "LOCATION": {
-      "tp": 6,
-      "fp": 2,
-      "fn": 12,
-      "gold_count": 18,
-      "pred_count": 8,
-      "precision": 0.75,
-      "recall": 0.3333,
-      "f1": 0.4615
+    "ADDRESS": {
+      "tp": 1,
+      "fp": 3,
+      "fn": 3,
+      "gold_count": 4,
+      "pred_count": 4,
+      "precision": 0.25,
+      "recall": 0.25,
+      "f1": 0.25
     },
-    "PAN": {
-      "tp": 6,
-      "fp": 0,
-      "fn": 0,
-      "gold_count": 6,
-      "pred_count": 6,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0
-    },
-    "PASSWORD": {
-      "tp": 2,
-      "fp": 4,
-      "fn": 4,
-      "gold_count": 6,
-      "pred_count": 6,
-      "precision": 0.3333,
-      "recall": 0.3333,
-      "f1": 0.3333
-    },
-    "PERSON": {
-      "tp": 33,
-      "fp": 4,
-      "fn": 2,
-      "gold_count": 35,
-      "pred_count": 37,
-      "precision": 0.8919,
-      "recall": 0.9429,
-      "f1": 0.9167
-    },
-    "PHONE": {
-      "tp": 11,
-      "fp": 0,
-      "fn": 0,
-      "gold_count": 11,
-      "pred_count": 11,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0
-    },
-    "PRIVATE_KEY": {
+    "API_KEY": {
       "tp": 0,
       "fp": 0,
       "fn": 1,
@@ -251,47 +78,270 @@
       "recall": 0.0,
       "f1": 0.0
     },
-    "SECRET": {
+    "BANK_ACCOUNT": {
       "tp": 3,
-      "fp": 1,
-      "fn": 2,
-      "gold_count": 5,
-      "pred_count": 4,
-      "precision": 0.75,
-      "recall": 0.6,
-      "f1": 0.6667
-    },
-    "SERVER_IDENTIFIER": {
-      "tp": 5,
       "fp": 0,
       "fn": 0,
-      "gold_count": 5,
-      "pred_count": 5,
+      "gold_count": 3,
+      "pred_count": 3,
       "precision": 1.0,
       "recall": 1.0,
       "f1": 1.0
+    },
+    "CONFIDENTIAL_PROJECT": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "gold_count": 1,
+      "pred_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "CREDENTIAL": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 0,
+      "pred_count": 1,
+      "precision": 0.0,
+      "recall": 1.0,
+      "f1": 0.0
+    },
+    "CREDIT_CARD": {
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 2,
+      "pred_count": 2,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "DATABASE_CREDENTIAL": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 1,
+      "pred_count": 2,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "DATE_OF_BIRTH": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 2,
+      "pred_count": 3,
+      "precision": 0.6667,
+      "recall": 1.0,
+      "f1": 0.8
+    },
+    "EMAIL": {
+      "tp": 9,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 9,
+      "pred_count": 10,
+      "precision": 0.9,
+      "recall": 1.0,
+      "f1": 0.9474
+    },
+    "FINANCIAL_IDENTIFIER": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "gold_count": 1,
+      "pred_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "IFSC": {
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 3,
+      "pred_count": 3,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "INTERNAL_URL": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "gold_count": 1,
+      "pred_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "IP_ADDRESS": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 4,
+      "pred_count": 4,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "LOCATION": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 6,
+      "gold_count": 6,
+      "pred_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "PAN": {
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 1,
+      "pred_count": 1,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "PASSWORD": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "gold_count": 4,
+      "pred_count": 3,
+      "precision": 0.6667,
+      "recall": 0.5,
+      "f1": 0.5714
+    },
+    "PERSON": {
+      "tp": 13,
+      "fp": 0,
+      "fn": 3,
+      "gold_count": 16,
+      "pred_count": 13,
+      "precision": 1.0,
+      "recall": 0.8125,
+      "f1": 0.8966
+    },
+    "PHONE": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "SECRET": {
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "gold_count": 1,
+      "pred_count": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "SERVER_IDENTIFIER": {
+      "tp": 4,
+      "fp": 0,
+      "fn": 1,
+      "gold_count": 5,
+      "pred_count": 4,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.8889
     }
   },
   "error_distribution": {
-    "boundary_error": 23,
-    "missed_pii": 20,
-    "category_mismatch": 12,
-    "spurious_detection": 6
+    "missed_pii": 14,
+    "boundary_error": 5,
+    "spurious_detection": 3,
+    "category_mismatch": 3
   },
-  "error_and_leakage_reconciliation": {
-    "strict_evaluation": {
-      "strict_tp": 118,
-      "strict_fp": 41,
-      "strict_fn": 53,
-      "strict_errors_total": 94
+  "leaked_entities": [
+    {
+      "sample_id": "sample_003",
+      "type": "PERSON",
+      "text": "Evelyn Reed",
+      "unmasked_chars": 11,
+      "total_chars": 11
     },
-    "leakage_reconciliation": {
-      "total_strict_fns": 53,
-      "masked_protected_fns": 39,
-      "residual_leaked_entities": 14,
-      "entity_leakage_rate_percentage": 8.19,
-      "sample_leakage_rate_percentage": 13.0
+    {
+      "sample_id": "sample_008",
+      "type": "LOCATION",
+      "text": "Seattle",
+      "unmasked_chars": 7,
+      "total_chars": 7
     },
-    "reconciliation_formula": "Strict FNs (53) = Masked/Protected by Non-Strict Tokens (39) + Residual Verbatim Leaked Entities (14)"
-  }
+    {
+      "sample_id": "sample_011",
+      "type": "PERSON",
+      "text": "Jessica Jones",
+      "unmasked_chars": 13,
+      "total_chars": 13
+    },
+    {
+      "sample_id": "sample_011",
+      "type": "LOCATION",
+      "text": "London",
+      "unmasked_chars": 6,
+      "total_chars": 6
+    },
+    {
+      "sample_id": "sample_028",
+      "type": "PERSON",
+      "text": "Vikramaditya Singh",
+      "unmasked_chars": 18,
+      "total_chars": 18
+    },
+    {
+      "sample_id": "sample_041",
+      "type": "PASSWORD",
+      "text": "MongoRootPassword#99",
+      "unmasked_chars": 20,
+      "total_chars": 20
+    },
+    {
+      "sample_id": "sample_068",
+      "type": "PASSWORD",
+      "text": "Winter2026#",
+      "unmasked_chars": 11,
+      "total_chars": 11
+    },
+    {
+      "sample_id": "sample_076",
+      "type": "INTERNAL_URL",
+      "text": "http://gw.internal.mesh:8000",
+      "unmasked_chars": 28,
+      "total_chars": 28
+    },
+    {
+      "sample_id": "sample_081",
+      "type": "LOCATION",
+      "text": "Ahmedabad",
+      "unmasked_chars": 9,
+      "total_chars": 9
+    },
+    {
+      "sample_id": "sample_083",
+      "type": "SERVER_IDENTIFIER",
+      "text": "srv-fin-core-09",
+      "unmasked_chars": 15,
+      "total_chars": 15
+    },
+    {
+      "sample_id": "sample_088",
+      "type": "CONFIDENTIAL_PROJECT",
+      "text": "Project Polaris",
+      "unmasked_chars": 15,
+      "total_chars": 15
+    }
+  ]
 }
