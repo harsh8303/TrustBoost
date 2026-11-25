@@ -71,12 +71,12 @@ class TestPromptBuilder:
         prompt = build_detection_prompt("some text")
         assert "entities" in prompt
 
-    def test_build_prompt_mentions_start_and_end(self):
-        """The prompt must explain start/end positions."""
+    def test_build_prompt_does_not_ask_for_offsets(self):
+        """The prompt must not ask the model for start/end character offsets."""
         from trustboost.detector.prompt_builder import build_detection_prompt
         prompt = build_detection_prompt("some text")
-        assert "start" in prompt
-        assert "end" in prompt
+        assert '"start"' not in prompt
+        assert '"end"' not in prompt
 
     def test_valid_entity_types_is_non_empty_set(self):
         """VALID_ENTITY_TYPES must be a non-empty set of strings."""
@@ -246,21 +246,23 @@ class TestValidateEntity:
         result = _validate_entity("not a dict", "some text")
         assert result is None
 
-    def test_missing_type_field_rejected(self):
-        """An entity without the 'type' field is rejected."""
+    def test_missing_type_field_gets_fallback_type(self):
+        """An entity without the 'type' field gets the fallback SENSITIVE type."""
         from trustboost.detector.pii_detector import _validate_entity
         entity = {"text": "John", "start": 0, "end": 4, "reason": "name"}
         result = _validate_entity(entity, "John Smith")
-        assert result is None
+        assert result is not None
+        assert result["type"] == "SENSITIVE"
 
-    def test_invalid_entity_type_rejected(self):
-        """An entity with a made-up type (not in VALID_ENTITY_TYPES) is rejected."""
+    def test_unknown_entity_type_is_kept_as_fallback(self):
+        """An entity with an unknown type is kept with the fallback SENSITIVE type."""
         from trustboost.detector.pii_detector import _validate_entity
         original = "John Smith"
         entity = {"text": "John Smith", "type": "MADE_UP_TYPE",
                   "start": 0, "end": 10, "reason": "test"}
         result = _validate_entity(entity, original)
-        assert result is None
+        assert result is not None
+        assert result["type"] == "SENSITIVE"
 
     def test_empty_text_rejected(self):
         """An entity with an empty text string is rejected."""
@@ -576,8 +578,8 @@ class TestDetectPiiUnit:
         assert result["success"] is False
         assert result["entities"] == []
 
-    def test_invalid_entity_type_filtered_out(self):
-        """Entities with unknown types are silently dropped."""
+    def test_unknown_entity_type_still_masked(self):
+        """Entities with unknown types are kept and masked as SENSITIVE."""
         text = "Call John."
         json_resp = json.dumps({"entities": [
             {"text": "John", "type": "HALLUCINATED_TYPE",
@@ -587,12 +589,12 @@ class TestDetectPiiUnit:
             from trustboost.detector.pii_detector import detect_pii
             result = detect_pii(text)
         assert result["success"] is True
-        assert result["entities"] == []  # Invalid type was filtered
+        assert [e["text"] for e in result["entities"]] == ["John"]
+        assert result["entities"][0]["type"] == "SENSITIVE"
 
     def test_missing_entity_fields_handled(self):
         """
-        An entity missing required fields is filtered out.
-        The overall detection still returns success=True with an empty list.
+        An entity missing optional fields like type is still kept and masked.
         """
         json_resp = json.dumps({"entities": [
             {"text": "Alice"}  # Missing type, start, end, reason
@@ -601,7 +603,7 @@ class TestDetectPiiUnit:
             from trustboost.detector.pii_detector import detect_pii
             result = detect_pii("Hello Alice")
         assert result["success"] is True
-        assert result["entities"] == []
+        assert [e["text"] for e in result["entities"]] == ["Alice"]
 
     def test_wrong_offsets_recovered_if_text_unique(self):
         """
@@ -622,10 +624,10 @@ class TestDetectPiiUnit:
         e = result["entities"][0]
         assert text[e["start"]:e["end"]] == e["text"]
 
-    def test_entity_text_mismatch_with_ambiguous_location_rejected(self):
+    def test_value_appearing_multiple_times_masked_everywhere(self):
         """
-        An entity whose text appears multiple times in the original is
-        rejected during recovery because the location is ambiguous.
+        When a detected value appears multiple times in the text,
+        Python locates and masks every occurrence.
         """
         text = "cat and cat are different cat"
         json_resp = json.dumps({"entities": [
@@ -635,8 +637,10 @@ class TestDetectPiiUnit:
         with self._mock_ollama(json_resp):
             from trustboost.detector.pii_detector import detect_pii
             result = detect_pii(text)
-        # Cannot safely recover — entity rejected
-        assert result["entities"] == []
+        assert result["success"] is True
+        assert len(result["entities"]) == 3
+        for e in result["entities"]:
+            assert text[e["start"]:e["end"]] == "cat"
 
     def test_duplicate_entities_collapsed(self):
         """
