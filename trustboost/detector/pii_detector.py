@@ -34,6 +34,8 @@ from trustboost.detector.prompt_builder import (
     build_detection_messages,
 )
 
+CHUNK_CHARS = 1500
+
 SECRET_TYPES = {
     "PASSWORD", "API_KEY", "ACCESS_TOKEN", "SECRET", "PRIVATE_KEY",
     "CREDENTIAL", "DATABASE_CREDENTIAL",
@@ -240,6 +242,28 @@ def _ask_model(chunk: str, attempts: int = 2) -> dict:
             return {"success": True, "entities": parsed["entities"], "message": "ok"}
         last_error = error
     return {"success": False, "entities": [], "message": last_error}
+
+
+def _split_into_chunks(text: str, max_chars: int = CHUNK_CHARS) -> list[str]:
+    """
+    Splits long text into pieces of at most `max_chars`, cutting at a line break
+    or the end of a sentence where possible. Short text is returned as one piece.
+    """
+    if len(text) <= max_chars:
+        return [text]
+    chunks = []
+    start = 0
+    while start < len(text):
+        end = min(len(text), start + max_chars)
+        if end < len(text):
+            cut = text.rfind("\n", start, end)
+            if cut <= start:
+                cut = text.rfind(". ", start, end)
+            if cut > start:
+                end = cut + 1
+        chunks.append(text[start:end])
+        start = end
+    return chunks
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -529,10 +553,16 @@ def detect_pii(text: str) -> dict:
 
     original_text = text  # never modified
 
-    result = _ask_model(original_text)
-    if not result["success"]:
-        return {"success": False, "entities": [], "message": f"PII detection failed: {result['message']}"}
-    raw_entities = result["entities"]
+    raw_entities: list = []
+    for chunk in _split_into_chunks(original_text):
+        result = _ask_model(chunk)
+        if not result["success"]:      # if ANY piece fails, the whole thing fails (safe)
+            return {
+                "success": False,
+                "entities": [],
+                "message": f"PII detection failed: {result['message']}",
+            }
+        raw_entities.extend(result["entities"])
 
     located = []
     for raw_entity in raw_entities:

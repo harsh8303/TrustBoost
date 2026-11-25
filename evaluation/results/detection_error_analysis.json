@@ -1,7 +1,7 @@
 {
-  "total_errors": 28,
+  "total_errors": 25,
   "error_distribution": {
-    "missed_pii": 17,
+    "missed_pii": 14,
     "boundary_error": 5,
     "spurious_detection": 3,
     "category_mismatch": 3
@@ -124,18 +124,6 @@
         "end": 74
       },
       "sample_id": "sample_028"
-    },
-    {
-      "error_type": "missed_pii",
-      "description": "Gold entity completely missed by the detector",
-      "predicted": null,
-      "expected": {
-        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
-        "type": "DATABASE_CREDENTIAL",
-        "start": 28,
-        "end": 81
-      },
-      "sample_id": "sample_036"
     },
     {
       "error_type": "category_mismatch",
@@ -358,30 +346,6 @@
         "end": 35
       },
       "sample_id": "sample_088"
-    },
-    {
-      "error_type": "missed_pii",
-      "description": "Gold entity completely missed by the detector",
-      "predicted": null,
-      "expected": {
-        "text": "daniel.wu@polaris.example.org",
-        "type": "EMAIL",
-        "start": 124,
-        "end": 153
-      },
-      "sample_id": "sample_088"
-    },
-    {
-      "error_type": "missed_pii",
-      "description": "Gold entity completely missed by the detector",
-      "predicted": null,
-      "expected": {
-        "text": "192.168.10.88",
-        "type": "IP_ADDRESS",
-        "start": 60,
-        "end": 73
-      },
-      "sample_id": "sample_093"
     }
   ]
 }
