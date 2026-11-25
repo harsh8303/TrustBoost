@@ -34,6 +34,14 @@ from trustboost.detector.prompt_builder import (
     build_detection_messages,
 )
 
+SECRET_TYPES = {
+    "PASSWORD", "API_KEY", "ACCESS_TOKEN", "SECRET", "PRIVATE_KEY",
+    "CREDENTIAL", "DATABASE_CREDENTIAL",
+}
+
+# Characters that end a secret when stretching it.
+_SECRET_STOP_CHARS = "\"'`()<>[]{},;"
+
 DETECTION_SCHEMA = {
     "type": "object",
     "properties": {
@@ -149,6 +157,21 @@ def _keep_whole_words(text: str, spans: list[tuple[int, int]]) -> list[tuple[int
     return whole if whole else spans
 
 
+def _widen_secret_span(text: str, start: int, end: int) -> tuple[int, int]:
+    """
+    Stretches a secret to the surrounding non-space characters, so
+    "Passw0rd" becomes "Passw0rd!" and a password inside a connection string
+    becomes the whole connection string. A final full stop is not included.
+    """
+    while start > 0 and not text[start - 1].isspace() and text[start - 1] not in _SECRET_STOP_CHARS:
+        start -= 1
+    while end < len(text) and not text[end].isspace() and text[end] not in _SECRET_STOP_CHARS:
+        end += 1
+    while end > start + 1 and text[end - 1] in ".:":
+        end -= 1
+    return start, end
+
+
 def _locate_entity(raw_entity, original_text: str) -> list[dict]:
     """
     Turns ONE detection from the model ({"text", "type"}) into a list of exact
@@ -169,6 +192,8 @@ def _locate_entity(raw_entity, original_text: str) -> list[dict]:
 
     located = []
     for start, end in _keep_whole_words(original_text, _find_occurrences(original_text, value)):
+        if entity_type in SECRET_TYPES:
+            start, end = _widen_secret_span(original_text, start, end)
         located.append({
             "text": original_text[start:end],
             "type": entity_type,

@@ -3,38 +3,38 @@
     "evaluation_title": "TrustBoost Phase 3 & Pipeline Comprehensive Detection Evaluation",
     "model": "gemma3:4b (local Ollama)",
     "total_samples": 43,
-    "timestamp": "2026-11-25 19:50:49 UTC",
+    "timestamp": "2026-11-25 20:19:31 UTC",
     "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])"
   },
   "summary": {
     "total_samples": 43,
     "total_gold_entities": 77,
-    "total_pred_entities": 66,
-    "strict_true_positives": 55,
+    "total_pred_entities": 63,
+    "strict_true_positives": 52,
     "strict_false_positives": 11,
-    "strict_false_negatives": 22,
+    "strict_false_negatives": 25,
     "micro_metrics": {
-      "precision": 0.8333,
-      "recall": 0.7143,
-      "f1": 0.7692
+      "precision": 0.8254,
+      "recall": 0.6753,
+      "f1": 0.7429
     },
     "macro_metrics": {
-      "precision": 0.5753,
-      "recall": 0.6251,
-      "f1": 0.567
+      "precision": 0.5582,
+      "recall": 0.5437,
+      "f1": 0.5475
     },
     "privacy_metrics": {
-      "char_recall": 0.872,
-      "entities_with_any_leak": 11,
-      "entity_any_leak_rate": 0.1429,
-      "over_masking_rate": 0.0435,
+      "char_recall": 0.8144,
+      "entities_with_any_leak": 14,
+      "entity_any_leak_rate": 0.1818,
+      "over_masking_rate": 0.0772,
       "total_gold_entities": 77
     },
     "latency_stats": {
-      "mean_seconds": 18.544,
-      "min_seconds": 7.697,
-      "max_seconds": 68.79,
-      "total_inference_time_seconds": 797.37
+      "mean_seconds": 24.554,
+      "min_seconds": 7.303,
+      "max_seconds": 292.426,
+      "total_inference_time_seconds": 1055.84
     }
   },
   "category_metrics": {
@@ -49,14 +49,14 @@
       "f1": 0.75
     },
     "ACCESS_TOKEN": {
-      "tp": 1,
+      "tp": 2,
       "fp": 0,
-      "fn": 1,
+      "fn": 0,
       "gold_count": 2,
-      "pred_count": 1,
+      "pred_count": 2,
       "precision": 1.0,
-      "recall": 0.5,
-      "f1": 0.6667
+      "recall": 1.0,
+      "f1": 1.0
     },
     "ADDRESS": {
       "tp": 1,
@@ -79,14 +79,14 @@
       "f1": 0.0
     },
     "BANK_ACCOUNT": {
-      "tp": 3,
-      "fp": 0,
-      "fn": 0,
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
       "gold_count": 3,
       "pred_count": 3,
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0
+      "precision": 0.6667,
+      "recall": 0.6667,
+      "f1": 0.6667
     },
     "CONFIDENTIAL_PROJECT": {
       "tp": 0,
@@ -96,16 +96,6 @@
       "pred_count": 0,
       "precision": 0.0,
       "recall": 0.0,
-      "f1": 0.0
-    },
-    "CREDENTIAL": {
-      "tp": 0,
-      "fp": 1,
-      "fn": 0,
-      "gold_count": 0,
-      "pred_count": 1,
-      "precision": 0.0,
-      "recall": 1.0,
       "f1": 0.0
     },
     "CREDIT_CARD": {
@@ -119,14 +109,14 @@
       "f1": 1.0
     },
     "DATABASE_CREDENTIAL": {
-      "tp": 1,
+      "tp": 0,
       "fp": 1,
-      "fn": 0,
+      "fn": 1,
       "gold_count": 1,
-      "pred_count": 2,
-      "precision": 0.5,
-      "recall": 1.0,
-      "f1": 0.6667
+      "pred_count": 1,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
     },
     "DATE_OF_BIRTH": {
       "tp": 2,
@@ -179,14 +169,14 @@
       "f1": 0.0
     },
     "IP_ADDRESS": {
-      "tp": 4,
+      "tp": 3,
       "fp": 0,
-      "fn": 0,
+      "fn": 1,
       "gold_count": 4,
-      "pred_count": 4,
+      "pred_count": 3,
       "precision": 1.0,
-      "recall": 1.0,
-      "f1": 1.0
+      "recall": 0.75,
+      "f1": 0.8571
     },
     "LOCATION": {
       "tp": 0,
@@ -209,14 +199,14 @@
       "f1": 1.0
     },
     "PASSWORD": {
-      "tp": 3,
+      "tp": 2,
       "fp": 2,
-      "fn": 1,
+      "fn": 2,
       "gold_count": 4,
-      "pred_count": 5,
-      "precision": 0.6,
-      "recall": 0.75,
-      "f1": 0.6667
+      "pred_count": 4,
+      "precision": 0.5,
+      "recall": 0.5,
+      "f1": 0.5
     },
     "PERSON": {
       "tp": 13,
@@ -260,10 +250,10 @@
     }
   },
   "error_distribution": {
-    "missed_pii": 14,
-    "boundary_error": 4,
+    "missed_pii": 17,
+    "boundary_error": 5,
     "spurious_detection": 3,
-    "category_mismatch": 4
+    "category_mismatch": 3
   },
   "leaked_entities": [
     {
@@ -302,11 +292,25 @@
       "total_chars": 18
     },
     {
+      "sample_id": "sample_036",
+      "type": "DATABASE_CREDENTIAL",
+      "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+      "unmasked_chars": 53,
+      "total_chars": 53
+    },
+    {
       "sample_id": "sample_041",
       "type": "PASSWORD",
       "text": "MongoRootPassword#99",
       "unmasked_chars": 20,
       "total_chars": 20
+    },
+    {
+      "sample_id": "sample_068",
+      "type": "PASSWORD",
+      "text": "Winter2026#",
+      "unmasked_chars": 11,
+      "total_chars": 11
     },
     {
       "sample_id": "sample_076",
@@ -342,6 +346,13 @@
       "text": "daniel.wu@polaris.example.org",
       "unmasked_chars": 29,
       "total_chars": 29
+    },
+    {
+      "sample_id": "sample_093",
+      "type": "IP_ADDRESS",
+      "text": "192.168.10.88",
+      "unmasked_chars": 13,
+      "total_chars": 13
     }
   ]
 }

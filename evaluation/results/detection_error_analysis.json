@@ -1,10 +1,10 @@
 {
-  "total_errors": 25,
+  "total_errors": 28,
   "error_distribution": {
-    "missed_pii": 14,
-    "boundary_error": 4,
+    "missed_pii": 17,
+    "boundary_error": 5,
     "spurious_detection": 3,
-    "category_mismatch": 4
+    "category_mismatch": 3
   },
   "detailed_errors": [
     {
@@ -126,21 +126,16 @@
       "sample_id": "sample_028"
     },
     {
-      "error_type": "category_mismatch",
-      "description": "Entity detected with incorrect category (predicted: CREDENTIAL, expected: ACCESS_TOKEN)",
-      "predicted": {
-        "text": "Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
-        "type": "CREDENTIAL",
-        "start": 35,
-        "end": 94
-      },
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
       "expected": {
-        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID",
-        "type": "ACCESS_TOKEN",
-        "start": 48,
-        "end": 93
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81
       },
-      "sample_id": "sample_033"
+      "sample_id": "sample_036"
     },
     {
       "error_type": "category_mismatch",
@@ -185,12 +180,29 @@
     },
     {
       "error_type": "boundary_error",
-      "description": "Entity detected with boundary difference: [22:52] vs [22:44]",
+      "description": "Entity detected with boundary difference: [26:53] vs [39:53]",
       "predicted": {
-        "text": "Flat 204, Shanti Nagar, Mumbai",
+        "text": "HDFC account 50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 26,
+        "end": 53
+      },
+      "expected": {
+        "text": "50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 39,
+        "end": 53
+      },
+      "sample_id": "sample_058"
+    },
+    {
+      "error_type": "boundary_error",
+      "description": "Entity detected with boundary difference: [0:57] vs [22:44]",
+      "predicted": {
+        "text": "Mera delivery address Flat 204, Shanti Nagar, Mumbai hai.",
         "type": "ADDRESS",
-        "start": 22,
-        "end": 52
+        "start": 0,
+        "end": 57
       },
       "expected": {
         "text": "Flat 204, Shanti Nagar",
@@ -225,12 +237,24 @@
       "sample_id": "sample_068"
     },
     {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Winter2026#",
+        "type": "PASSWORD",
+        "start": 14,
+        "end": 25
+      },
+      "sample_id": "sample_068"
+    },
+    {
       "error_type": "category_mismatch",
       "description": "Entity detected with incorrect category (predicted: PASSWORD, expected: SECRET)",
       "predicted": {
-        "text": "sec_tok_991823746a",
+        "text": "AUTH_SECRET=sec_tok_991823746a",
         "type": "PASSWORD",
-        "start": 26,
+        "start": 14,
         "end": 44
       },
       "expected": {
@@ -346,6 +370,18 @@
         "end": 153
       },
       "sample_id": "sample_088"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "192.168.10.88",
+        "type": "IP_ADDRESS",
+        "start": 60,
+        "end": 73
+      },
+      "sample_id": "sample_093"
     }
   ]
 }
