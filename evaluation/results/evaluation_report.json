@@ -3,38 +3,38 @@
     "evaluation_title": "TrustBoost Phase 3 & Pipeline Comprehensive Detection Evaluation",
     "model": "gemma3:4b (local Ollama)",
     "total_samples": 43,
-    "timestamp": "2026-11-25 18:58:38 UTC",
+    "timestamp": "2026-11-25 19:19:45 UTC",
     "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])"
   },
   "summary": {
     "total_samples": 43,
     "total_gold_entities": 77,
-    "total_pred_entities": 68,
+    "total_pred_entities": 69,
     "strict_true_positives": 53,
-    "strict_false_positives": 15,
+    "strict_false_positives": 16,
     "strict_false_negatives": 24,
     "micro_metrics": {
-      "precision": 0.7794,
+      "precision": 0.7681,
       "recall": 0.6883,
-      "f1": 0.731
+      "f1": 0.726
     },
     "macro_metrics": {
-      "precision": 0.6336,
-      "recall": 0.6032,
-      "f1": 0.6013
+      "precision": 0.6048,
+      "recall": 0.6212,
+      "f1": 0.5739
     },
     "privacy_metrics": {
-      "char_recall": 0.8877,
+      "char_recall": 0.8915,
       "entities_with_any_leak": 11,
       "entity_any_leak_rate": 0.1429,
-      "over_masking_rate": 0.0639,
+      "over_masking_rate": 0.0637,
       "total_gold_entities": 77
     },
     "latency_stats": {
-      "mean_seconds": 20.724,
-      "min_seconds": 5.236,
-      "max_seconds": 43.767,
-      "total_inference_time_seconds": 891.15
+      "mean_seconds": 22.658,
+      "min_seconds": 6.344,
+      "max_seconds": 47.65,
+      "total_inference_time_seconds": 974.28
     }
   },
   "category_metrics": {
@@ -238,6 +238,16 @@
       "recall": 1.0,
       "f1": 1.0
     },
+    "SENSITIVE": {
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 0,
+      "pred_count": 1,
+      "precision": 0.0,
+      "recall": 1.0,
+      "f1": 0.0
+    },
     "SERVER_IDENTIFIER": {
       "tp": 5,
       "fp": 0,
@@ -252,7 +262,7 @@
   "error_distribution": {
     "boundary_error": 11,
     "missed_pii": 11,
-    "category_mismatch": 2,
+    "category_mismatch": 3,
     "spurious_detection": 2
   },
   "leaked_entities": [
@@ -281,7 +291,7 @@
       "sample_id": "sample_036",
       "type": "DATABASE_CREDENTIAL",
       "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
-      "unmasked_chars": 41,
+      "unmasked_chars": 36,
       "total_chars": 53
     },
     {

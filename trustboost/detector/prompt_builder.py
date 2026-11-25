@@ -56,6 +56,10 @@ VALID_ENTITY_TYPES = {
     "INTERNAL_ORGANIZATION_INFORMATION",
 }
 
+# Extra label used when the model finds something sensitive but gives it a label
+# we don't recognise. We still mask it instead of throwing it away.
+FALLBACK_ENTITY_TYPE = "SENSITIVE"
+
 
 def build_detection_prompt(text: str) -> str:
     """

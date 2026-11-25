@@ -1,9 +1,9 @@
 {
-  "total_errors": 26,
+  "total_errors": 27,
   "error_distribution": {
     "boundary_error": 11,
     "missed_pii": 11,
-    "category_mismatch": 2,
+    "category_mismatch": 3,
     "spurious_detection": 2
   },
   "detailed_errors": [
@@ -144,6 +144,23 @@
         "end": 93
       },
       "sample_id": "sample_033"
+    },
+    {
+      "error_type": "category_mismatch",
+      "description": "Entity detected with incorrect category (predicted: SENSITIVE, expected: DATABASE_CREDENTIAL)",
+      "predicted": {
+        "text": "admin",
+        "type": "SENSITIVE",
+        "start": 41,
+        "end": 46
+      },
+      "expected": {
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81
+      },
+      "sample_id": "sample_036"
     },
     {
       "error_type": "category_mismatch",

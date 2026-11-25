@@ -28,7 +28,46 @@ WHAT THIS FILE DOES NOT DO:
 import json
 
 from trustboost.agent.ollama_client import generate_response
-from trustboost.detector.prompt_builder import VALID_ENTITY_TYPES, build_detection_prompt
+from trustboost.detector.prompt_builder import (
+    FALLBACK_ENTITY_TYPE,
+    VALID_ENTITY_TYPES,
+    build_detection_prompt,
+)
+
+TYPE_ALIASES = {
+    "NAME": "PERSON", "FULL_NAME": "PERSON", "PERSON_NAME": "PERSON",
+    "EMAIL_ADDRESS": "EMAIL", "E_MAIL": "EMAIL",
+    "PHONE_NUMBER": "PHONE", "MOBILE": "PHONE", "MOBILE_NUMBER": "PHONE", "TELEPHONE": "PHONE",
+    "AADHAR": "AADHAAR", "AADHAAR_NUMBER": "AADHAAR", "UIDAI": "AADHAAR",
+    "PAN_CARD": "PAN", "PAN_NUMBER": "PAN",
+    "CARD_NUMBER": "CREDIT_CARD", "DEBIT_CARD": "CREDIT_CARD", "CREDITCARD": "CREDIT_CARD",
+    "ACCOUNT_NUMBER": "BANK_ACCOUNT", "BANK_ACCOUNT_NUMBER": "BANK_ACCOUNT",
+    "IFSC_CODE": "IFSC",
+    "IP": "IP_ADDRESS", "IPV4": "IP_ADDRESS", "IPV6": "IP_ADDRESS",
+    "DOB": "DATE_OF_BIRTH", "BIRTH_DATE": "DATE_OF_BIRTH", "BIRTHDATE": "DATE_OF_BIRTH",
+    "TOKEN": "ACCESS_TOKEN", "AUTH_TOKEN": "ACCESS_TOKEN", "BEARER_TOKEN": "ACCESS_TOKEN",
+    "APIKEY": "API_KEY", "KEY": "API_KEY",
+    "URL": "INTERNAL_URL", "LINK": "INTERNAL_URL",
+    "CITY": "LOCATION", "PLACE": "LOCATION",
+    "PROJECT": "CONFIDENTIAL_PROJECT",
+    "CONNECTION_STRING": "DATABASE_CREDENTIAL", "DB_CREDENTIAL": "DATABASE_CREDENTIAL",
+    "HOSTNAME": "SERVER_IDENTIFIER", "SERVER": "SERVER_IDENTIFIER",
+}
+
+
+def _normalise_type(raw_type) -> str:
+    """
+    Turns whatever label the model used into one of our categories.
+      "aadhaar" -> "AADHAAR", "NAME" -> "PERSON", "phone number" -> "PHONE"
+    If nothing matches, returns a safe catch-all type so the text is STILL masked.
+    """
+    t = str(raw_type or "").strip().upper().replace(" ", "_").replace("-", "_")
+    t = TYPE_ALIASES.get(t, t)
+    if t in VALID_ENTITY_TYPES:
+        return t
+    if any(word in t for word in ("PASS", "KEY", "TOKEN", "SECRET", "CRED")):
+        return "CREDENTIAL"
+    return FALLBACK_ENTITY_TYPE
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -144,7 +183,7 @@ def _attempt_offset_recovery(entity: dict, original_text: str) -> dict | None:
 # ─────────────────────────────────────────────────────────────────────────────
 # INTERNAL FUNCTION 3: _validate_entity
 # ─────────────────────────────────────────────────────────────────────────────
-def _validate_entity(entity: any, original_text: str) -> dict | None:
+def _validate_entity(entity: object, original_text: str) -> dict | None:
     """
     Validates a single entity dict returned by the LLM.
 
@@ -175,15 +214,13 @@ def _validate_entity(entity: any, original_text: str) -> dict | None:
         return None
 
     # Check 2: required fields must exist
-    required_fields = {"text", "type", "start", "end", "reason"}
-    if not required_fields.issubset(entity.keys()):
-        # Try recovery even with missing offset fields if text and type exist
-        if "text" in entity and "type" in entity:
-            entity.setdefault("reason", "")
-            entity.setdefault("start", -1)
-            entity.setdefault("end", -1)
-        else:
-            return None
+    entity = dict(entity)  # work on a copy, never change the caller's dict
+    if "text" not in entity:
+        return None
+    entity.setdefault("type", FALLBACK_ENTITY_TYPE)
+    entity.setdefault("reason", "")
+    entity.setdefault("start", -1)
+    entity.setdefault("end", -1)
 
     # Check 3: text must be a non-empty string
     entity_text = entity.get("text", "")
@@ -191,9 +228,9 @@ def _validate_entity(entity: any, original_text: str) -> dict | None:
         return None
 
     # Check 4: type must be a valid category
-    entity_type = entity.get("type", "")
-    if entity_type not in VALID_ENTITY_TYPES:
-        return None
+    # Never throw a detection away because of its label: fix or fall back.
+    entity_type = _normalise_type(entity.get("type"))
+    entity["type"] = entity_type
 
     # Check 5: start and end must be integers (LLMs sometimes return strings)
     try:
