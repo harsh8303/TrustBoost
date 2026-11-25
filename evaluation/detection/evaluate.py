@@ -10,6 +10,7 @@ import sys
 import json
 import time
 import argparse
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -21,12 +22,48 @@ if str(PROJECT_ROOT) not in sys.path:
 from trustboost.detector.pii_detector import detect_pii
 from evaluation.detection.metrics import (
     compute_comprehensive_metrics,
+    compute_privacy_metrics,
     export_category_metrics_csv,
 )
 
 RESULTS_DIR = PROJECT_ROOT / "evaluation" / "results"
 DATASET_PATH = PROJECT_ROOT / "evaluation" / "dataset" / "dataset.json"
 CACHE_PATH = RESULTS_DIR / "cached_predictions.json"
+
+
+def _code_fingerprint() -> str:
+    """
+    A short code that changes whenever the detector code, prompt, model or
+    settings change. Cached predictions are only reused if this matches, so
+    you can never accidentally report results from an older version.
+    """
+    h = hashlib.sha256()
+    files = sorted((PROJECT_ROOT / "trustboost" / "detector").glob("*.py"))
+    files.append(PROJECT_ROOT / "trustboost" / "agent" / "ollama_client.py")
+    for path in files:
+        h.update(path.read_bytes())
+    h.update(os.getenv("OLLAMA_MODEL", "gemma3:4b").encode())
+    h.update(os.getenv("TRUSTBOOST_PATTERNS", "1").encode())
+    return h.hexdigest()[:16]
+
+
+CODE_FINGERPRINT = _code_fingerprint()
+
+
+def _cache_key(text: str) -> str:
+    return hashlib.sha256(f"{CODE_FINGERPRINT}|{text}".encode("utf-8")).hexdigest()
+
+
+def in_split(sample_id: str, split: str) -> bool:
+    """
+    dev  = 40% of samples: use these while improving the prompt/code.
+    test = the other 60%: only look at these for the FINAL numbers you report.
+    """
+    if split == "all":
+        return True
+    number = int(sample_id.split("_")[1])
+    is_dev = number % 5 in (1, 3)
+    return is_dev if split == "dev" else not is_dev
 
 
 def load_dataset(dataset_path: Path) -> List[Dict[str, Any]]:
@@ -36,9 +73,10 @@ def load_dataset(dataset_path: Path) -> List[Dict[str, Any]]:
         return json.load(f)
 
 
-def run_evaluation(limit: int = None, use_cache: bool = True) -> Dict[str, Any]:
+def run_evaluation(limit: int = None, use_cache: bool = True, split: str = "all") -> Dict[str, Any]:
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    samples = load_dataset(DATASET_PATH)
+    samples = [s for s in load_dataset(DATASET_PATH) if in_split(s["id"], split)]
+    print(f"Split: {split} | Code fingerprint: {CODE_FINGERPRINT}")
 
     if limit is not None and limit > 0:
         samples = samples[:limit]
@@ -63,31 +101,34 @@ def run_evaluation(limit: int = None, use_cache: bool = True) -> Dict[str, Any]:
         s_id = sample["id"]
         text = sample["text"]
 
-        if s_id in cached_preds:
-            pred_entities = cached_preds[s_id].get("predicted_entities", [])
-            latency = cached_preds[s_id].get("latency_seconds", 0.0)
+        key = _cache_key(text)
+        if key in cached_preds:
+            pred_entities = cached_preds[key].get("predicted_entities", [])
+            latency = cached_preds[key].get("latency_seconds", 0.0)
             status = "cached"
         else:
             t0 = time.perf_counter()
+            succeeded = False
             try:
                 res = detect_pii(text)
                 latency = round(time.perf_counter() - t0, 3)
-                if res.get("success", False):
-                    pred_entities = res.get("entities", [])
-                else:
-                    pred_entities = []
-                status = f"{latency:.2f}s"
+                succeeded = res.get("success", False)
+                pred_entities = res.get("entities", []) if succeeded else []
+                status = f"{latency:.2f}s" if succeeded else f"FAILED ({latency:.2f}s)"
             except Exception as e:
                 latency = round(time.perf_counter() - t0, 3)
                 print(f"Error on {s_id}: {e}")
                 pred_entities = []
                 status = f"err ({latency:.2f}s)"
 
-            cached_preds[s_id] = {
-                "predicted_entities": pred_entities,
-                "latency_seconds": latency,
-                "timestamp": time.time()
-            }
+            # Only cache successful runs, so a failure is retried next time.
+            if succeeded:
+                cached_preds[key] = {
+                    "sample_id": s_id,
+                    "predicted_entities": pred_entities,
+                    "latency_seconds": latency,
+                    "timestamp": time.time()
+                }
             # Save incremental cache every 5 samples
             if idx % 5 == 0 or idx == len(samples):
                 with open(CACHE_PATH, "w", encoding="utf-8") as f:
@@ -107,6 +148,8 @@ def run_evaluation(limit: int = None, use_cache: bool = True) -> Dict[str, Any]:
 
     print("\nComputing comprehensive metrics & error analysis...")
     metrics_result = compute_comprehensive_metrics(evaluated_samples)
+    privacy = compute_privacy_metrics(evaluated_samples)
+    metrics_result["summary"]["privacy_metrics"] = {k: v for k, v in privacy.items() if k != "leaked_entities"}
 
     # Add latency statistics
     if inference_times:
@@ -128,7 +171,8 @@ def run_evaluation(limit: int = None, use_cache: bool = True) -> Dict[str, Any]:
         },
         "summary": metrics_result["summary"],
         "category_metrics": metrics_result["category_metrics"],
-        "error_distribution": metrics_result["error_distribution"]
+        "error_distribution": metrics_result["error_distribution"],
+        "leaked_entities": privacy["leaked_entities"],
     }
     report_path = RESULTS_DIR / "evaluation_report.json"
     with open(report_path, "w", encoding="utf-8") as f:
@@ -166,6 +210,11 @@ def run_evaluation(limit: int = None, use_cache: bool = True) -> Dict[str, Any]:
     print(f"Macro F1-Score:  {metrics_result['summary']['macro_metrics']['f1']}")
     print(f"Error Distribution: {metrics_result['error_distribution']}")
 
+    print("\n=== PRIVACY (the numbers that matter most) ===")
+    print(f"PII characters masked (char recall): {privacy['char_recall']:.2%}")
+    print(f"Entities with ANY character leaked:  {privacy['entities_with_any_leak']} / {privacy['total_gold_entities']}")
+    print(f"Over-masking rate:                   {privacy['over_masking_rate']:.2%}")
+
     return eval_report
 
 
@@ -173,6 +222,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate TrustBoost PII detection.")
     parser.add_argument("--limit", type=int, default=None, help="Limit number of samples to evaluate")
     parser.add_argument("--no-cache", action="store_true", help="Do not use cached predictions")
+    parser.add_argument("--split", choices=["all", "dev", "test"], default="all",
+                        help="dev = for improving; test = for final reported numbers")
     args = parser.parse_args()
 
-    run_evaluation(limit=args.limit, use_cache=not args.no_cache)
+    run_evaluation(limit=args.limit, use_cache=not args.no_cache, split=args.split)
