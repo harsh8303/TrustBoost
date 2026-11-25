@@ -1,10 +1,10 @@
 {
-  "total_errors": 27,
+  "total_errors": 26,
   "error_distribution": {
     "boundary_error": 11,
-    "missed_pii": 10,
-    "category_mismatch": 3,
-    "spurious_detection": 3
+    "missed_pii": 11,
+    "category_mismatch": 2,
+    "spurious_detection": 2
   },
   "detailed_errors": [
     {
@@ -112,18 +112,6 @@
       "sample_id": "sample_023"
     },
     {
-      "error_type": "spurious_detection",
-      "description": "Model detected entity where no gold entity exists",
-      "predicted": {
-        "text": "Temporary database password",
-        "type": "PASSWORD",
-        "start": 0,
-        "end": 27
-      },
-      "expected": null,
-      "sample_id": "sample_031"
-    },
-    {
       "error_type": "boundary_error",
       "description": "Entity detected with boundary difference: [31:50] vs [31:51]",
       "predicted": {
@@ -161,23 +149,6 @@
       "error_type": "category_mismatch",
       "description": "Entity detected with incorrect category (predicted: PASSWORD, expected: DATABASE_CREDENTIAL)",
       "predicted": {
-        "text": "admin",
-        "type": "PASSWORD",
-        "start": 41,
-        "end": 46
-      },
-      "expected": {
-        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
-        "type": "DATABASE_CREDENTIAL",
-        "start": 28,
-        "end": 81
-      },
-      "sample_id": "sample_036"
-    },
-    {
-      "error_type": "category_mismatch",
-      "description": "Entity detected with incorrect category (predicted: PASSWORD, expected: DATABASE_CREDENTIAL)",
-      "predicted": {
         "text": "P@ssw0rd2026",
         "type": "PASSWORD",
         "start": 47,
@@ -196,7 +167,7 @@
       "description": "Model detected entity where no gold entity exists",
       "predicted": {
         "text": "db_master",
-        "type": "CREDENTIAL",
+        "type": "DATABASE_CREDENTIAL",
         "start": 14,
         "end": 23
       },
@@ -289,6 +260,18 @@
         "end": 58
       },
       "sample_id": "sample_078"
+    },
+    {
+      "error_type": "missed_pii",
+      "description": "Gold entity completely missed by the detector",
+      "predicted": null,
+      "expected": {
+        "text": "Ahmedabad",
+        "type": "LOCATION",
+        "start": 118,
+        "end": 127
+      },
+      "sample_id": "sample_081"
     },
     {
       "error_type": "boundary_error",

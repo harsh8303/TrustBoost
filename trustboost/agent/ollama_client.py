@@ -44,6 +44,8 @@ load_dotenv()
 
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "gemma3:4b")
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+# How long (seconds) to wait for the model before giving up, so the app never hangs forever.
+OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "180"))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -93,7 +95,7 @@ def create_client() -> ollama.Client:
     RETURNS:
         An ollama.Client instance ready to send requests.
     """
-    return ollama.Client(host=OLLAMA_HOST)
+    return ollama.Client(host=OLLAMA_HOST, timeout=OLLAMA_TIMEOUT)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -266,72 +268,87 @@ def get_full_status() -> dict:
 # ─────────────────────────────────────────────────────────────────────────────
 # FUNCTION 6: generate_response
 # ─────────────────────────────────────────────────────────────────────────────
-def generate_response(prompt: str) -> dict:
+def generate_response(
+    prompt: str,
+    system: str | None = None,
+    json_schema: dict | None = None,
+) -> dict:
     """
-    Sends a text prompt to the configured Ollama model and returns the response.
-
-    WHY THIS FUNCTION EXISTS:
-        This is the core communication function — the one that actually talks
-        to Gemma 3 4B. In Phase 3, the PII detector will use this function
-        to send detection prompts to the model.
-
-        For now (Phase 2), we use it to verify the connection is working
-        end-to-end by sending a simple test prompt.
-
-    HOW IT WORKS:
-        We use the Ollama Python SDK's chat() method which follows the
-        OpenAI-style chat message format:
-          - "role": "user" means this message comes from the user.
-          - "content": the actual prompt text.
-
-        The model responds with a message object. We extract the text from:
-          response.message.content
+    Sends a prompt to the configured Ollama model and returns the response.
 
     PARAMETERS:
-        prompt (str): The text to send to the model.
+        prompt (str): The user message to send.
+        system (str | None): Optional fixed instructions sent as a separate
+            "system" message (keeps our rules apart from the user's data).
+        json_schema (dict | None): Optional JSON schema. When given, Ollama
+            forces the model to reply with JSON matching this shape.
+
+    SETTINGS USED (and why):
+        temperature 0 -> same input gives the same answer every time
+        seed 42       -> extra guarantee of repeatable results
+        num_ctx       -> memory window big enough for prompt + text + answer
+        num_predict   -> upper limit on answer length
 
     RETURNS:
-        dict with keys:
-            "success"   → True if response was received, False on error
-            "response"  → The model's text response (empty string on error)
-            "message"   → Status message (error details if failed)
+        dict with keys "success", "response", "message", "done_reason"
     """
     if not prompt or not prompt.strip():
         return {
             "success": False,
             "response": "",
             "message": "❌ Prompt cannot be empty.",
+            "done_reason": None,
         }
 
     try:
         client = create_client()
 
-        # client.chat() sends a conversation to the model.
-        # We send a single user message (a list with one item).
-        # The model replies with a ChatResponse object.
-        response = client.chat(
-            model=OLLAMA_MODEL,
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt.strip(),
-                }
-            ],
-        )
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt.strip()})
 
-        # Extract the text content from the response object
+        # Roughly 3 characters per token, plus room for the model's answer.
+        total_chars = len(prompt) + len(system or "")
+        num_ctx = min(16384, max(4096, total_chars // 3 + 2048))
+
+        chat_kwargs = {
+            "model": OLLAMA_MODEL,
+            "messages": messages,
+            "options": {
+                "temperature": 0,
+                "seed": 42,
+                "num_ctx": num_ctx,
+                "num_predict": 2048,
+            },
+        }
+        if json_schema is not None:
+            chat_kwargs["format"] = json_schema
+
+        response = client.chat(**chat_kwargs)
         response_text = response.message.content
+        done_reason = getattr(response, "done_reason", None)
+
+        # "length" means the model was cut off before finishing its answer.
+        if done_reason == "length":
+            return {
+                "success": False,
+                "response": response_text,
+                "message": "❌ The model's answer was cut off because it was too long.",
+                "done_reason": done_reason,
+            }
 
         return {
             "success": True,
             "response": response_text,
             "message": "✅ Response received successfully.",
+            "done_reason": done_reason,
         }
 
     except Exception as e:
-        error_text = str(e)
         return {
             "success": False,
             "response": "",
-            "message": f"❌ Failed to generate response: {error_text}",
+            "message": f"❌ Failed to generate response: {str(e)}",
+            "done_reason": None,
         }

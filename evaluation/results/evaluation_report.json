@@ -3,38 +3,38 @@
     "evaluation_title": "TrustBoost Phase 3 & Pipeline Comprehensive Detection Evaluation",
     "model": "gemma3:4b (local Ollama)",
     "total_samples": 43,
-    "timestamp": "2026-11-25 17:16:34 UTC",
+    "timestamp": "2026-11-25 18:58:38 UTC",
     "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])"
   },
   "summary": {
     "total_samples": 43,
     "total_gold_entities": 77,
-    "total_pred_entities": 71,
-    "strict_true_positives": 54,
-    "strict_false_positives": 17,
-    "strict_false_negatives": 23,
+    "total_pred_entities": 68,
+    "strict_true_positives": 53,
+    "strict_false_positives": 15,
+    "strict_false_negatives": 24,
     "micro_metrics": {
-      "precision": 0.7606,
-      "recall": 0.7013,
-      "f1": 0.7297
+      "precision": 0.7794,
+      "recall": 0.6883,
+      "f1": 0.731
     },
     "macro_metrics": {
-      "precision": 0.5996,
-      "recall": 0.6288,
-      "f1": 0.58
+      "precision": 0.6336,
+      "recall": 0.6032,
+      "f1": 0.6013
     },
     "privacy_metrics": {
-      "char_recall": 0.8982,
-      "entities_with_any_leak": 10,
-      "entity_any_leak_rate": 0.1299,
-      "over_masking_rate": 0.0826,
+      "char_recall": 0.8877,
+      "entities_with_any_leak": 11,
+      "entity_any_leak_rate": 0.1429,
+      "over_masking_rate": 0.0639,
       "total_gold_entities": 77
     },
     "latency_stats": {
-      "mean_seconds": 107.318,
-      "min_seconds": 5.111,
-      "max_seconds": 3634.074,
-      "total_inference_time_seconds": 4614.69
+      "mean_seconds": 20.724,
+      "min_seconds": 5.236,
+      "max_seconds": 43.767,
+      "total_inference_time_seconds": 891.15
     }
   },
   "category_metrics": {
@@ -98,16 +98,6 @@
       "recall": 0.0,
       "f1": 0.0
     },
-    "CREDENTIAL": {
-      "tp": 0,
-      "fp": 1,
-      "fn": 0,
-      "gold_count": 0,
-      "pred_count": 1,
-      "precision": 0.0,
-      "recall": 1.0,
-      "f1": 0.0
-    },
     "CREDIT_CARD": {
       "tp": 2,
       "fp": 0,
@@ -120,10 +110,10 @@
     },
     "DATABASE_CREDENTIAL": {
       "tp": 0,
-      "fp": 0,
+      "fp": 1,
       "fn": 1,
       "gold_count": 1,
-      "pred_count": 0,
+      "pred_count": 1,
       "precision": 0.0,
       "recall": 0.0,
       "f1": 0.0
@@ -189,14 +179,14 @@
       "f1": 1.0
     },
     "LOCATION": {
-      "tp": 2,
+      "tp": 1,
       "fp": 0,
-      "fn": 4,
+      "fn": 5,
       "gold_count": 6,
-      "pred_count": 2,
+      "pred_count": 1,
       "precision": 1.0,
-      "recall": 0.3333,
-      "f1": 0.5
+      "recall": 0.1667,
+      "f1": 0.2857
     },
     "PAN": {
       "tp": 1,
@@ -210,13 +200,13 @@
     },
     "PASSWORD": {
       "tp": 2,
-      "fp": 5,
+      "fp": 3,
       "fn": 2,
       "gold_count": 4,
-      "pred_count": 7,
-      "precision": 0.2857,
+      "pred_count": 5,
+      "precision": 0.4,
       "recall": 0.5,
-      "f1": 0.3636
+      "f1": 0.4444
     },
     "PERSON": {
       "tp": 12,
@@ -261,9 +251,9 @@
   },
   "error_distribution": {
     "boundary_error": 11,
-    "missed_pii": 10,
-    "category_mismatch": 3,
-    "spurious_detection": 3
+    "missed_pii": 11,
+    "category_mismatch": 2,
+    "spurious_detection": 2
   },
   "leaked_entities": [
     {
@@ -291,7 +281,7 @@
       "sample_id": "sample_036",
       "type": "DATABASE_CREDENTIAL",
       "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
-      "unmasked_chars": 36,
+      "unmasked_chars": 41,
       "total_chars": 53
     },
     {
@@ -307,6 +297,13 @@
       "text": "7766 5544 3322",
       "unmasked_chars": 14,
       "total_chars": 14
+    },
+    {
+      "sample_id": "sample_081",
+      "type": "LOCATION",
+      "text": "Ahmedabad",
+      "unmasked_chars": 9,
+      "total_chars": 9
     },
     {
       "sample_id": "sample_088",
