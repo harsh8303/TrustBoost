@@ -31,8 +31,27 @@ from trustboost.agent.ollama_client import generate_response
 from trustboost.detector.prompt_builder import (
     FALLBACK_ENTITY_TYPE,
     VALID_ENTITY_TYPES,
-    build_detection_prompt,
+    build_detection_messages,
 )
+
+DETECTION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "entities": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "text": {"type": "string"},
+                    "type": {"type": "string"},
+                    "reason": {"type": "string"},
+                },
+                "required": ["text", "type"],
+            },
+        }
+    },
+    "required": ["entities"],
+}
 
 TYPE_ALIASES = {
     "NAME": "PERSON", "FULL_NAME": "PERSON", "PERSON_NAME": "PERSON",
@@ -68,6 +87,134 @@ def _normalise_type(raw_type) -> str:
     if any(word in t for word in ("PASS", "KEY", "TOKEN", "SECRET", "CRED")):
         return "CREDENTIAL"
     return FALLBACK_ENTITY_TYPE
+
+
+def _find_all(haystack: str, needle: str) -> list[int]:
+    """Start index of every occurrence of `needle` in `haystack` (plain str.find)."""
+    positions = []
+    start = 0
+    while True:
+        pos = haystack.find(needle, start)
+        if pos == -1:
+            return positions
+        positions.append(pos)
+        start = pos + 1
+
+
+def _find_ignoring_whitespace(text: str, value: str) -> list[tuple[int, int]]:
+    """
+    Finds `value` even if the model changed the spacing or capitals,
+    e.g. model says "4111 1111" but the text has "4111  1111".
+    """
+    target = "".join(value.split()).lower()
+    if not target:
+        return []
+    squashed_chars, index_map = [], []
+    for i, ch in enumerate(text):
+        if not ch.isspace():
+            low = ch.lower()
+            squashed_chars.append(low if len(low) == 1 else ch)
+            index_map.append(i)
+    squashed = "".join(squashed_chars)
+    return [
+        (index_map[pos], index_map[pos + len(target) - 1] + 1)
+        for pos in _find_all(squashed, target)
+    ]
+
+
+def _find_occurrences(text: str, value: str) -> list[tuple[int, int]]:
+    """
+    Every (start, end) position where `value` appears in `text`.
+    Tries an exact match first, then ignoring capitals, then ignoring spacing.
+    """
+    spans = [(p, p + len(value)) for p in _find_all(text, value)]
+    if not spans:
+        lower_text = text.lower()
+        if len(lower_text) == len(text):
+            spans = [(p, p + len(value)) for p in _find_all(lower_text, value.lower())]
+    if not spans:
+        spans = _find_ignoring_whitespace(text, value)
+    return spans
+
+
+def _keep_whole_words(text: str, spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    """
+    Prefer matches that are whole words, so "Ram" does not mask the inside of
+    "Ramesh". If there are no whole-word matches, keep all matches (safer).
+    """
+    whole = [
+        (s, e) for s, e in spans
+        if (s == 0 or not text[s - 1].isalnum()) and (e == len(text) or not text[e].isalnum())
+    ]
+    return whole if whole else spans
+
+
+def _locate_entity(raw_entity, original_text: str) -> list[dict]:
+    """
+    Turns ONE detection from the model ({"text", "type"}) into a list of exact
+    entities, one for EVERY place that value appears in the original text.
+    Offsets are always computed here in Python, never trusted from the model.
+    """
+    if not isinstance(raw_entity, dict):
+        return []
+    value = raw_entity.get("text")
+    if not isinstance(value, str):
+        return []
+    value = value.strip()
+    if len(value) < 2:  # a single character is never meaningful PII
+        return []
+
+    entity_type = _normalise_type(raw_entity.get("type"))
+    reason = str(raw_entity.get("reason", "")).strip()
+
+    located = []
+    for start, end in _keep_whole_words(original_text, _find_occurrences(original_text, value)):
+        located.append({
+            "text": original_text[start:end],
+            "type": entity_type,
+            "start": start,
+            "end": end,
+            "reason": reason,
+        })
+    return located
+
+
+def _check_structure(parsed) -> str | None:
+    """Returns an error message if the parsed JSON has the wrong shape, else None."""
+    if parsed is None:
+        return ("the model returned a response that could not be parsed as JSON. "
+                "This may be a temporary model issue. Please try again.")
+    if not isinstance(parsed, dict):
+        return "expected a JSON object at the top level."
+    if "entities" not in parsed:
+        return "JSON response is missing the 'entities' key."
+    if not isinstance(parsed["entities"], list):
+        return "'entities' must be a JSON array."
+    return None
+
+
+def _ask_model(chunk: str, attempts: int = 2) -> dict:
+    """
+    Asks Gemma to find PII in one piece of text. Tries again once if the answer
+    is broken. Returns {"success", "entities" (raw model output), "message"}.
+    """
+    system_prompt, user_message = build_detection_messages(chunk)
+    last_error = "unknown error"
+    for _ in range(attempts):
+        result = generate_response(user_message, system=system_prompt, json_schema=DETECTION_SCHEMA)
+        if not result.get("success"):
+            last_error = result.get("message", "model call failed")
+            continue
+        raw = result.get("response", "")
+        if not raw or not raw.strip():
+            last_error = "the model returned an empty response."
+            continue
+        parsed = _extract_json_from_response(raw)
+        error = _check_structure(parsed)
+        if error is None:
+            return {"success": True, "entities": parsed["entities"], "message": "ok"}
+        last_error = error
+    return {"success": False, "entities": [], "message": last_error}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -318,75 +465,25 @@ def _remove_duplicates_and_overlaps(entities: list[dict]) -> list[dict]:
 # ─────────────────────────────────────────────────────────────────────────────
 def _parse_and_validate_response(raw_response: str, original_text: str) -> dict:
     """
-    Takes the raw LLM output string and runs the full validation pipeline:
-      1. Extract JSON from the response text.
-      2. Check the top-level structure (must have "entities" key).
-      3. Validate each entity individually.
-      4. Remove duplicates and overlapping entities.
-
-    PARAMETERS:
-        raw_response (str): The raw string returned by the LLM.
-        original_text (str): The original unmodified user text.
-
-    RETURNS:
-        dict:
-            "success" (bool)
-            "entities" (list of valid entity dicts)
-            "message" (str)
+    Takes one raw model answer and turns it into exact, validated entities:
+      1. Extract JSON from the answer and check its shape.
+      2. For each detection, find EVERY occurrence in the original text.
+      3. Remove duplicates and overlaps (longer span wins).
     """
-    # Step 1: Parse JSON
     parsed = _extract_json_from_response(raw_response)
-    if parsed is None:
-        return {
-            "success": False,
-            "entities": [],
-            "message": (
-                "PII detection failed: the model returned a response that could "
-                "not be parsed as JSON. This may be a temporary model issue. "
-                "Please try again."
-            ),
-        }
+    error = _check_structure(parsed)
+    if error is not None:
+        return {"success": False, "entities": [], "message": f"PII detection failed: {error}"}
 
-    # Step 2: Check top-level structure
-    if not isinstance(parsed, dict):
-        return {
-            "success": False,
-            "entities": [],
-            "message": "PII detection failed: expected a JSON object at the top level.",
-        }
-
-    if "entities" not in parsed:
-        return {
-            "success": False,
-            "entities": [],
-            "message": "PII detection failed: JSON response is missing the 'entities' key.",
-        }
-
-    if not isinstance(parsed["entities"], list):
-        return {
-            "success": False,
-            "entities": [],
-            "message": "PII detection failed: 'entities' must be a JSON array.",
-        }
-
-    # Step 3: Validate each entity
-    valid_entities = []
+    located = []
     for raw_entity in parsed["entities"]:
-        validated = _validate_entity(raw_entity, original_text)
-        if validated is not None:
-            valid_entities.append(validated)
-        # Silently skip invalid entities — the model sometimes hallucinates
-        # spurious entries. We keep what's valid and discard the rest.
-
-    # Step 4: Remove duplicates and overlapping spans
-    final_entities = _remove_duplicates_and_overlaps(valid_entities)
-
+        located.extend(_locate_entity(raw_entity, original_text))
+    final_entities = _remove_duplicates_and_overlaps(located)
     return {
         "success": True,
         "entities": final_entities,
         "message": (
-            f"PII detection completed successfully. "
-            f"Found {len(final_entities)} sensitive entity(ies)."
+            f"PII detection completed successfully. Found {len(final_entities)} sensitive entity(ies)."
             if final_entities
             else "PII detection completed successfully. No sensitive information found."
         ),
@@ -397,58 +494,7 @@ def _parse_and_validate_response(raw_response: str, original_text: str) -> dict:
 # PUBLIC API: detect_pii
 # ─────────────────────────────────────────────────────────────────────────────
 def detect_pii(text: str) -> dict:
-    """
-    Detects Personally Identifiable Information (PII) in the given text
-    using the locally running Gemma 3 4B model via Ollama.
-
-    This is the main public function. All other functions in this file
-    are internal helpers called by this one.
-
-    HOW IT WORKS (the full pipeline):
-        1. Validate the input text (not empty).
-        2. Build a carefully designed detection prompt using prompt_builder.py.
-        3. Send the prompt to Gemma 3 4B via the existing Ollama client.
-        4. Receive the model's raw JSON response.
-        5. Parse and validate the JSON structure.
-        6. Validate each entity's fields, type, and offsets.
-        7. Attempt offset recovery for entities with wrong positions.
-        8. Remove duplicate and overlapping detections.
-        9. Return the final structured result.
-
-    IMPORTANT:
-        - The original text is NEVER modified by this function.
-        - Regex is NEVER used for detection.
-        - If detection fails at any step, success=False is returned.
-        - A success=True result with zero entities means no PII was found.
-
-    PARAMETERS:
-        text (str): The raw text to analyze. Must not be empty.
-
-    RETURNS:
-        On success:
-            {
-                "success": True,
-                "entities": [
-                    {
-                        "text": "Rahul Sharma",
-                        "type": "PERSON",
-                        "start": 0,
-                        "end": 12,
-                        "reason": "Full name of an individual"
-                    },
-                    ...
-                ],
-                "message": "PII detection completed successfully. Found 1 entity."
-            }
-
-        On failure:
-            {
-                "success": False,
-                "entities": [],
-                "message": "PII detection failed: <reason>"
-            }
-    """
-    # ── Step 1: Validate input ───────────────────────────────────────────────
+    """Detects PII in `text` using the local Gemma model."""
     if not isinstance(text, str) or not text.strip():
         return {
             "success": False,
@@ -456,34 +502,24 @@ def detect_pii(text: str) -> dict:
             "message": "PII detection failed: input text must be a non-empty string.",
         }
 
-    # Store the original text. We will NEVER modify this variable.
-    original_text = text
+    original_text = text  # never modified
 
-    # ── Step 2: Build the prompt ─────────────────────────────────────────────
-    prompt = build_detection_prompt(original_text)
+    result = _ask_model(original_text)
+    if not result["success"]:
+        return {"success": False, "entities": [], "message": f"PII detection failed: {result['message']}"}
+    raw_entities = result["entities"]
 
-    # ── Step 3 & 4: Send to Ollama and receive response ──────────────────────
-    # We reuse the existing generate_response() from Phase 2.
-    # It handles all network errors and returns a structured dict.
-    ollama_result = generate_response(prompt)
+    located = []
+    for raw_entity in raw_entities:
+        located.extend(_locate_entity(raw_entity, original_text))
+    final_entities = _remove_duplicates_and_overlaps(located)
 
-    if not ollama_result["success"]:
-        return {
-            "success": False,
-            "entities": [],
-            "message": f"PII detection failed: {ollama_result['message']}",
-        }
-
-    raw_response = ollama_result["response"]
-
-    if not raw_response or not raw_response.strip():
-        return {
-            "success": False,
-            "entities": [],
-            "message": "PII detection failed: the model returned an empty response.",
-        }
-
-    # ── Step 5–8: Parse, validate, deduplicate ───────────────────────────────
-    result = _parse_and_validate_response(raw_response, original_text)
-
-    return result
+    return {
+        "success": True,
+        "entities": final_entities,
+        "message": (
+            f"PII detection completed successfully. Found {len(final_entities)} sensitive entity(ies)."
+            if final_entities
+            else "PII detection completed successfully. No sensitive information found."
+        ),
+    }

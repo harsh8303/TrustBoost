@@ -4058,5 +4058,766 @@
     ],
     "latency_seconds": 27.103,
     "timestamp": 1795634385.5852473
+  },
+  "03ec68f5146cc7d664309cf06e2d992748f49bd66374282fe4cff91572a36b8c": {
+    "sample_id": "sample_001",
+    "predicted_entities": [
+      {
+        "text": "Alice Walker",
+        "type": "PERSON",
+        "start": 15,
+        "end": 27,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "alice.walker@example.com",
+        "type": "EMAIL",
+        "start": 52,
+        "end": 76,
+        "reason": "Personal email address"
+      }
+    ],
+    "latency_seconds": 68.79,
+    "timestamp": 1795635521.1262317
+  },
+  "02d373b9ba42d0ee2f57245d0b12025376bd03124057f1a7c40342acc1294f94": {
+    "sample_id": "sample_003",
+    "predicted_entities": [
+      {
+        "text": "+1-555-019-2834",
+        "type": "PHONE",
+        "start": 16,
+        "end": 31,
+        "reason": "Phone number"
+      }
+    ],
+    "latency_seconds": 14.89,
+    "timestamp": 1795635536.0159206
+  },
+  "914f1fee7789659c974bef7c0dd990fac71405ff9614bbb10d9f5e4785accb2d": {
+    "sample_id": "sample_006",
+    "predicted_entities": [
+      {
+        "text": "David K. Miller",
+        "type": "PERSON",
+        "start": 19,
+        "end": 34,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "Flat 4B, Greenwood Heights, Austin",
+        "type": "ADDRESS",
+        "start": 46,
+        "end": 80,
+        "reason": "Full residential address"
+      }
+    ],
+    "latency_seconds": 19.195,
+    "timestamp": 1795635555.2110007
+  },
+  "c2dc332df2e44df68b669929663a4f22742ce2353e3534a3aa1f6990e04f7261": {
+    "sample_id": "sample_008",
+    "predicted_entities": [
+      {
+        "text": "George Thomas",
+        "type": "PERSON",
+        "start": 11,
+        "end": 24,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "1995-10-22",
+        "type": "DATE_OF_BIRTH",
+        "start": 31,
+        "end": 41,
+        "reason": "Date of birth of an individual"
+      }
+    ],
+    "latency_seconds": 20.102,
+    "timestamp": 1795635575.313424
+  },
+  "a699bff979db095570f7482ca14ad6492f9cb7ca7f46fcd0e3eecf50b872445c": {
+    "sample_id": "sample_011",
+    "predicted_entities": [
+      {
+        "text": "+44 20 7946 0912",
+        "type": "PHONE",
+        "start": 31,
+        "end": 47,
+        "reason": "Phone number"
+      }
+    ],
+    "latency_seconds": 14.708,
+    "timestamp": 1795635590.0210807
+  },
+  "dc2687cdc534c91549247ec458fab4d5a342402102a2baa91e1c9fcc8f4b3bb9": {
+    "sample_id": "sample_013",
+    "predicted_entities": [
+      {
+        "text": "accounting.dept@solarsolutions.example.co",
+        "type": "EMAIL",
+        "start": 30,
+        "end": 71,
+        "reason": "Email address for a department"
+      }
+    ],
+    "latency_seconds": 13.181,
+    "timestamp": 1795635603.223472
+  },
+  "aa124ea8e21b56ded7068df608b5fe0379581c439d422bebe43702536279c987": {
+    "sample_id": "sample_016",
+    "predicted_entities": [
+      {
+        "text": "9876 5432 1098",
+        "type": "AADHAAR",
+        "start": 32,
+        "end": 46,
+        "reason": "Unique identification number"
+      },
+      {
+        "text": "50100234567890",
+        "type": "BANK_ACCOUNT",
+        "start": 65,
+        "end": 79,
+        "reason": "Financial account identifier"
+      }
+    ],
+    "latency_seconds": 20.62,
+    "timestamp": 1795635623.8439217
+  },
+  "0c2730bc685078ac2ad10e7ce32db35c49938686fab129e9423df1deab883ba9": {
+    "sample_id": "sample_018",
+    "predicted_entities": [
+      {
+        "text": "HDFC0000240",
+        "type": "IFSC",
+        "start": 33,
+        "end": 44,
+        "reason": "Bank IFSC code"
+      },
+      {
+        "text": "Priya Sharma",
+        "type": "PERSON",
+        "start": 64,
+        "end": 76,
+        "reason": "Full name of an individual"
+      }
+    ],
+    "latency_seconds": 18.465,
+    "timestamp": 1795635642.3094776
+  },
+  "e50a3c78925858895b43e18ffec0e0a76627a0217836feb56699ca4f14c99c0d": {
+    "sample_id": "sample_021",
+    "predicted_entities": [
+      {
+        "text": "4532-8901-2345-6789",
+        "type": "CREDIT_CARD",
+        "start": 36,
+        "end": 55,
+        "reason": "Full credit card number"
+      },
+      {
+        "text": "11/28",
+        "type": "DATE_OF_BIRTH",
+        "start": 65,
+        "end": 70,
+        "reason": "Expiration date of credit card"
+      }
+    ],
+    "latency_seconds": 23.107,
+    "timestamp": 1795635665.4167414
+  },
+  "f74e7b4ac1c7a8ee6cb07cdae85526b7987adc1e1c7551ae63154752f26ad653": {
+    "sample_id": "sample_023",
+    "predicted_entities": [
+      {
+        "text": "rahul.verma@okhdfcbank",
+        "type": "EMAIL",
+        "start": 35,
+        "end": 57,
+        "reason": "UPI ID is a personal email address"
+      }
+    ],
+    "latency_seconds": 14.556,
+    "timestamp": 1795635679.9725976
+  },
+  "72f1248e74bd81bf51402d56481f51d6543279d20529c73f36d3858e73286d58": {
+    "sample_id": "sample_026",
+    "predicted_entities": [
+      {
+        "text": "112233445566",
+        "type": "BANK_ACCOUNT",
+        "start": 28,
+        "end": 40,
+        "reason": "Complete bank account number"
+      },
+      {
+        "text": "UTIB0000150",
+        "type": "IFSC",
+        "start": 58,
+        "end": 69,
+        "reason": "Complete IFSC code"
+      }
+    ],
+    "latency_seconds": 20.797,
+    "timestamp": 1795635700.789187
+  },
+  "83233835605d089b91583a54c080727400136367227f48c94f7f1bed57209284": {
+    "sample_id": "sample_028",
+    "predicted_entities": [
+      {
+        "text": "8877 6655 4433",
+        "type": "AADHAAR",
+        "start": 18,
+        "end": 32,
+        "reason": "Aadhaar card number"
+      }
+    ],
+    "latency_seconds": 15.766,
+    "timestamp": 1795635716.5549765
+  },
+  "6153cdb2d03260866298d09500728d3bff473b54e0f6b41845a8da152584307a": {
+    "sample_id": "sample_031",
+    "predicted_entities": [
+      {
+        "text": "SuperSecretPassw0rd!",
+        "type": "PASSWORD",
+        "start": 31,
+        "end": 51,
+        "reason": "Temporary database password"
+      }
+    ],
+    "latency_seconds": 12.678,
+    "timestamp": 1795635729.2331219
+  },
+  "80d6cab9cc946e2c1f5f26da6ce1aab3c777b23674a652a915ee9ae30f61c8e8": {
+    "sample_id": "sample_033",
+    "predicted_entities": [
+      {
+        "text": "Bearer token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-ID.",
+        "type": "CREDENTIAL",
+        "start": 35,
+        "end": 94,
+        "reason": "Authentication token"
+      }
+    ],
+    "latency_seconds": 18.631,
+    "timestamp": 1795635747.864136
+  },
+  "3ac71bf6f4802b1f9cec50a183355e8f733938df08ba17c3a846c8926e4bfb0b": {
+    "sample_id": "sample_036",
+    "predicted_entities": [
+      {
+        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 28,
+        "end": 81,
+        "reason": "Complete Postgres connection string with username, password, host, port and database name"
+      }
+    ],
+    "latency_seconds": 19.399,
+    "timestamp": 1795635767.2636194
+  },
+  "140acd3a33b0b86460cc76d8aea74f58f5235660755b900346466fbaa5526528": {
+    "sample_id": "sample_038",
+    "predicted_entities": [
+      {
+        "text": "sk_test_51MzABCDEFGHIJKLMN1234567890",
+        "type": "SECRET",
+        "start": 27,
+        "end": 63,
+        "reason": "Stripe test secret key"
+      }
+    ],
+    "latency_seconds": 17.162,
+    "timestamp": 1795635784.4439623
+  },
+  "c477b95691190b9f5a7247068303f0762acd90c069278eca33765fb8645b4fb4": {
+    "sample_id": "sample_041",
+    "predicted_entities": [
+      {
+        "text": "db_master",
+        "type": "DATABASE_CREDENTIAL",
+        "start": 14,
+        "end": 23,
+        "reason": "Database username"
+      }
+    ],
+    "latency_seconds": 11.557,
+    "timestamp": 1795635796.0007498
+  },
+  "bd3fa7cbb484a802a63016cde488d3394efeaec1a1128f9939b840a29a21addc": {
+    "sample_id": "sample_043",
+    "predicted_entities": [
+      {
+        "text": "ya29.a0AfH6SMD_exampleTokenValue123",
+        "type": "ACCESS_TOKEN",
+        "start": 22,
+        "end": 57,
+        "reason": "Expired access token"
+      }
+    ],
+    "latency_seconds": 14.238,
+    "timestamp": 1795635810.2389402
+  },
+  "e8830465820baef3c9ce6cf20bbf82ab3c326d93cb5e3652882cdb2e37cb99ac": {
+    "sample_id": "sample_046",
+    "predicted_entities": [
+      {
+        "text": "192.168.1.105",
+        "type": "IP_ADDRESS",
+        "start": 22,
+        "end": 35,
+        "reason": "Internal IP address"
+      }
+    ],
+    "latency_seconds": 13.943,
+    "timestamp": 1795635824.1826193
+  },
+  "3ccabc4404119a9d4ac6c61a5e0265e0473e6d9f31ccc0d7272c062c73da9cc7": {
+    "sample_id": "sample_048",
+    "predicted_entities": [
+      {
+        "text": "k8s-worker-node-04a",
+        "type": "SERVER_IDENTIFIER",
+        "start": 24,
+        "end": 43,
+        "reason": "Unique identifier for a server"
+      }
+    ],
+    "latency_seconds": 15.133,
+    "timestamp": 1795635839.3162014
+  },
+  "07e80dbba97e90ad8b42298375f56948c93a93cad784a02a0c0ef585af9f3f36": {
+    "sample_id": "sample_051",
+    "predicted_entities": [
+      {
+        "text": "10.200.45.12",
+        "type": "IP_ADDRESS",
+        "start": 24,
+        "end": 36,
+        "reason": "IP address of a server"
+      }
+    ],
+    "latency_seconds": 15.062,
+    "timestamp": 1795635854.4000182
+  },
+  "2bd0ca2cb13600d36a2235bcb956aad5909f1ba5600bdd11ebe96e8ccedc8cae": {
+    "sample_id": "sample_053",
+    "predicted_entities": [
+      {
+        "text": "db-primary-sg-01.vpc.internal",
+        "type": "SERVER_IDENTIFIER",
+        "start": 22,
+        "end": 51,
+        "reason": "Internal server identifier"
+      }
+    ],
+    "latency_seconds": 14.655,
+    "timestamp": 1795635869.0549772
+  },
+  "3814cec872e57e95c4f02f129c9fead91115fef694bab59b302f32a7d1c4e92f": {
+    "sample_id": "sample_056",
+    "predicted_entities": [
+      {
+        "text": "Rohit Verma",
+        "type": "PERSON",
+        "start": 11,
+        "end": 22,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "9876543210",
+        "type": "PHONE",
+        "start": 39,
+        "end": 49,
+        "reason": "Phone number"
+      }
+    ],
+    "latency_seconds": 19.085,
+    "timestamp": 1795635888.1396315
+  },
+  "37b1d1e5ee02e6c17f5c8476b07d897fc479a9c5842d0a6c62482d26e9c7d875": {
+    "sample_id": "sample_058",
+    "predicted_entities": [
+      {
+        "text": "50100987654321",
+        "type": "BANK_ACCOUNT",
+        "start": 39,
+        "end": 53,
+        "reason": "Complete bank account number"
+      }
+    ],
+    "latency_seconds": 15.366,
+    "timestamp": 1795635903.5056894
+  },
+  "6622494dd54ab5b6ce7fd7e2196145e3d651ae2c8fefcea9498ff900e86d0eb5": {
+    "sample_id": "sample_061",
+    "predicted_entities": [
+      {
+        "text": "SBIN0004567",
+        "type": "IFSC",
+        "start": 16,
+        "end": 27,
+        "reason": "Bank IFSC code"
+      }
+    ],
+    "latency_seconds": 13.709,
+    "timestamp": 1795635917.2147825
+  },
+  "161cb75cb994b48aa08f25670aec1a4d4a401d71a6d06b3c541aa199e0cfe5f8": {
+    "sample_id": "sample_063",
+    "predicted_entities": [
+      {
+        "text": "Flat 204, Shanti Nagar, Mumbai",
+        "type": "ADDRESS",
+        "start": 22,
+        "end": 52,
+        "reason": "Full residential address"
+      }
+    ],
+    "latency_seconds": 14.446,
+    "timestamp": 1795635931.6846886
+  },
+  "6c4276ef7682dbc6beeb590e35f06964f9cd2bac6cd1ff642518884d98d0006e": {
+    "sample_id": "sample_066",
+    "predicted_entities": [
+      {
+        "text": "mark_dev99@gmail.com",
+        "type": "EMAIL",
+        "start": 20,
+        "end": 40,
+        "reason": "Personal email address"
+      }
+    ],
+    "latency_seconds": 13.348,
+    "timestamp": 1795635945.0331516
+  },
+  "d081163bb760af7133121b17a30a90c7e0ea1629eb3357d04a9ad1da5e7c3822": {
+    "sample_id": "sample_068",
+    "predicted_entities": [
+      {
+        "text": "admin pass",
+        "type": "PASSWORD",
+        "start": 0,
+        "end": 10,
+        "reason": "Password associated with an account"
+      },
+      {
+        "text": "Winter2026#",
+        "type": "PASSWORD",
+        "start": 14,
+        "end": 25,
+        "reason": "Password including symbols"
+      }
+    ],
+    "latency_seconds": 19.001,
+    "timestamp": 1795635964.033943
+  },
+  "51cfad815b2711c3fa6dcc8c42584415e28e15bf5f8f21e308ee8e3c71337965": {
+    "sample_id": "sample_071",
+    "predicted_entities": [
+      {
+        "text": "prod-db-replica-02",
+        "type": "SERVER_IDENTIFIER",
+        "start": 25,
+        "end": 43,
+        "reason": "Server identifier"
+      }
+    ],
+    "latency_seconds": 13.342,
+    "timestamp": 1795635977.375928
+  },
+  "60416eb57120da5e2aa857694724fb24480e67d2bfc189f9988ed4ad762ef096": {
+    "sample_id": "sample_073",
+    "predicted_entities": [
+      {
+        "text": "Jane Doe",
+        "type": "PERSON",
+        "start": 56,
+        "end": 64,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "jane.doe@acme.example.com",
+        "type": "EMAIL",
+        "start": 81,
+        "end": 106,
+        "reason": "Personal email address"
+      }
+    ],
+    "latency_seconds": 17.676,
+    "timestamp": 1795635995.051856
+  },
+  "b4906c99177039654d2f07c20ae993aad410b47b47f3a69a97ba6b59ddcc1217": {
+    "sample_id": "sample_076",
+    "predicted_entities": [
+      {
+        "text": "sec_tok_991823746a",
+        "type": "PASSWORD",
+        "start": 26,
+        "end": 44,
+        "reason": "Authentication secret"
+      }
+    ],
+    "latency_seconds": 14.221,
+    "timestamp": 1795636009.2889643
+  },
+  "5b4fe34fa1295032b727475e1177e651eb4a44c7f76ed47147fa9908f9d7e156": {
+    "sample_id": "sample_078",
+    "predicted_entities": [
+      {
+        "text": "Neha Deshmukh",
+        "type": "PERSON",
+        "start": 30,
+        "end": 43,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "7766 5544 3322",
+        "type": "AADHAAR",
+        "start": 44,
+        "end": 58,
+        "reason": "Unique Aadhaar identifier"
+      }
+    ],
+    "latency_seconds": 19.262,
+    "timestamp": 1795636028.5509079
+  },
+  "6ff79b7f63b8f58975341dc6c1ec2b206e0a51407345644667514f672645b739": {
+    "sample_id": "sample_081",
+    "predicted_entities": [
+      {
+        "text": "Amit Patel",
+        "type": "PERSON",
+        "start": 18,
+        "end": 28,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "amit.patel@fintech.example.in",
+        "type": "EMAIL",
+        "start": 37,
+        "end": 66,
+        "reason": "Personal email address"
+      },
+      {
+        "text": "+91-9820012345",
+        "type": "PHONE",
+        "start": 75,
+        "end": 89,
+        "reason": "Personal phone number"
+      },
+      {
+        "text": "ABCDP9876Q",
+        "type": "PAN",
+        "start": 96,
+        "end": 106,
+        "reason": "PAN card number"
+      }
+    ],
+    "latency_seconds": 28.655,
+    "timestamp": 1795636057.2057712
+  },
+  "f1e168af2385e0dc76f113d85378d53ed1a65a27f50daec37876a57c8f1db25f": {
+    "sample_id": "sample_083",
+    "predicted_entities": [
+      {
+        "text": "Suresh Menon",
+        "type": "PERSON",
+        "start": 25,
+        "end": 37,
+        "reason": "Name of an individual"
+      },
+      {
+        "text": "Aadhaar: 3344 5566 7788",
+        "type": "AADHAAR",
+        "start": 39,
+        "end": 62,
+        "reason": "Unique identification number"
+      },
+      {
+        "text": "192.0.2.144",
+        "type": "IP_ADDRESS",
+        "start": 127,
+        "end": 138,
+        "reason": "IP address"
+      }
+    ],
+    "latency_seconds": 28.209,
+    "timestamp": 1795636085.41536
+  },
+  "7adcb55e3557a0d4548ae02b669ce0b62e75f1da124e0227be7e809387f08cd1": {
+    "sample_id": "sample_086",
+    "predicted_entities": [
+      {
+        "text": "Kavita Krishnan",
+        "type": "PERSON",
+        "start": 22,
+        "end": 37,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "1992-04-18",
+        "type": "DATE_OF_BIRTH",
+        "start": 44,
+        "end": 54,
+        "reason": "Date of birth of an individual"
+      },
+      {
+        "text": "404 Green Valley, Bengaluru",
+        "type": "ADDRESS",
+        "start": 68,
+        "end": 95,
+        "reason": "Full residential address including city"
+      },
+      {
+        "text": "+91-9988776655",
+        "type": "PHONE",
+        "start": 112,
+        "end": 126,
+        "reason": "Phone number"
+      }
+    ],
+    "latency_seconds": 33.502,
+    "timestamp": 1795636118.9177978
+  },
+  "b1acc9d75bbc80142db0694d226b08b0fb8a4179b31778a3662974b384f4985c": {
+    "sample_id": "sample_088",
+    "predicted_entities": [
+      {
+        "text": "Daniel Wu",
+        "type": "PERSON",
+        "start": 52,
+        "end": 61,
+        "reason": "Name of an individual"
+      },
+      {
+        "text": "RootAdminPass2026!",
+        "type": "PASSWORD",
+        "start": 83,
+        "end": 101,
+        "reason": "Root password with symbols"
+      }
+    ],
+    "latency_seconds": 18.679,
+    "timestamp": 1795636137.623501
+  },
+  "e00e36b1fe90c524fb776b6d82245dd84326b0343705be0dce71bbaeedf7b4e8": {
+    "sample_id": "sample_091",
+    "predicted_entities": [
+      {
+        "text": "test.contact@sample.example.com",
+        "type": "EMAIL",
+        "start": 14,
+        "end": 45,
+        "reason": "Email address"
+      },
+      {
+        "text": "+1-555-0182",
+        "type": "PHONE",
+        "start": 57,
+        "end": 68,
+        "reason": "Phone number"
+      }
+    ],
+    "latency_seconds": 19.758,
+    "timestamp": 1795636157.3813725
+  },
+  "b34f8d4de8d317032085e7548f879810a175e2368d6b2daa9b8eb5562345d596": {
+    "sample_id": "sample_093",
+    "predicted_entities": [
+      {
+        "text": "server-gamma-node-09",
+        "type": "SERVER_IDENTIFIER",
+        "start": 26,
+        "end": 46,
+        "reason": "Server hostname"
+      },
+      {
+        "text": "192.168.10.88",
+        "type": "IP_ADDRESS",
+        "start": 60,
+        "end": 73,
+        "reason": "IP address"
+      }
+    ],
+    "latency_seconds": 21.023,
+    "timestamp": 1795636178.4042113
+  },
+  "5e3d88907abdcc458da9678e20c2eaefba1a4f8d001bcf05523fa3de80f6b70f": {
+    "sample_id": "sample_096",
+    "predicted_entities": [],
+    "latency_seconds": 7.948,
+    "timestamp": 1795636186.351866
+  },
+  "f7a52d4779b6e4fc098af1c3ec719bb12d83d1c41dd3085f6397916d849f7e97": {
+    "sample_id": "sample_098",
+    "predicted_entities": [],
+    "latency_seconds": 7.697,
+    "timestamp": 1795636194.04866
+  },
+  "16550a1b68be03f174f79263cf6617805af372b796eab1aa4563ad0be9228575": {
+    "sample_id": "sample_101",
+    "predicted_entities": [
+      {
+        "text": "Rahul Mehta",
+        "type": "PERSON",
+        "start": 0,
+        "end": 11,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "Rahul Mehta",
+        "type": "PERSON",
+        "start": 46,
+        "end": 57,
+        "reason": "Full name of an individual"
+      },
+      {
+        "text": "rahul.mehta@example.in",
+        "type": "EMAIL",
+        "start": 61,
+        "end": 83,
+        "reason": "Personal email address"
+      }
+    ],
+    "latency_seconds": 18.684,
+    "timestamp": 1795636212.7543938
+  },
+  "ddbb1be75ac39d7742f2af666b855dfb9090fbc9fa9f90573eb334b540119e5b": {
+    "sample_id": "sample_103",
+    "predicted_entities": [
+      {
+        "text": "4539 1488 0343 6467",
+        "type": "CREDIT_CARD",
+        "start": 73,
+        "end": 92,
+        "reason": "Complete credit card number"
+      },
+      {
+        "text": "neha.k@example.in",
+        "type": "EMAIL",
+        "start": 109,
+        "end": 126,
+        "reason": "Personal email address"
+      }
+    ],
+    "latency_seconds": 21.664,
+    "timestamp": 1795636234.419486
+  },
+  "a8f7a914ff2085bfda54a004e895c266d8f10f8ca4560b1673fd659d8f5c5483": {
+    "sample_id": "sample_106",
+    "predicted_entities": [
+      {
+        "text": "Flat 7C, Lotus Residency, Baner Road, Pune 411045",
+        "type": "ADDRESS",
+        "start": 25,
+        "end": 74,
+        "reason": "Full residential address including city and PIN"
+      }
+    ],
+    "latency_seconds": 15.462,
+    "timestamp": 1795636249.881212
   }
 }
