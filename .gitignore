@@ -36,3 +36,8 @@ htmlcov/
 !/evaluation/results/phase3_2b6_full_evaluation/phase3_2b6_category_metrics.csv
 !/evaluation/results/phase3_2b6_full_evaluation/phase3_2b6_comparison_report.md
 !/evaluation/results/phase3_2b6_full_evaluation/run_phase3_2b6_evaluation.py
+
+# Allow only reviewed Phase 3.3B independence audit
+!/evaluation/results/inline_holdout_v1/
+/evaluation/results/inline_holdout_v1/*
+!/evaluation/results/inline_holdout_v1/holdout_v1_independence_audit.md
