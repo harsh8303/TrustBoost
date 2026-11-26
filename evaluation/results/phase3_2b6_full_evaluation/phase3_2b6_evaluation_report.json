@@ -1,0 +1,305 @@
+{
+  "metadata": {
+    "evaluation_title": "TrustBoost Phase 3.2B.6 Full Evaluation (JSON-Aware PERSON + Compact Prompt Refinement)",
+    "git_commit": "a6e98a19c14b24c241bfc05499124e47211c8662",
+    "model": "gemma3:4b (local Ollama)",
+    "configuration": {
+      "temperature": 0,
+      "format": "omitted",
+      "num_ctx": 4096,
+      "prompt_version": "Phase 3.2B.6D.3 compact Variant B-based prompt (trustboost/detector/prompt_builder.py)",
+      "offset_recovery": "Phase 2A duplicate-safe offset recovery",
+      "deterministic_uri_recognizer": "Phase 3.2A.3 _extract_database_uri_entities",
+      "deterministic_secret_recognizer": "Phase 3.2B.3 _extract_structured_secret_entities",
+      "deterministic_pii_recognizer": "Phase 3.2B.5 _extract_structured_pii_entities",
+      "deterministic_json_person_recognizer": "Phase 3.2B.6C _extract_json_person_entities"
+    },
+    "total_samples": 100,
+    "timestamp": "2026-11-25 18:56:36 UTC",
+    "matching_mode": "strict_entity_level (exact type and character boundaries [start:end])",
+    "cache_used": false
+  },
+  "summary": {
+    "total_samples": 100,
+    "total_gold_entities": 171,
+    "total_pred_entities": 176,
+    "strict_true_positives": 146,
+    "strict_false_positives": 30,
+    "strict_false_negatives": 25,
+    "micro_metrics": {
+      "precision": 0.8295,
+      "recall": 0.8538,
+      "f1": 0.8415
+    },
+    "macro_metrics": {
+      "precision": 0.7471,
+      "recall": 0.8,
+      "f1": 0.7661
+    },
+    "latency_stats": {
+      "mean_seconds": 4.46,
+      "median_seconds": 3.737,
+      "min_seconds": 0.915,
+      "max_seconds": 13.425,
+      "total_inference_time_seconds": 446.01,
+      "total_wall_seconds": 446.06
+    },
+    "token_stats": {
+      "mean_prompt_tokens": 1907.83,
+      "total_prompt_tokens": 190783,
+      "mean_eval_tokens": 55.8,
+      "total_eval_tokens": 5580,
+      "mean_eval_duration_seconds": 3.677
+    },
+    "reliability_stats": {
+      "detection_failures_count": 0,
+      "detection_failures": [],
+      "malformed_responses_count": 0,
+      "malformed_responses": [],
+      "tokenization_verified": 100,
+      "exact_restoration_verified": 100
+    }
+  },
+  "category_metrics": {
+    "AADHAAR": {
+      "tp": 6,
+      "fp": 1,
+      "fn": 1,
+      "gold_count": 7,
+      "pred_count": 7,
+      "precision": 0.8571,
+      "recall": 0.8571,
+      "f1": 0.8571
+    },
+    "ACCESS_TOKEN": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "gold_count": 3,
+      "pred_count": 3,
+      "precision": 0.6667,
+      "recall": 0.6667,
+      "f1": 0.6667
+    },
+    "ADDRESS": {
+      "tp": 6,
+      "fp": 2,
+      "fn": 2,
+      "gold_count": 8,
+      "pred_count": 8,
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1": 0.75
+    },
+    "API_KEY": {
+      "tp": 5,
+      "fp": 1,
+      "fn": 1,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 0.8333,
+      "recall": 0.8333,
+      "f1": 0.8333
+    },
+    "BANK_ACCOUNT": {
+      "tp": 5,
+      "fp": 1,
+      "fn": 1,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 0.8333,
+      "recall": 0.8333,
+      "f1": 0.8333
+    },
+    "CONFIDENTIAL_PROJECT": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "gold_count": 3,
+      "pred_count": 3,
+      "precision": 0.6667,
+      "recall": 0.6667,
+      "f1": 0.6667
+    },
+    "CREDENTIAL": {
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 1,
+      "pred_count": 2,
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.6667
+    },
+    "CREDIT_CARD": {
+      "tp": 2,
+      "fp": 2,
+      "fn": 3,
+      "gold_count": 5,
+      "pred_count": 4,
+      "precision": 0.5,
+      "recall": 0.4,
+      "f1": 0.4444
+    },
+    "DATABASE_CREDENTIAL": {
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 2,
+      "pred_count": 3,
+      "precision": 0.6667,
+      "recall": 1.0,
+      "f1": 0.8
+    },
+    "DATE_OF_BIRTH": {
+      "tp": 7,
+      "fp": 1,
+      "fn": 0,
+      "gold_count": 7,
+      "pred_count": 8,
+      "precision": 0.875,
+      "recall": 1.0,
+      "f1": 0.9333
+    },
+    "EMAIL": {
+      "tp": 12,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 12,
+      "pred_count": 12,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "FINANCIAL_IDENTIFIER": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 5,
+      "pred_count": 5,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "IFSC": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "INTERNAL_ORGANIZATION_INFORMATION": {
+      "tp": 1,
+      "fp": 3,
+      "fn": 1,
+      "gold_count": 2,
+      "pred_count": 4,
+      "precision": 0.25,
+      "recall": 0.5,
+      "f1": 0.3333
+    },
+    "INTERNAL_URL": {
+      "tp": 3,
+      "fp": 2,
+      "fn": 1,
+      "gold_count": 4,
+      "pred_count": 5,
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.6667
+    },
+    "IP_ADDRESS": {
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 7,
+      "pred_count": 7,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "LOCATION": {
+      "tp": 12,
+      "fp": 5,
+      "fn": 6,
+      "gold_count": 18,
+      "pred_count": 17,
+      "precision": 0.7059,
+      "recall": 0.6667,
+      "f1": 0.6857
+    },
+    "PAN": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "PASSWORD": {
+      "tp": 2,
+      "fp": 4,
+      "fn": 4,
+      "gold_count": 6,
+      "pred_count": 6,
+      "precision": 0.3333,
+      "recall": 0.3333,
+      "f1": 0.3333
+    },
+    "PERSON": {
+      "tp": 33,
+      "fp": 4,
+      "fn": 2,
+      "gold_count": 35,
+      "pred_count": 37,
+      "precision": 0.8919,
+      "recall": 0.9429,
+      "f1": 0.9167
+    },
+    "PHONE": {
+      "tp": 11,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 11,
+      "pred_count": 11,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "PRIVATE_KEY": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "gold_count": 1,
+      "pred_count": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "SECRET": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 5,
+      "pred_count": 5,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "SERVER_IDENTIFIER": {
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "gold_count": 5,
+      "pred_count": 5,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    }
+  }
+}

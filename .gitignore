@@ -25,3 +25,14 @@ htmlcov/
 # IDE
 .vscode/
 .idea/
+
+# Evaluation outputs: keep raw sample-level PII data local
+/evaluation/results/*
+
+# Allow only reviewed Phase 3.2B.6 aggregate documentation
+!/evaluation/results/phase3_2b6_full_evaluation/
+/evaluation/results/phase3_2b6_full_evaluation/*
+!/evaluation/results/phase3_2b6_full_evaluation/phase3_2b6_evaluation_report.json
+!/evaluation/results/phase3_2b6_full_evaluation/phase3_2b6_category_metrics.csv
+!/evaluation/results/phase3_2b6_full_evaluation/phase3_2b6_comparison_report.md
+!/evaluation/results/phase3_2b6_full_evaluation/run_phase3_2b6_evaluation.py
