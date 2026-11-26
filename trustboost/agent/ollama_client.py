@@ -309,6 +309,17 @@ def generate_response(prompt: str) -> dict:
         # client.chat() sends a conversation to the model.
         # We send a single user message (a list with one item).
         # The model replies with a ChatResponse object.
+        #
+        # Phase 2B.1 — Temperature Optimization (retained in Phase 2B.2):
+        #   temperature=0 makes the model deterministic (greedy decoding).
+        #   This eliminates sampling variance that caused leakage regressions
+        #   between Phase 1 and Phase 2A evaluations.
+        #   format="json" is intentionally omitted because clean-prompt A/B
+        #   testing showed GBNF JSON constraints caused sample_035 to miss
+        #   its SSH PRIVATE_KEY; _extract_json_from_response() handles
+        #   Markdown fences reliably without harming detection recall.
+        #   All other Modelfile defaults (top_k, top_p, num_ctx, stop tokens)
+        #   remain unchanged.
         response = client.chat(
             model=OLLAMA_MODEL,
             messages=[
@@ -317,6 +328,7 @@ def generate_response(prompt: str) -> dict:
                     "content": prompt.strip(),
                 }
             ],
+            options={"temperature": 0},
         )
 
         # Extract the text content from the response object

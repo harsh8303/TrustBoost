@@ -192,3 +192,50 @@ class TestPipelineExecution:
         assert restoration_res["success"] is True
         assert restoration_res["restored_text"] == text
         assert restoration_res["unrestored_tokens"] == []
+
+    def test_repeated_pii_sanitization_and_restoration_end_to_end(self):
+        """Repeated PII with imprecise LLM offsets masks all occurrences and restores cleanly."""
+        text = (
+            "Alice Walker signed in with alice@example.com; "
+            "Alice Walker confirmed alice@example.com and +1-555-0144 / +1-555-0144."
+        )
+        raw_llm = (
+            '{"entities":['
+            '{"text":"Alice Walker","type":"PERSON","start":0,"end":12},'
+            '{"text":"alice@example.com","type":"EMAIL","start":10,"end":25},'
+            '{"text":"Alice Walker","type":"PERSON","start":40,"end":52},'
+            '{"text":"+1-555-0144","type":"PHONE","start":5,"end":15}'
+            ']}'
+        )
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": raw_llm, "message": "ok"},
+        ):
+            pipeline_res = sanitize_text(text)
+
+        assert pipeline_res["success"] is True
+        san = pipeline_res["sanitized_text"]
+        assert "Alice Walker" not in san
+        assert "alice@example.com" not in san
+        assert "+1-555-0144" not in san
+        assert san.count("[PERSON_1]") == 2
+        assert san.count("[EMAIL_1]") == 2
+        assert san.count("[PHONE_1]") == 2
+
+        restoration_res = restore_text(san, pipeline_res["mapping"])
+        assert restoration_res["success"] is True
+        assert restoration_res["restored_text"] == text
+
+    def test_ambiguous_unresolved_entity_fails_closed_in_pipeline(self):
+        """Ambiguous entity that cannot be safely resolved aborts sanitization."""
+        text = "May called May yesterday."
+        raw_llm = '{"entities":[{"text":"May","type":"PERSON","start":99,"end":102}]}'
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": raw_llm, "message": "ok"},
+        ):
+            pipeline_res = sanitize_text(text)
+
+        assert pipeline_res["success"] is False
+        assert pipeline_res["sanitized_text"] is None
+        assert "May" in pipeline_res["message"]

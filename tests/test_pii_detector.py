@@ -769,6 +769,192 @@ class TestDetectPiiUnit:
         assert detect_pii(["list"])["success"] is False
 
 
+class TestPhase2ADuplicateSafeOffsetRecovery:
+    """Tests for Phase 2A batch-aware, duplicate-safe offset recovery."""
+
+    def _mock_ollama(self, json_response: str):
+        return patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={
+                "success": True,
+                "response": json_response,
+                "message": "ok",
+            },
+        )
+
+    def test_repeated_person_first_exact_second_wrong_offsets(self):
+        """Exact first span is reserved; inaccurate second occurrence recovers cleanly."""
+        text = "Alice Walker signed in, and Alice Walker changed her password."
+        json_resp = json.dumps({"entities": [
+            {"text": "Alice Walker", "type": "PERSON", "start": 0, "end": 12},
+            {"text": "Alice Walker", "type": "PERSON", "start": 22, "end": 32},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert len(result["entities"]) == 2
+        assert [(e["start"], e["end"]) for e in result["entities"]] == [(0, 12), (28, 40)]
+        for ent in result["entities"]:
+            assert text[ent["start"]:ent["end"]] == "Alice Walker"
+
+    def test_repeated_person_missing_offsets_masks_all_occurrences(self):
+        """Multi-word person name with missing offsets recovers all occurrences."""
+        text = "Alice Walker signed in, and Alice Walker approved the transfer."
+        json_resp = json.dumps({"entities": [
+            {"text": "Alice Walker", "type": "PERSON"},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert [(e["start"], e["end"]) for e in result["entities"]] == [(0, 12), (28, 40)]
+
+    def test_repeated_person_single_exact_detection_masks_second_occurrence(self):
+        """Even if LLM emits exact offsets for only occurrence #1, #2 is also masked."""
+        text = "Alice Walker signed in, and Alice Walker changed her password."
+        json_resp = json.dumps({"entities": [
+            {"text": "Alice Walker", "type": "PERSON", "start": 0, "end": 12},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert [(e["start"], e["end"]) for e in result["entities"]] == [(0, 12), (28, 40)]
+
+    def test_repeated_email_phone_pan_aadhaar_wrong_and_single_detections(self):
+        """Repeated structured PII types recover every occurrence safely."""
+        cases = [
+            (
+                "Send to alice@example.com and cc alice@example.com today.",
+                [{"text": "alice@example.com", "type": "EMAIL", "start": 0, "end": 16},
+                 {"text": "alice@example.com", "type": "EMAIL", "start": 23, "end": 38}],
+                2,
+            ),
+            (
+                "Call +1-555-0144 first, or retry +1-555-0144 after 5 PM.",
+                [{"text": "+1-555-0144", "type": "PHONE", "start": 0, "end": 10}],
+                2,
+            ),
+            (
+                "PAN ABCDE1234F verified; backup PAN ABCDE1234F logged.",
+                [{"text": "ABCDE1234F", "type": "PAN", "start": 99, "end": 109}],
+                2,
+            ),
+            (
+                "Aadhaar 9876 5432 1098 matches Aadhaar 9876 5432 1098.",
+                [{"text": "9876 5432 1098", "type": "AADHAAR"}],
+                2,
+            ),
+        ]
+        from trustboost.detector.pii_detector import detect_pii
+        for text, raw_ents, expected_count in cases:
+            with self._mock_ollama(json.dumps({"entities": raw_ents})):
+                result = detect_pii(text)
+            assert result["success"] is True, f"Failed on {text}: {result}"
+            assert len(result["entities"]) == expected_count
+            for ent in result["entities"]:
+                assert text[ent["start"]:ent["end"]] == ent["text"]
+
+    def test_identical_text_different_types_preserved(self):
+        """Identical surface text with distinct types preserves both categories and spans."""
+        text = "Meet Jordan in Jordan today."
+        # Deliberately off by 1 on both spans; ordered K=2 == M=2
+        json_resp = json.dumps({"entities": [
+            {"text": "Jordan", "type": "PERSON", "start": 4, "end": 10},
+            {"text": "Jordan", "type": "LOCATION", "start": 14, "end": 20},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert len(result["entities"]) == 2
+        assert result["entities"][0]["type"] == "PERSON"
+        assert (result["entities"][0]["start"], result["entities"][0]["end"]) == (5, 11)
+        assert result["entities"][1]["type"] == "LOCATION"
+        assert (result["entities"][1]["start"], result["entities"][1]["end"]) == (15, 21)
+
+    def test_three_occurrences_with_wrong_offsets_resolved_in_order(self):
+        """Three occurrences with shifted LLM offsets resolve 1-to-1."""
+        text = "Jordan met our client Jordan in Jordan last week."
+        json_resp = json.dumps({"entities": [
+            {"text": "Jordan", "type": "PERSON", "start": 0, "end": 5},
+            {"text": "Jordan", "type": "PERSON", "start": 26, "end": 31},
+            {"text": "Jordan", "type": "LOCATION", "start": 40, "end": 45},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert [(e["start"], e["end"], e["type"]) for e in result["entities"]] == [
+            (0, 6, "PERSON"),
+            (22, 28, "PERSON"),
+            (32, 38, "LOCATION"),
+        ]
+
+    def test_word_boundary_prevents_subtoken_match(self):
+        """'SBI' must match standalone 'SBI' rather than prefix inside 'SBIN0001122'."""
+        text = "Credited to SBI account with IFSC SBIN0001122."
+        json_resp = json.dumps({"entities": [
+            {"text": "SBI", "type": "BANK_ACCOUNT", "start": 0, "end": 3},
+            {"text": "SBIN0001122", "type": "IFSC", "start": 30, "end": 41},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert [(e["text"], e["start"], e["end"]) for e in result["entities"]] == [
+            ("SBI", 12, 15),
+            ("SBIN0001122", 34, 45),
+        ]
+
+    def test_ambiguous_common_word_may_not_blindly_masked(self):
+        """'May' in 'May Parker' is resolved as PERSON without masking 'this May'."""
+        text = "Please confirm if May Parker is travelling to Paris this May."
+        json_resp = json.dumps({"entities": [
+            {"text": "May", "type": "PERSON", "start": 0, "end": 3},
+            {"text": "Paris", "type": "LOCATION", "start": 40, "end": 45},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert [(e["text"], e["start"], e["end"]) for e in result["entities"]] == [
+            ("May", 18, 21),
+            ("Paris", 46, 51),
+        ]
+
+    def test_unresolvable_ambiguous_entity_fails_closed(self):
+        """Ambiguous common word without safe disambiguation fails closed explicitly."""
+        text = "May called May yesterday."
+        json_resp = json.dumps({"entities": [
+            {"text": "May", "type": "PERSON", "start": 99, "end": 102},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is False
+        assert result["entities"] == []
+        assert "unresolved_entities" in result
+        assert result["unresolved_entities"][0]["text"] == "May"
+        assert "May" in result["message"]
+
+    def test_hallucinated_entity_text_rejected(self):
+        """Hallucinated entity absent from text is ignored while valid entities pass."""
+        text = "Reach Alice Walker at alice@example.com."
+        json_resp = json.dumps({"entities": [
+            {"text": "Fake Hallucination", "type": "PERSON", "start": 0, "end": 18},
+            {"text": "alice@example.com", "type": "EMAIL", "start": 0, "end": 10},
+        ]})
+        with self._mock_ollama(json_resp):
+            from trustboost.detector.pii_detector import detect_pii
+            result = detect_pii(text)
+        assert result["success"] is True
+        assert len(result["entities"]) == 1
+        assert result["entities"][0]["text"] == "alice@example.com"
+        assert text[result["entities"][0]["start"]:result["entities"][0]["end"]] == "alice@example.com"
+
+
 # ═════════════════════════════════════════════════════════════════════════════
 # SECTION 2: INTEGRATION TESTS (Require Ollama + gemma3:4b)
 # ═════════════════════════════════════════════════════════════════════════════
@@ -817,9 +1003,836 @@ class TestPiiDetectorIntegration:
 
     def test_real_result_structure(self):
         """Real model response has correct structure."""
-        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.detector import detect_pii
         result = detect_pii("Test sentence for structure check.")
         assert "success" in result
         assert "entities" in result
         assert "message" in result
         assert isinstance(result["entities"], list)
+
+
+class TestPhase32APromptCoverageAndRegression:
+    """Targeted unit & regression tests for Phase 3.2A prompt coverage improvements."""
+
+    def test_prompt_preserves_24_types_compact_schema_and_budget(self):
+        """All 24 categories, compact schema, and 8GB-safe prompt size are preserved."""
+        from trustboost.detector.prompt_builder import VALID_ENTITY_TYPES, build_detection_prompt
+
+        assert len(VALID_ENTITY_TYPES) == 24
+        prompt = build_detection_prompt("Sample input text.")
+        for category in VALID_ENTITY_TYPES:
+            assert category in prompt
+        assert "compact JSON only" in prompt
+        assert '"text":' in prompt and '"type":' in prompt and '"start":' in prompt and '"end":' in prompt
+        assert len(prompt) < 7500
+
+    def test_prompt_includes_all_seven_phase32a_coverage_areas(self):
+        """Prompt contains explicit rules and examples for all 7 Phase 3.2A areas."""
+        from trustboost.detector.prompt_builder import build_detection_prompt
+
+        prompt = build_detection_prompt("Sample")
+        # 1. LOCATION cities & generic country exclusion
+        assert "Springfield" in prompt and "Ahmedabad" in prompt and "Paris" in prompt
+        assert "generic, unlinked country names" in prompt
+        # 2. FINANCIAL_IDENTIFIER (UPI + GSTIN) vs EMAIL
+        assert "rahul.verma@okhdfcbank" in prompt and "27AAAPL1234C1ZV" in prompt
+        assert "remain EMAIL" in prompt
+        # 3. DATABASE_CREDENTIAL complete URI
+        assert "postgresql://admin:Pass1@db.local:5432/app" in prompt
+        assert "ONE single DATABASE_CREDENTIAL entity" in prompt
+        # 4. INTERNAL_ORGANIZATION_INFORMATION
+        assert "proprietary algorithm for customer churn prediction" in prompt
+        # 5. CONFIDENTIAL_PROJECT
+        assert "Project Titan" in prompt and "Project Polaris" in prompt
+        # 6. IFSC & SERVER_IDENTIFIER
+        assert "ICIC0000011" in prompt and "srv-fin-core-09" in prompt
+        # 7. Structured / multiline CSV AADHAAR
+        assert "id,name,aadhaar\n101,Neha Deshmukh,7766 5544 3322" in prompt
+
+    @pytest.mark.parametrize(
+        "text,expected_entities",
+        [
+            (
+                "Please deliver the package to Bob Henderson at 452 Elm Street, Springfield.",
+                [
+                    {"text": "Bob Henderson", "type": "PERSON", "start": 30, "end": 43},
+                    {"text": "452 Elm Street", "type": "ADDRESS", "start": 47, "end": 61},
+                    {"text": "Springfield", "type": "LOCATION", "start": 63, "end": 74},
+                ],
+            ),
+            (
+                "Send 500 to johnny.cash@okhdfcbank and GSTIN 27AAAPL1234C1ZV, IFSC ICIC0000011.",
+                [
+                    {"text": "johnny.cash@okhdfcbank", "type": "FINANCIAL_IDENTIFIER", "start": 12, "end": 34},
+                    {"text": "27AAAPL1234C1ZV", "type": "FINANCIAL_IDENTIFIER", "start": 45, "end": 60},
+                    {"text": "ICIC0000011", "type": "IFSC", "start": 67, "end": 78},
+                ],
+            ),
+            (
+                "Connect to postgresql://admin:P@ssw0rd2026@localhost:5432/maindb on srv-fin-core-09.",
+                [
+                    {
+                        "text": "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+                        "type": "DATABASE_CREDENTIAL",
+                        "start": 11,
+                        "end": 64,
+                    },
+                    {"text": "srv-fin-core-09", "type": "SERVER_IDENTIFIER", "start": 68, "end": 83},
+                ],
+            ),
+            (
+                "The board discussed Project Titan and proprietary algorithm for customer churn prediction.",
+                [
+                    {"text": "Project Titan", "type": "CONFIDENTIAL_PROJECT", "start": 20, "end": 33},
+                    {
+                        "text": "proprietary algorithm for customer churn prediction",
+                        "type": "INTERNAL_ORGANIZATION_INFORMATION",
+                        "start": 38,
+                        "end": 89,
+                    },
+                ],
+            ),
+            (
+                "CSV_DUMP: id,name,aadhaar\n101,Neha Deshmukh,7766 5544 3322",
+                [
+                    {"text": "Neha Deshmukh", "type": "PERSON", "start": 30, "end": 43},
+                    {"text": "7766 5544 3322", "type": "AADHAAR", "start": 44, "end": 58},
+                ],
+            ),
+        ],
+    )
+    def test_targeted_seven_categories_pipeline_roundtrip(self, text, expected_entities):
+        """Detection validation, offset recovery, tokenization, and restoration work for all 7 categories."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        mock_payload = json.dumps({"entities": expected_entities})
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": mock_payload, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == len(expected_entities)
+        for pred, exp in zip(det["entities"], expected_entities):
+            assert pred["text"] == exp["text"]
+            assert pred["type"] == exp["type"]
+            assert text[pred["start"]:pred["end"]] == exp["text"]
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        for exp in expected_entities:
+            assert exp["text"] not in tok["sanitized_text"]
+
+        rest = restore_text(tok["sanitized_text"], tok["mapping"])
+        assert rest["success"] is True
+        assert rest["restored_text"] == text
+
+    @pytest.mark.parametrize(
+        "text,expected_uri",
+        [
+            (
+                "Postgres connection string: postgresql://admin:P@ssw0rd2026@localhost:5432/maindb.",
+                "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb",
+            ),
+            (
+                "Redis URI: redis://default:redispw2026!@cache.internal.net:6379.",
+                "redis://default:redispw2026!@cache.internal.net:6379",
+            ),
+        ],
+    )
+    def test_full_database_uri_single_entity_roundtrip(self, text, expected_uri):
+        """Full PostgreSQL and Redis URIs resolve as one DATABASE_CREDENTIAL without fragmentation."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        start = text.index(expected_uri)
+        end = start + len(expected_uri)
+        mock_payload = json.dumps({
+            "entities": [
+                {"text": expected_uri, "type": "DATABASE_CREDENTIAL", "start": start, "end": end}
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": mock_payload, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == 1
+        assert det["entities"][0]["type"] == "DATABASE_CREDENTIAL"
+        assert det["entities"][0]["text"] == expected_uri
+        assert text[det["entities"][0]["start"]:det["entities"][0]["end"]] == expected_uri
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert expected_uri not in tok["sanitized_text"]
+        assert "[DATABASE_CREDENTIAL_1]" in tok["sanitized_text"]
+
+        rest = restore_text(tok["sanitized_text"], tok["mapping"])
+        assert rest["success"] is True
+        assert rest["restored_text"] == text
+
+    def test_location_city_positive_and_standalone_country_negative(self):
+        """City in personal travel context is LOCATION; generic standalone country is excluded."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.detector.prompt_builder import build_detection_prompt
+
+        prompt = build_detection_prompt("Generic text in India.")
+        assert "generic, unlinked country names" in prompt
+        assert "travelling to Paris" in prompt
+
+        travel_text = "Please confirm if May Parker is travelling to Paris this May."
+        travel_payload = json.dumps({
+            "entities": [
+                {"text": "May Parker", "type": "PERSON", "start": 18, "end": 28},
+                {"text": "Paris", "type": "LOCATION", "start": 46, "end": 51},
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": travel_payload, "message": "ok"},
+        ):
+            det_pos = detect_pii(travel_text)
+        assert det_pos["success"] is True
+        assert any(e["text"] == "Paris" and e["type"] == "LOCATION" for e in det_pos["entities"])
+
+        country_text = "Our engineering teams operate in India and Germany."
+        country_payload = json.dumps({"entities": []})
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": country_payload, "message": "ok"},
+        ):
+            det_neg = detect_pii(country_text)
+        assert det_neg["success"] is True
+        assert det_neg["entities"] == []
+
+
+class TestPhase32A3DatabaseUriRecognizer:
+    """Comprehensive unit tests for deterministic DATABASE_CREDENTIAL URI recognition."""
+
+    def test_sample_036_postgresql_raw_at_in_password_and_fragment_suppression(self):
+        """sample_036: PostgreSQL URI with raw '@' in password supersedes LLM fragments."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = "Postgres connection string: postgresql://admin:P@ssw0rd2026@localhost:5432/maindb."
+        expected_uri = "postgresql://admin:P@ssw0rd2026@localhost:5432/maindb"
+        llm_fragments = json.dumps({
+            "entities": [
+                {"text": "admin", "type": "PASSWORD", "start": 41, "end": 46},
+                {"text": "P@ssw0rd2026", "type": "PASSWORD", "start": 47, "end": 59},
+                {"text": "localhost", "type": "SERVER_IDENTIFIER", "start": 60, "end": 69},
+                {"text": "5432", "type": "INTERNAL_URL", "start": 70, "end": 74},
+                {"text": "maindb", "type": "DATABASE_CREDENTIAL", "start": 75, "end": 81},
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": llm_fragments, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == 1
+        ent = det["entities"][0]
+        assert ent["type"] == "DATABASE_CREDENTIAL"
+        assert ent["text"] == expected_uri
+        assert (ent["start"], ent["end"]) == (28, 81)
+        assert text[ent["start"]:ent["end"]] == expected_uri
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert tok["sanitized_text"] == "Postgres connection string: [DATABASE_CREDENTIAL_1]."
+        rest = restore_text(tok["sanitized_text"], tok["mapping"])
+        assert rest["success"] is True
+        assert rest["restored_text"] == text
+
+    def test_sample_045_redis_uri_with_exclamation_in_password(self):
+        """sample_045: Redis URI with '!' in password is detected as one DATABASE_CREDENTIAL."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = "Redis URI: redis://default:redispw2026!@cache.internal.net:6379."
+        expected_uri = "redis://default:redispw2026!@cache.internal.net:6379"
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": '{"entities":[]}', "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == 1
+        ent = det["entities"][0]
+        assert ent["type"] == "DATABASE_CREDENTIAL"
+        assert ent["text"] == expected_uri
+        assert (ent["start"], ent["end"]) == (11, 63)
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert tok["sanitized_text"] == "Redis URI: [DATABASE_CREDENTIAL_1]."
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+    def test_postgresql_percent_encoded_credentials(self):
+        """PostgreSQL URI with percent-encoded credentials and query params is detected."""
+        from trustboost.detector.pii_detector import _extract_database_uri_entities
+
+        text = "DSN: postgresql://svc_user:p%40ss%21word@10.0.1.5:5432/prod?sslmode=require"
+        ents = _extract_database_uri_entities(text)
+        assert len(ents) == 1
+        assert ents[0]["text"] == "postgresql://svc_user:p%40ss%21word@10.0.1.5:5432/prod?sslmode=require"
+        assert text[ents[0]["start"]:ents[0]["end"]] == ents[0]["text"]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Public docs: postgresql://localhost:5432/publicdb",
+            "Redis endpoint: redis://cache.internal.net:6379",
+            "Missing password: postgresql://admin@localhost:5432/db",
+            "Empty password: postgresql://admin:@localhost:5432/db",
+            "Empty user: postgresql://:secret@localhost:5432/db",
+            "Percent-encoded space only: postgresql://%20:%20@localhost:5432/db",
+            "Invalid port zero: postgresql://admin:secret@localhost:0/db",
+            "Invalid port >65535: postgresql://admin:secret@localhost:70000/db",
+            "Non-numeric port: postgresql://admin:secret@localhost:abc/db",
+            "AMQP not auto-classified: amqp://guest:guest@rabbit.internal:5672/",
+            "HTTPS URL not DB URI: https://user:pass@example.com/path",
+        ],
+    )
+    def test_credentialless_invalid_and_unsupported_uris_rejected(self, text):
+        """Credential-less, invalid user/pass/port, and non-DB URIs must not be emitted."""
+        from trustboost.detector.pii_detector import _extract_database_uri_entities
+
+        assert _extract_database_uri_entities(text) == []
+
+    def test_ipv6_host_and_port(self):
+        """Bracketed IPv6 host with optional port is supported."""
+        from trustboost.detector.pii_detector import _extract_database_uri_entities
+
+        text = "URI=mongodb://root:s3cr3t@[2001:db8::1]:27017/admin"
+        ents = _extract_database_uri_entities(text)
+        assert len(ents) == 1
+        assert ents[0]["text"] == "mongodb://root:s3cr3t@[2001:db8::1]:27017/admin"
+        assert text[ents[0]["start"]:ents[0]["end"]] == ents[0]["text"]
+
+    @pytest.mark.parametrize(
+        "text,expected_uri",
+        [
+            ("(postgresql://u1:p1@db.internal:5432/app)", "postgresql://u1:p1@db.internal:5432/app"),
+            ('Check "mysql://u1:p1@127.0.0.1:3306/shop", please.', "mysql://u1:p1@127.0.0.1:3306/shop"),
+            ("Line1\nDSN=rediss://u1:p!@cache.net:6380;", "rediss://u1:p!@cache.net:6380"),
+        ],
+    )
+    def test_wrappers_quotes_commas_and_multiline_boundaries(self, text, expected_uri):
+        """URIs inside parentheses, quotes, commas, and multiline text preserve exact spans."""
+        from trustboost.detector.pii_detector import _extract_database_uri_entities
+
+        ents = _extract_database_uri_entities(text)
+        assert len(ents) == 1
+        assert ents[0]["text"] == expected_uri
+        assert text[ents[0]["start"]:ents[0]["end"]] == expected_uri
+
+    def test_multiple_uris_and_unrelated_neighbouring_pii_preserved(self):
+        """Multiple DB URIs and neighbouring PERSON/EMAIL PII are all preserved and restored."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = (
+            "Alice Walker rotated postgresql://admin:P@ss1@db1:5432/app "
+            "and redis://svc:pw!@cache1:6379, contact alice@example.com."
+        )
+        llm_payload = json.dumps({
+            "entities": [
+                {"text": "Alice Walker", "type": "PERSON", "start": 0, "end": 12},
+                {"text": "P@ss1", "type": "PASSWORD", "start": 40, "end": 45},
+                {"text": "alice@example.com", "type": "EMAIL", "start": 100, "end": 117},
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": llm_payload, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        types_texts = [(e["type"], e["text"]) for e in det["entities"]]
+        assert types_texts == [
+            ("PERSON", "Alice Walker"),
+            ("DATABASE_CREDENTIAL", "postgresql://admin:P@ss1@db1:5432/app"),
+            ("DATABASE_CREDENTIAL", "redis://svc:pw!@cache1:6379"),
+            ("EMAIL", "alice@example.com"),
+        ]
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert "P@ss1" not in tok["sanitized_text"]
+        assert "pw!" not in tok["sanitized_text"]
+        assert "Alice Walker" not in tok["sanitized_text"]
+        assert "alice@example.com" not in tok["sanitized_text"]
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+
+class TestPhase32B3StructuredSecretsAndIpRecognizer:
+    """Comprehensive unit tests for deterministic API-key, IP, and private-key recognition."""
+
+    def test_sample_032_github_pat_excludes_prefix_and_trailing_period(self):
+        """sample_032: Exact GitHub PAT extracted; overlapping prefix-only LLM detection superseded."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = "Set your environment variable to API_KEY=ghp_39aZkL84910fKmQ9021a8xZ4901lQp."
+        expected_tok = "ghp_39aZkL84910fKmQ9021a8xZ4901lQp"
+        llm_overlapping = json.dumps({
+            "entities": [
+                {
+                    "text": "Set your environment variable to API_KEY=ghp_39aZkL84910fKmQ9021a8xZ4901lQp",
+                    "type": "API_KEY",
+                    "start": 0,
+                    "end": 75,
+                }
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": llm_overlapping, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == 1
+        ent = det["entities"][0]
+        assert ent["type"] == "API_KEY"
+        assert ent["text"] == expected_tok
+        assert (ent["start"], ent["end"]) == (41, 75)
+        assert text[ent["start"]:ent["end"]] == expected_tok
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert tok["sanitized_text"] == "Set your environment variable to API_KEY=[API_KEY_1]."
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+    @pytest.mark.parametrize(
+        "token",
+        [
+            "ghp_1234567890abcdefghijklmnopqr",
+            "gho_1234567890abcdefghijklmnopqr",
+            "ghu_1234567890abcdefghijklmnopqr",
+            "ghs_1234567890abcdefghijklmnopqr",
+            "ghr_1234567890abcdefghijklmnopqr",
+            "github_pat_11AAAAAA0123456789_abcdefg",
+            "sk-live-9021849102b48",
+            "sk-test-1234567890abcdef",
+            "sk-proj-1234567890abcdef",
+            "sk_live_1234567890abcdef",
+            "sk-1234567890abcdefghij",
+            "AKIAIOSFODNN7EXAMPLE",
+        ],
+    )
+    def test_valid_api_key_prefixes_recognized(self, token):
+        """All supported GitHub, OpenAI/Stripe sk-*, and AWS AKIA* formats are recognized."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        text = f"Token is {token}."
+        ents = _extract_structured_secret_entities(text)
+        assert len(ents) == 1
+        assert ents[0]["type"] == "API_KEY"
+        assert ents[0]["text"] == token
+        assert text[ents[0]["start"]:ents[0]["end"]] == token
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Clone https://github.com/example/repo.git now.",
+            "Short gh_abc and ghp_short and sk-abc and sk_short.",
+            "Model sku-12345 and ghost_mode and ghz_12345678901234567890.",
+            "Invalid AWS key AKIA12345 and AKIAIOSFODNN7EXAMPLEEXTRA.",
+        ],
+    )
+    def test_public_github_url_and_arbitrary_gh_sk_rejected(self, text):
+        """Public GitHub repo URLs and arbitrary gh/sk/AKIA strings are not classified as API_KEY."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        assert [e for e in _extract_structured_secret_entities(text) if e["type"] == "API_KEY"] == []
+
+    def test_sample_074_ipv4_with_port_excludes_port(self):
+        """sample_074: 198.51.100.45:44321 emits only 198.51.100.45 [60:73]."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = "DEBUG [2026-03-31 10:14:22] Connection accepted from client 198.51.100.45:44321"
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": '{"entities":[]}', "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert len(det["entities"]) == 1
+        ent = det["entities"][0]
+        assert ent["type"] == "IP_ADDRESS"
+        assert ent["text"] == "198.51.100.45"
+        assert (ent["start"], ent["end"]) == (60, 73)
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert tok["sanitized_text"] == "DEBUG [2026-03-31 10:14:22] Connection accepted from client [IP_ADDRESS_1]:44321"
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+    @pytest.mark.parametrize(
+        "text,expected_ip",
+        [
+            ("Ping 192.168.1.10 now.", "192.168.1.10"),
+            ("IPv6 host 2001:db8::1 connected.", "2001:db8::1"),
+            ("Bracketed [2001:db8::1]:8443 ok.", "2001:db8::1"),
+            ("Loopback [::1]:8080 ready.", "::1"),
+        ],
+    )
+    def test_valid_ipv4_and_ipv6_variants(self, text, expected_ip):
+        """Valid IPv4, IPv6, and bracketed IPv6 with port are recognized accurately."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        ents = _extract_structured_secret_entities(text)
+        assert len(ents) == 1
+        assert ents[0]["type"] == "IP_ADDRESS"
+        assert ents[0]["text"] == expected_ip
+        assert text[ents[0]["start"]:ents[0]["end"]] == expected_ip
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Invalid octets 256.1.1.1 and 999.999.999.999.",
+            "Version v1.2.3.4 and 1.2.3.4.5 and v2.0.1.",
+            "Timestamp 10:14:22 and ordinary number 123456.",
+            "Invalid port 10.0.0.1:99999.",
+        ],
+    )
+    def test_invalid_ips_versions_and_numbers_rejected(self, text):
+        """Invalid octets, version strings, OIDs, timestamps, and invalid ports are rejected."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        assert [e for e in _extract_structured_secret_entities(text) if e["type"] == "IP_ADDRESS"] == []
+
+    def test_pem_and_openssh_private_keys_recognized(self):
+        """Complete PEM and OpenSSH private-key blocks are detected as PRIVATE_KEY."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        pem = "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAtestbody\n-----END RSA PRIVATE KEY-----"
+        openssh = "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAA=\n-----END OPENSSH PRIVATE KEY-----"
+        for key_block in (pem, openssh):
+            text = f"Key:\n{key_block}\nEnd."
+            ents = _extract_structured_secret_entities(text)
+            assert len(ents) == 1
+            assert ents[0]["type"] == "PRIVATE_KEY"
+            assert ents[0]["text"] == key_block
+            assert text[ents[0]["start"]:ents[0]["end"]] == key_block
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Deploy key ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8... generated for deploy bot.",
+            "Incomplete header -----BEGIN PRIVATE KEY----- without closing footer",
+            "Mismatched -----BEGIN RSA PRIVATE KEY-----\nabc\n-----END EC PRIVATE KEY-----",
+        ],
+    )
+    def test_ssh_public_key_and_incomplete_private_keys_not_misclassified(self, text):
+        """SSH RSA public keys and incomplete/mismatched blocks are not emitted as PRIVATE_KEY."""
+        from trustboost.detector.pii_detector import _extract_structured_secret_entities
+
+        assert [e for e in _extract_structured_secret_entities(text) if e["type"] == "PRIVATE_KEY"] == []
+
+    def test_overlap_supersedes_prefix_and_preserves_neighbouring_pii(self):
+        """Deterministic API_KEY/IP_ADDRESS supersede overlapping LLM spans while keeping nearby PII."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = "Alice Walker used Bearer sk-live-9021849102b48 from 198.51.100.45:44321."
+        llm_payload = json.dumps({
+            "entities": [
+                {"text": "Alice Walker", "type": "PERSON", "start": 0, "end": 12},
+                {"text": "Bearer sk-live-9021849102b48", "type": "CREDENTIAL", "start": 18, "end": 46},
+                {"text": "198.51.100.45:44321", "type": "INTERNAL_URL", "start": 52, "end": 71},
+            ]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": llm_payload, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert [(e["type"], e["text"]) for e in det["entities"]] == [
+            ("PERSON", "Alice Walker"),
+            ("API_KEY", "sk-live-9021849102b48"),
+            ("IP_ADDRESS", "198.51.100.45"),
+        ]
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert "Alice Walker" not in tok["sanitized_text"]
+        assert "sk-live-9021849102b48" not in tok["sanitized_text"]
+        assert "198.51.100.45" not in tok["sanitized_text"]
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+
+class TestPhase32B5StructuredPiiRecognizer:
+    """Comprehensive unit tests for deterministic PAN, international phone, and context-aware DOB."""
+
+    @pytest.mark.parametrize(
+        "text,expected_pan",
+        [
+            ('{"status": "active", "lead": "Marcus Brody", "pan": "BKPTR1290N"}', "BKPTR1290N"),
+            ("Taxpayer Rajesh Kumar has provided PAN ABCDE1234F for clearance.", "ABCDE1234F"),
+            ("Kindly submit Aadhaar 4321 8765 2109 and PAN BKZPR8812K for KYC renewal.", "BKZPR8812K"),
+            ("Kripya apna PAN card ALMPK9911D email kijiye.", "ALMPK9911D"),
+        ],
+    )
+    def test_valid_indian_pan_with_context(self, text, expected_pan):
+        """Valid Indian PANs with PAN/tax/JSON context are extracted with exact offsets."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        ents = [e for e in _extract_structured_pii_entities(text) if e["type"] == "PAN"]
+        assert len(ents) == 1
+        assert ents[0]["text"] == expected_pan
+        assert text[ents[0]["start"]:ents[0]["end"]] == expected_pan
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Model code ABCDE1234F without any tax or pan context.",
+            "Lowercase pan abcde1234f should not match.",
+            "PAN embedded in longer token PAN ABCDE1234FG99.",
+            "Too short PAN ABC1234F and wrong digits PAN ABCD12345F.",
+            "GSTIN 27AAAPL1234C1ZV is not a 10-char PAN.",
+        ],
+    )
+    def test_invalid_or_uncontextualized_pan_rejected(self, text):
+        """Invalid PANs, partial matches inside longer strings, and uncontextualized IDs are rejected."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        assert [e for e in _extract_structured_pii_entities(text) if e["type"] == "PAN"] == []
+
+    @pytest.mark.parametrize(
+        "text,expected_phone",
+        [
+            ("Call me back on +1-555-019-2834 if Dr. Evelyn Reed is unavailable.", "+1-555-019-2834"),
+            ("You can reach Jessica Jones at +44 20 7946 0912 during office hours.", "+44 20 7946 0912"),
+            ("Laura Croft can be reached at +1 (555) 987-6543 at her estate.", "+1 (555) 987-6543"),
+            ("Contactable at +91-9988776655 or [+1-555-0182]!", "+91-9988776655"),
+        ],
+    )
+    def test_sample_003_and_international_phone_separators(self, text, expected_phone):
+        """sample_003 and international phones with spaces, hyphens, and parentheses are extracted."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        ents = [e for e in _extract_structured_pii_entities(text) if e["type"] == "PHONE"]
+        assert len(ents) >= 1
+        assert ents[0]["text"] == expected_phone
+        assert text[ents[0]["start"]:ents[0]["end"]] == expected_phone
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "DEBUG [2026-03-31 10:14:22] client 198.51.100.45:44321",
+            "Order total +123 and version +1.2.3.4 and short +1-23.",
+            "Too many digits +1-555-123-456-789-0123.",
+        ],
+    )
+    def test_invalid_phone_like_strings_rejected(self, text):
+        """Timestamps, ports, short/overlong numbers are not classified as PHONE."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        assert [e for e in _extract_structured_pii_entities(text) if e["type"] == "PHONE"] == []
+
+    @pytest.mark.parametrize(
+        "text,expected_dob",
+        [
+            ("Date of Birth: 03-Dec-1979 for client Kevin Flynn.", "03-Dec-1979"),
+            ("Patient record shows Charlie Vance was born on 14/05/1988 in Chicago.", "14/05/1988"),
+            ("Applicant: George Thomas, DOB: 1995-10-22, living in Seattle.", "1995-10-22"),
+            ("New recruit Michael Scott was born on 15 March 1965 in Scranton.", "15 March 1965"),
+            ('{"name": "Kevin Flynn", "dob": "03-Dec-1979", "date_of_birth": "1988-05-14"}', "03-Dec-1979"),
+        ],
+    )
+    def test_sample_012_and_context_aware_dob_formats(self, text, expected_dob):
+        """sample_012 and context-labelled prose/JSON DOBs are extracted with exact offsets."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        ents = [e for e in _extract_structured_pii_entities(text) if e["type"] == "DATE_OF_BIRTH"]
+        assert len(ents) >= 1
+        assert ents[0]["text"] == expected_dob
+        assert text[ents[0]["start"]:ents[0]["end"]] == expected_dob
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Invalid calendar date DOB: 31-Feb-1990.",
+            "Invalid month DOB: 2020-13-01.",
+            "Meeting scheduled on 03-Dec-2026 with Alice.",
+            "DEBUG [2026-03-31 10:14:22] Invoice date: 14/05/2025.",
+        ],
+    )
+    def test_invalid_calendar_dates_and_generic_dates_rejected(self, text):
+        """Invalid calendar dates and unlabelled meeting/log/invoice dates are not DATE_OF_BIRTH."""
+        from trustboost.detector.pii_detector import _extract_structured_pii_entities
+
+        assert [e for e in _extract_structured_pii_entities(text) if e["type"] == "DATE_OF_BIRTH"] == []
+
+    def test_sample_003_012_075_pipeline_roundtrip_and_unrelated_preservation(self):
+        """End-to-end detection, tokenization, and restoration for 003, 012, 075 and JSON DOB."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        cases = [
+            (
+                "Call me back on +1-555-019-2834 if Dr. Evelyn Reed is unavailable.",
+                json.dumps({"entities": [{"text": "Evelyn Reed", "type": "PERSON", "start": 39, "end": 50}]}),
+                "+1-555-019-2834",
+            ),
+            (
+                "Date of Birth: 03-Dec-1979 for client Kevin Flynn.",
+                json.dumps({"entities": [{"text": "Kevin Flynn", "type": "PERSON", "start": 38, "end": 49}]}),
+                "03-Dec-1979",
+            ),
+            (
+                '{"status": "active", "lead": "Marcus Brody", "pan": "BKPTR1290N"}',
+                json.dumps({"entities": []}),
+                "BKPTR1290N",
+            ),
+        ]
+        for text, llm_json, must_mask in cases:
+            with patch(
+                "trustboost.detector.pii_detector.generate_response",
+                return_value={"success": True, "response": llm_json, "message": "ok"},
+            ):
+                det = detect_pii(text)
+            assert det["success"] is True
+            tok = tokenize_entities(text, det["entities"])
+            assert tok["success"] is True
+            assert must_mask not in tok["sanitized_text"]
+            assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+
+class TestPhase32B6CJsonPersonRecognizer:
+    """Positive, negative, and integration tests for JSON-aware PERSON detection."""
+
+    def test_sample_075_json_lead_and_pan_roundtrip(self):
+        """sample_075: 'lead': 'Marcus Brody' -> PERSON [30:42], 'pan': 'BKPTR1290N' -> PAN [53:63], 'status': 'active' untouched."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = '{"status": "active", "lead": "Marcus Brody", "pan": "BKPTR1290N"}'
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": '{"entities":[]}', "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert [(e["type"], e["text"], e["start"], e["end"]) for e in det["entities"]] == [
+            ("PERSON", "Marcus Brody", 30, 42),
+            ("PAN", "BKPTR1290N", 53, 63),
+        ]
+        for e in det["entities"]:
+            assert text[e["start"]:e["end"]] == e["text"]
+
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert tok["sanitized_text"] == '{"status": "active", "lead": "[PERSON_1]", "pan": "[PAN_1]"}'
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
+
+    def test_json_person_name_nested_array_escaped_unicode_and_duplicates(self):
+        """Supports simple, nested, array, escaped-quote, Unicode-escape, and repeated-name JSON inputs."""
+        from trustboost.detector.pii_detector import _extract_json_person_entities
+
+        # Simple
+        s1 = '{"name": "John Smith"}'
+        e1 = _extract_json_person_entities(s1)
+        assert [(e["text"], e["start"], e["end"]) for e in e1] == [("John Smith", 10, 20)]
+
+        # Nested object + case-insensitive key
+        s2 = '{"meta": {"OWNER": "Alice Walker"}}'
+        e2 = _extract_json_person_entities(s2)
+        assert [(e["text"], e["start"], e["end"]) for e in e2] == [("Alice Walker", 20, 32)]
+
+        # Array of objects
+        s3 = '[{"contact": "Kevin Flynn"}, {"employee": "Neha Deshmukh"}]'
+        e3 = _extract_json_person_entities(s3)
+        assert [(e["text"], e["start"], e["end"]) for e in e3] == [
+            ("Kevin Flynn", 14, 25),
+            ("Neha Deshmukh", 43, 56),
+        ]
+
+        # Escaped quote string
+        s4 = '{"author": "Jean-Luc \\"Picard\\""}'
+        e4 = _extract_json_person_entities(s4)
+        assert len(e4) == 1
+        assert s4[e4[0]["start"]:e4[0]["end"]] == e4[0]["text"]
+
+        # Unicode escape sequence
+        s5 = '{"patient": "Jos\\u00e9 Silva"}'
+        e5 = _extract_json_person_entities(s5)
+        assert len(e5) == 1
+        assert e5[0]["text"] == "Jos\\u00e9 Silva"
+        assert s5[e5[0]["start"]:e5[0]["end"]] == e5[0]["text"]
+
+        # Same name appearing under two different semantic keys preserves distinct offsets
+        s6 = '{"lead": "Marcus Brody", "owner": "Marcus Brody"}'
+        e6 = _extract_json_person_entities(s6)
+        assert [(e["text"], e["start"], e["end"]) for e in e6] == [
+            ("Marcus Brody", 10, 22),
+            ("Marcus Brody", 35, 47),
+        ]
+
+    @pytest.mark.parametrize(
+        "json_text",
+        [
+            '{"status": "active"}',
+            '{"owner": "admin"}',
+            '{"lead": "Backend Team"}',
+            '{"lead": "Support Team"}',
+            '{"owner": "Acme Corporation"}',
+            '{"contact": "North America"}',
+            '{"lead": "Project Polaris"}',
+            '{"user": "deploy-service-01"}',
+            '{"name": "unknown"}',
+            '{"contact": "alice@example.com"}',
+            '{"user": "https://example.com/profile"}',
+            '{"lead": "Marcus Brody"',  # Malformed JSON
+            'Not JSON at all: {"lead": "Marcus Brody"}',
+        ],
+    )
+    def test_json_person_negative_cases_and_malformed_json(self, json_text):
+        """Generic statuses, teams, orgs, regions, projects, IDs, emails, URLs, and malformed JSON emit no PERSON."""
+        from trustboost.detector.pii_detector import _extract_json_person_entities
+
+        assert _extract_json_person_entities(json_text) == []
+
+    def test_json_person_does_not_overlap_email_api_key_or_pan(self):
+        """Existing EMAIL, API_KEY, and PAN detections inside JSON are preserved without overlap."""
+        from trustboost.detector.pii_detector import detect_pii
+        from trustboost.tokenizer.tokenizer import restore_text, tokenize_entities
+
+        text = (
+            '{"contact": "alice@example.com", "owner": "Alice Walker", '
+            '"api_key": "ghp_39aZkL84910fKmQ9021a8xZ4901lQp", "pan": "BKPTR1290N"}'
+        )
+        llm_json = json.dumps({
+            "entities": [{"text": "alice@example.com", "type": "EMAIL", "start": 13, "end": 30}]
+        })
+        with patch(
+            "trustboost.detector.pii_detector.generate_response",
+            return_value={"success": True, "response": llm_json, "message": "ok"},
+        ):
+            det = detect_pii(text)
+
+        assert det["success"] is True
+        assert [(e["type"], e["text"]) for e in det["entities"]] == [
+            ("EMAIL", "alice@example.com"),
+            ("PERSON", "Alice Walker"),
+            ("API_KEY", "ghp_39aZkL84910fKmQ9021a8xZ4901lQp"),
+            ("PAN", "BKPTR1290N"),
+        ]
+        tok = tokenize_entities(text, det["entities"])
+        assert tok["success"] is True
+        assert restore_text(tok["sanitized_text"], tok["mapping"])["restored_text"] == text
